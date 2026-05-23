@@ -177,7 +177,7 @@ export default function DashboardPage() {
             <div style={{fontSize:12,fontWeight:700,color:'var(--mint)',marginBottom:4}}>🛍️ رابط متجرك للزبائن</div>
             <div style={{fontSize:12,color:'var(--ink2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',fontFamily:'var(--font-mono)'}}>{fullStoreUrl}</div>
           </div>
-          <div style={{display:'flex',gap:8,flexShrink:0}}>
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
             <button onClick={()=>navigator.clipboard?.writeText(fullStoreUrl).then(()=>window.alert('تم نسخ الرابط!'))}
               style={{padding:'6px 14px',background:'var(--mint)',border:'none',borderRadius:8,color:'#fff',fontSize:12,fontWeight:700,cursor:'pointer'}}>
               نسخ الرابط
