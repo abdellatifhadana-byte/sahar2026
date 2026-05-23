@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build output
+dist/
+
+# Environment - NEVER commit
+.env
+server/.env
+
+# Database - regenerates automatically
+server/data/
+server/data/*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+*.log
+
+# Editor
+.vscode/
+.idea/
+
+# Temp
+*.tmp
+*.temp
