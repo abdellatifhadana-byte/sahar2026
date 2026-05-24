@@ -80,3 +80,54 @@ router.get('/qr', auth, (req, res) => {
 });
 
 module.exports = router;
+
+// POST /api/settings/verify-connection — proxy for connection verification (avoid CORS)
+router.post('/verify-connection', auth, async (req, res) => {
+  const { service, token, pageId, apiKey } = req.body;
+  const https = require('https');
+
+  function httpsGet(hostname, path, headers) {
+    return new Promise((resolve, reject) => {
+      const req2 = https.request({ hostname, path, headers, method: 'GET' }, r => {
+        let data = ''; r.on('data', c => data += c); r.on('end', () => resolve({ status: r.statusCode, body: data }));
+      });
+      req2.on('error', reject); req2.setTimeout(8000, () => { req2.destroy(); reject(new Error('Timeout')); });
+      req2.end();
+    });
+  }
+
+  try {
+    if (service === 'openai') {
+      const r = await httpsGet('api.openai.com', '/v1/models', { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' });
+      const data = JSON.parse(r.body);
+      if (r.status === 200 && data.data) return res.json({ ok: true, info: `${data.data.length} models available` });
+      return res.json({ ok: false, error: data.error?.message || 'Invalid key' });
+    }
+
+    if (service === 'gemini') {
+      const r = await httpsGet('generativelanguage.googleapis.com', `/v1/models?key=${apiKey}`, { 'Content-Type': 'application/json' });
+      const data = JSON.parse(r.body);
+      if (r.status === 200 && data.models) return res.json({ ok: true, info: `${data.models.length} models` });
+      return res.json({ ok: false, error: data.error?.message || 'Invalid key' });
+    }
+
+    if (['facebook', 'instagram', 'whatsapp', 'messenger'].includes(service)) {
+      const r = await httpsGet('graph.facebook.com', `/v19.0/me?access_token=${token}`, { 'Content-Type': 'application/json' });
+      const data = JSON.parse(r.body);
+      if (!data.error && data.id) {
+        // If pageId given, verify page access
+        if (pageId) {
+          const r2 = await httpsGet('graph.facebook.com', `/v19.0/${pageId}?access_token=${token}&fields=name,id`, {});
+          const d2 = JSON.parse(r2.body);
+          if (!d2.error) return res.json({ ok: true, name: d2.name || data.name, id: d2.id });
+        }
+        return res.json({ ok: true, name: data.name, id: data.id });
+      }
+      return res.json({ ok: false, error: data.error?.message || 'Invalid token' });
+    }
+
+    res.json({ ok: false, error: 'Unknown service' });
+  } catch (e) {
+    res.json({ ok: false, error: e.message });
+  }
+});

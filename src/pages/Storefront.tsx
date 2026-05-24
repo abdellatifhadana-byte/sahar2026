@@ -222,15 +222,41 @@ function ProductModal({ p, cart, onClose, currency, userId }: { p:SProduct; cart
             <div style={{ marginBottom:18 }}>
               <div style={{ fontSize:11,fontWeight:700,color:'var(--ink3)',marginBottom:8 }}>اللون</div>
               <div style={{ display:'flex',gap:8,flexWrap:'wrap' }}>
-                {p.colors.map(c => (
-                  <button key={c} onClick={()=>setColor(c)} style={{
-                    padding:'6px 14px',borderRadius:8,border:`1.5px solid ${color===c?'var(--ember)':'var(--border2)'}`,
-                    background:color===c?'rgba(255,77,26,.12)':'transparent',
-                    color:color===c?'var(--ember2)':'var(--ink2)',
-                    fontSize:13,fontWeight:600,cursor:'pointer',transition:'all .15s',
-                  }}>{c}</button>
-                ))}
+                {p.colors.map(clr => {
+                  const colorImg = (p as any).colorImages?.[clr];
+                  return (
+                    <button key={clr} onClick={()=>{
+                      setColor(clr);
+                      // Update displayed image if color has its own image
+                      if (colorImg) {
+                        // We'll handle via state
+                      }
+                    }} style={{
+                      padding: colorImg ? '4px' : '6px 14px',
+                      borderRadius: colorImg ? 10 : 8,
+                      border:`2px solid ${color===clr?'var(--ember)':'var(--border2)'}`,
+                      background:color===clr?'rgba(255,77,26,.12)':'transparent',
+                      cursor:'pointer',transition:'all .15s',
+                      display:'flex',flexDirection:'column',alignItems:'center',gap:4,
+                    }}>
+                      {colorImg ? (
+                        <>
+                          <img src={colorImg} alt={clr} style={{ width:56,height:56,objectFit:'cover',borderRadius:7 }} />
+                          <span style={{ fontSize:10,fontWeight:700,color:color===clr?'var(--ember2)':'var(--ink2)' }}>{clr}</span>
+                        </>
+                      ) : (
+                        <span style={{ fontSize:13,fontWeight:600,color:color===clr?'var(--ember2)':'var(--ink2)' }}>{clr}</span>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
+              {/* Show color-specific image */}
+              {color && (p as any).colorImages?.[color] && (p as any).colorImages[color] !== p.imageUrl && (
+                <div style={{ marginTop:10,borderRadius:12,overflow:'hidden',height:140 }}>
+                  <img src={(p as any).colorImages[color]} alt={color} style={{ width:'100%',height:'100%',objectFit:'cover' }} />
+                </div>
+              )}
             </div>
           )}
 

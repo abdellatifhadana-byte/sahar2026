@@ -4,7 +4,7 @@ import {
   Home, Package, ShoppingCart, MessageCircle, Users,
   BarChart3, Settings, Wifi, BellRing, Truck,
   Sun, Moon, X, Search, PlusCircle, Sparkles,
-  Zap, LogOut, ExternalLink
+  Zap, LogOut, ExternalLink, Download
 } from 'lucide-react';
 
 const NAV: { page: Page; icon: typeof Home; label: string }[] = [
@@ -19,6 +19,7 @@ const NAV: { page: Page; icon: typeof Home; label: string }[] = [
   { page: 'notifications', icon: BellRing,       label: 'الإشعارات' },
   { page: 'banner',        icon: Sparkles,       label: 'AI Studio' },
   { page: 'editor',        icon: Zap,            label: 'محرر الصور'},
+  { page: 'import',        icon: Download,       label: 'استيراد'   },
   { page: 'settings',      icon: Settings,       label: 'الإعدادات' },
 ];
 

@@ -16,6 +16,7 @@ const DeliveryPage     = lazy(() => import('./DeliveryPage'));
 const NotificationsPage= lazy(() => import('./NotificationsPage'));
 const SettingsPage     = lazy(() => import('./SettingsPage'));
 const BannerStudioPage  = lazy(() => import('./BannerStudioPage'));
+const ChatImportPage    = lazy(() => import('./ChatImportPage'));
 const ImageEditorPage   = lazy(() => import('./ImageEditorPage'));
 
 function PageSkeleton() {
@@ -105,6 +106,7 @@ export default function MainLayout() {
       case 'notifications': return <NotificationsPage />;
       case 'settings':      return <SettingsPage />;
       case 'banner':        return <BannerStudioPage />;
+      case 'import':        return <ChatImportPage />;
       case 'editor':        return <ImageEditorPage />;
       default:              return <DashboardPage />;
     }

@@ -195,6 +195,71 @@ export default function DeliveryPage() {
                 <Input label="🚚 Demande Ramassage" value={config.ramassagePage || ''} onChange={(v: string) => setConfig(p => ({ ...p, ramassagePage: v }))} ph="https://..." />
               </div>
 
+              {/* Visual Step Builder */}
+              <div>
+                <label className="label" style={{ marginBottom: 8, display: 'block' }}>📋 خطوات التسجيل التلقائي</label>
+                <p style={{ fontSize: 11, color: 'var(--ink3)', marginBottom: 10 }}>
+                  حدد ما سيفعله التطبيق تلقائياً على موقع شركة التوصيل خطوة بخطوة
+                </p>
+                {(() => {
+                  const steps: any[] = (config as any).automationSteps || [];
+                  const setSteps = (ns: any[]) => setConfig(p => ({ ...p, automationSteps: ns }));
+                  const addStep = (type: string) => setSteps([...steps, { type, selector: '', value: '', description: '' }]);
+                  const removeStep = (i: number) => setSteps(steps.filter((_: any, j: number) => j !== i));
+                  const updateStep = (i: number, field: string, value: string) => { const ns = [...steps]; ns[i] = { ...ns[i], [field]: value }; setSteps(ns); };
+                  return (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {steps.map((step: any, i: number) => (
+                        <div key={i} style={{ background: 'var(--void2)', borderRadius: 10, padding: '10px 12px', border: '1px solid var(--border)' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                            <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--ember)', color: '#fff', fontSize: 10, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{i + 1}</span>
+                            <select value={step.type} onChange={e => updateStep(i, 'type', e.target.value)} style={{ padding: '4px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink1)', fontSize: 12 }}>
+                              <option value="goto">🌐 فتح صفحة</option>
+                              <option value="fill">⌨️ ملء حقل</option>
+                              <option value="click">👆 ضغط زر</option>
+                              <option value="select">📋 اختيار قيمة</option>
+                              <option value="wait">⏱️ انتظار</option>
+                              <option value="extract">📤 استخراج رقم التتبع</option>
+                            </select>
+                            <input value={step.description} onChange={e => updateStep(i, 'description', e.target.value)} placeholder="وصف الخطوة..." style={{ flex: 1, padding: '4px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11 }} />
+                            <button onClick={() => removeStep(i)} style={{ width: 24, height: 24, borderRadius: 6, background: 'rgba(255,77,26,.1)', border: 'none', cursor: 'pointer', color: 'var(--ember)', flexShrink: 0, fontWeight: 900, fontSize: 14 }}>×</button>
+                          </div>
+                          {['fill','select','goto','extract','wait'].includes(step.type) && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                              {step.type !== 'goto' && step.type !== 'wait' && step.type !== 'extract' && (
+                                <input value={step.selector} onChange={e => updateStep(i, 'selector', e.target.value)} placeholder="#username أو .btn-submit أو input[name='phone']" style={{ padding: '5px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11 }} dir="ltr" />
+                              )}
+                              {step.type === 'click' && (
+                                <input value={step.selector} onChange={e => updateStep(i, 'selector', e.target.value)} placeholder="selector الزر مثل: button[type='submit'] أو #saveBtn" style={{ padding: '5px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11 }} dir="ltr" />
+                              )}
+                              {['fill','select','goto'].includes(step.type) && (
+                                <input value={step.value} onChange={e => updateStep(i, 'value', e.target.value)} placeholder={step.type === 'goto' ? 'https://...' : 'القيمة أو {order.customerName} أو {order.city}'} style={{ padding: '5px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11 }} dir={step.type === 'goto' ? 'ltr' : 'rtl'} />
+                              )}
+                              {step.type === 'wait' && (
+                                <input value={step.value} onChange={e => updateStep(i, 'value', e.target.value)} type="number" placeholder="المدة بالميلي ثانية مثل: 2000" style={{ padding: '5px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11 }} />
+                              )}
+                              {step.type === 'extract' && (
+                                <input value={step.selector} onChange={e => updateStep(i, 'selector', e.target.value)} placeholder="selector رقم التتبع مثل: .tracking-number أو #shipmentId" style={{ padding: '5px 8px', borderRadius: 6, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11 }} dir="ltr" />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                        {[['goto','🌐'],['fill','⌨️'],['click','👆'],['select','📋'],['wait','⏱️'],['extract','📤']].map(([t,ic]) => (
+                          <button key={t} onClick={() => addStep(t)} style={{ padding: '4px 11px', borderRadius: 7, background: 'var(--panel)', border: '1px solid var(--border)', color: 'var(--ink2)', fontSize: 11, cursor: 'pointer' }}>{ic} {t}</button>
+                        ))}
+                      </div>
+                      {steps.length > 0 && (
+                        <div style={{ fontSize: 10, color: 'var(--ink3)', background: 'rgba(0,200,150,.05)', border: '1px solid rgba(0,200,150,.15)', borderRadius: 7, padding: '7px 10px' }}>
+                          📌 المتغيرات: {'{order.customerName}'} • {'{order.customerPhone}'} • {'{order.city}'} • {'{order.address}'} • {'{order.total}'}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+
               <div style={{ display: 'flex', gap: 10, paddingTop: 4 }}>
                 <button onClick={() => { setShowAdd(false); setConfig(EMPTY); }} className="btn btn-ghost" style={{ paddingInline: 20 }}>إلغاء</button>
                 <button onClick={save} className="btn btn-primary" style={{ flex: 1, justifyContent: 'center' }}>

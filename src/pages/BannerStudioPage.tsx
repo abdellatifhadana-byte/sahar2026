@@ -35,12 +35,51 @@ function CopyBtn({ text }: { text: string }) {
 }
 
 export default function BannerStudioPage() {
-  const { settings } = useStore();
+  const { settings, notify } = useStore();
   const [template, setTemplate] = useState('custom');
   const [prompt, setPrompt]     = useState('');
   const [loading, setLoading]   = useState(false);
   const [result, setResult]     = useState<any>(null);
+  const [publishState, setPublishState] = useState<Record<string, 'idle'|'loading'|'success'|'error'>>({});
+  const [publishResults, setPublishResults] = useState<Record<string, string>>({});
   const [error, setError]       = useState('');
+
+  const publishTo = async (platform: string) => {
+    if (!result?.caption) { notify('warning', 'أنشئ المحتوى أولاً'); return; }
+    const social = settings.social as any;
+    const tok = platform === 'facebook' ? social.facebook?.accessToken
+              : platform === 'instagram' ? social.instagram?.accessToken : '';
+    const pageId = platform === 'facebook' ? social.facebook?.pageId
+                 : platform === 'instagram' ? social.instagram?.pageId : '';
+    
+    if (!tok || !pageId) {
+      notify('error', `❌ ${platform === 'facebook' ? 'Facebook' : 'Instagram'} غير مربوط — اذهب لصفحة الربط`);
+      return;
+    }
+    
+    setPublishState(s => ({ ...s, [platform]: 'loading' }));
+    try {
+      const authTok = localStorage.getItem('ai_commerce_token') || '';
+      const r = await fetch('/api/ai/publish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authTok}` },
+        body: JSON.stringify({ platform, message: result.caption + '\n\n' + result.hashtags, imageUrl: null }),
+      });
+      const data = await r.json();
+      if (data.success) {
+        setPublishState(s => ({ ...s, [platform]: 'success' }));
+        setPublishResults(s => ({ ...s, [platform]: data.postId || data.mediaId || 'تم النشر' }));
+        notify('success', `✅ تم النشر على ${platform === 'facebook' ? 'Facebook' : 'Instagram'} بنجاح!`);
+      } else {
+        setPublishState(s => ({ ...s, [platform]: 'error' }));
+        setPublishResults(s => ({ ...s, [platform]: data.error || 'فشل النشر' }));
+        notify('error', `❌ فشل النشر: ${data.error}`);
+      }
+    } catch (e: any) {
+      setPublishState(s => ({ ...s, [platform]: 'error' }));
+      notify('error', `❌ خطأ: ${e.message}`);
+    }
+  };
 
   const generate = async () => {
     if (!prompt.trim()) return;
@@ -165,6 +204,54 @@ export default function BannerStudioPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Publish to platforms */}
+      {result && (
+        <div className="card" style={{ padding:'14px 16px' }}>
+          <div style={{ fontSize:12,fontWeight:700,color:'var(--ink3)',marginBottom:10,letterSpacing:'.06em' }}>
+            📢 نشر على المنصات
+          </div>
+          <div style={{ display:'flex',gap:8,flexWrap:'wrap' }}>
+            {[
+              { id:'facebook', label:'Facebook', color:'#1877F2', icon:'📘' },
+              { id:'instagram', label:'Instagram', color:'#E1306C', icon:'📸' },
+            ].map(p => {
+              const state = publishState[p.id] || 'idle';
+              const connected = !!(settings.social as any)[p.id]?.connected;
+              return (
+                <div key={p.id} style={{ flex:1,minWidth:140 }}>
+                  <button
+                    onClick={() => publishTo(p.id)}
+                    disabled={state === 'loading' || !connected}
+                    style={{
+                      width:'100%',padding:'10px',borderRadius:10,
+                      background: state === 'success' ? 'rgba(0,200,150,.1)' : state === 'error' ? 'rgba(255,77,26,.1)' : `${p.color}15`,
+                      border: `1px solid ${state === 'success' ? 'rgba(0,200,150,.3)' : state === 'error' ? 'rgba(255,77,26,.3)' : `${p.color}40`}`,
+                      color: state === 'success' ? 'var(--mint)' : state === 'error' ? 'var(--ember)' : p.color,
+                      cursor: connected ? 'pointer' : 'not-allowed',
+                      opacity: connected ? 1 : 0.5,
+                      display:'flex',flexDirection:'column',alignItems:'center',gap:4,
+                    }}>
+                    <span style={{ fontSize:20 }}>{p.icon}</span>
+                    <span style={{ fontSize:12,fontWeight:700 }}>
+                      {state === 'loading' ? '⟳ جارٍ النشر...' : state === 'success' ? '✅ تم النشر' : state === 'error' ? '❌ فشل' : `نشر على ${p.label}`}
+                    </span>
+                    {!connected && <span style={{ fontSize:10 }}>غير مربوط</span>}
+                  </button>
+                  {publishResults[p.id] && (
+                    <div style={{ fontSize:10,color:'var(--ink3)',marginTop:4,textAlign:'center' }}>
+                      {state === 'success' ? `✅ ID: ${publishResults[p.id]}` : publishResults[p.id]}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p style={{ fontSize:10,color:'var(--ink3)',marginTop:8,textAlign:'center' }}>
+            يتم التحقق من النشر مباشرة عبر Meta API — النتيجة حقيقية وليست وهمية
+          </p>
         </div>
       )}
 

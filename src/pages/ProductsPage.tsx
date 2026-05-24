@@ -41,6 +41,8 @@ function ProductForm({ product, onClose }: { product?: Product; onClose: () => v
     images: product?.images ?? [],
     isForChildren: product?.isForChildren ?? false,
     ageRange: product?.ageRange ?? '',
+    sizeType: (product as any)?.sizeType ?? 'adult',
+    colorImages: (product as any)?.colorImages ?? {},
   });
   const [imgTab, setImgTab] = useState<'photo' | 'emoji'>('photo');
   const fileRef = useRef<HTMLInputElement>(null);
@@ -63,7 +65,9 @@ function ProductForm({ product, onClose }: { product?: Product; onClose: () => v
       stock: parseInt(form.stock) || 0, category: form.category, 
       sizes: form.sizes, colors: form.colors, status: form.status, 
       emoji: form.emoji, imageUrl: form.imageUrl, images: form.images, 
-      isForChildren: form.isForChildren, ageRange: form.ageRange 
+      isForChildren: form.isForChildren, ageRange: form.ageRange,
+      sizeType: (form as any).sizeType,
+      colorImages: (form as any).colorImages || {}
     };
     if (product) updateProduct(product.id, d); else addProduct(d);
     onClose();
@@ -90,7 +94,7 @@ function ProductForm({ product, onClose }: { product?: Product; onClose: () => v
         </div>
         {imgTab === 'photo' ? (
           <>
-            <input ref={fileRef} type="file" accept="image/*" capture="environment" className="hidden" style={{ display: 'none' }} onChange={handleImg} />
+            <input ref={fileRef} type="file" accept="image/*" className="hidden" style={{ display: 'none' }} onChange={handleImg} />
             {form.imageUrl ? (
               <div style={{ position: 'relative' }}>
                 <img src={form.imageUrl} alt="" style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 14, border: '1px solid var(--clr-border)' }} />
@@ -155,8 +159,21 @@ function ProductForm({ product, onClose }: { product?: Product; onClose: () => v
       {/* Sizes */}
       <div>
         <label className="label">المقاسات</label>
+        <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+          {[['adult','بالغين'],['children','أطفال'],['shoes','أحذية']].map(([k,l]) => (
+            <button key={k} onClick={() => setForm(p => ({ ...p, sizeType: k as any, sizes: [] }))}
+              style={{ padding: '5px 12px', borderRadius: 99, fontSize: 12, fontWeight: 700, cursor: 'pointer', border: `1.5px solid ${(form as any).sizeType === k ? 'var(--ember)' : 'var(--border)'}`, background: (form as any).sizeType === k ? 'rgba(255,77,26,.1)' : 'transparent', color: (form as any).sizeType === k ? 'var(--ember2)' : 'var(--ink3)' }}>
+              {l}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {['XS','S','M','L','XL','XXL','38','39','40','41','42','43','44'].map(s => chip(form.sizes.includes(s), () => setForm(p => ({ ...p, sizes: tog(p.sizes, s) })), s))}
+          {((form as any).sizeType === 'children'
+            ? ['0-1 أسبوع','1-4 أسابيع','1-3 أشهر','3-6 أشهر','6-9 أشهر','9-12 شهر','12-18 شهر','18-24 شهر','2 سنوات','3 سنوات','4 سنوات','5 سنوات','6 سنوات','7 سنوات','8 سنوات','9 سنوات','10 سنوات','11 سنوات','12 سنوات']
+            : (form as any).sizeType === 'shoes'
+            ? ['35','36','37','38','39','40','41','42','43','44','45','46']
+            : ['XS','S','M','L','XL','XXL','XXXL']
+          ).map(s => chip(form.sizes.includes(s), () => setForm(p => ({ ...p, sizes: tog(p.sizes, s) })), s))}
         </div>
       </div>
 
@@ -167,6 +184,61 @@ function ProductForm({ product, onClose }: { product?: Product; onClose: () => v
           {['أسود','أبيض','أحمر','أزرق','أخضر','رمادي','بني','وردي','ذهبي','بيج','نبيتي','برتقالي'].map(c => chip(form.colors.includes(c), () => setForm(p => ({ ...p, colors: tog(p.colors, c) })), c))}
         </div>
       </div>
+
+      {/* Color Images */}
+      {form.colors.length > 0 && (
+        <div>
+          <label className="label">صور الألوان (اختياري)</label>
+          <p style={{ fontSize: 11, color: 'var(--ink3)', marginBottom: 8 }}>
+            أضف صورة لكل لون — الزبون سيرى صورة اللون الذي يختاره
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {form.colors.map(color => {
+              const colorImgs = (form as any).colorImages || {};
+              const colorImg = colorImgs[color];
+              const inputId = `color-img-${color}`;
+              return (
+                <div key={color} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--void2)', borderRadius: 10, border: '1px solid var(--border)' }}>
+                  <div style={{ width: 56, height: 56, borderRadius: 8, overflow: 'hidden', background: 'var(--panel)', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {colorImg
+                      ? <img src={colorImg} alt={color} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <span style={{ fontSize: 10, color: 'var(--ink3)' }}>بدون صورة</span>
+                    }
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink1)', marginBottom: 4 }}>{color}</div>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <label htmlFor={inputId} style={{ padding: '4px 12px', borderRadius: 6, background: 'var(--ember)', color: '#fff', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>
+                        {colorImg ? '🔄 تغيير' : '📸 إضافة'}
+                      </label>
+                      {colorImg && (
+                        <button onClick={() => {
+                          const imgs = { ...(form as any).colorImages };
+                          delete imgs[color];
+                          setForm(p => ({ ...p, colorImages: imgs }));
+                        }} style={{ padding: '4px 10px', borderRadius: 6, background: 'rgba(255,77,26,.1)', border: '1px solid rgba(255,77,26,.2)', color: 'var(--ember)', fontSize: 11, cursor: 'pointer' }}>
+                          حذف
+                        </button>
+                      )}
+                    </div>
+                    <input id={inputId} type="file" accept="image/*" style={{ display: 'none' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]; if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = ev => {
+                          setForm(p => ({ ...p, colorImages: { ...(p as any).colorImages, [color]: ev.target?.result as string } }));
+                        };
+                        reader.readAsDataURL(file);
+                        e.target.value = '';
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Status */}
       <div>

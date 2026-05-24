@@ -1,10 +1,10 @@
 [phases.setup]
-nixPkgs = ["nodejs_20", "python3", "gcc", "gnumake"]
+nixPkgs = ["nodejs_20", "python3", "gcc", "gnumake", "pkg-config"]
 
 [phases.install]
 cmds = [
   "npm install --legacy-peer-deps",
-  "cd server && npm install --build-from-source"
+  "cd server && npm install"
 ]
 
 [phases.build]

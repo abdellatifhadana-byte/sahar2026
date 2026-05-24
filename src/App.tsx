@@ -19,6 +19,7 @@ const PAGE_URLS: Record<string, string> = {
   settings:      '/settings',
   banner:        '/studio',
   editor:        '/editor',
+  import:        '/import',
 };
 
 const URL_PAGES: Record<string, string> = Object.fromEntries(
@@ -93,7 +94,7 @@ function AppShell() {
         {/* ── PROTECTED: Merchant dashboard ── */}
         {['/dashboard','/products','/orders','/messages','/customers',
           '/analytics','/connections','/delivery','/notifications',
-          '/settings','/studio','/editor'].map(path => (
+          '/settings','/studio','/import'].map(path => (
           <Route key={path} path={path}
             element={isAuthed ? <MainLayout /> : <Navigate to="/login" replace />} />
         ))}

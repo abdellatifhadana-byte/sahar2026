@@ -10,23 +10,24 @@ const __dirname = path.dirname(__filename);
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
+    alias: { "@": path.resolve(__dirname, "src") },
   },
- build: {
-  outDir: "dist",
-  sourcemap: false,
-  rollupOptions: {
-    output: {
-      manualChunks(id) {
-        if (id.includes("node_modules")) {
-          return "vendor";
-        }
+  build: {
+    outDir: "dist",
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) {
+            return 'vendor';
+          }
+          if (id.includes('node_modules/lucide-react')) {
+            return 'icons';
+          }
+        },
       },
     },
   },
-},
   server: {
     proxy: {
       "/api": "http://localhost:3001",

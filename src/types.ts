@@ -5,7 +5,7 @@
 export type Page =
   | 'dashboard' | 'products' | 'orders' | 'conversations'
   | 'customers' | 'analytics' | 'connections' | 'delivery'
-  | 'notifications' | 'settings' | 'banner' | 'editor';
+  | 'notifications' | 'settings' | 'banner' | 'editor' | 'import';
 
 export type UserRole = 'admin' | 'seller' | 'support' | 'delivery';
 export type OrderStatus = 'pending' | 'pending_confirmation' | 'approved' | 'processing' | 'shipped' | 'delivered' | 'cancelled';

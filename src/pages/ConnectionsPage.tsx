@@ -88,10 +88,18 @@ export default function ConnectionsPage() {
     let ok = false;
     try {
       if (svc.id === 'openai') {
-        const r = await fetch('https://api.openai.com/v1/models', { headers: { Authorization: `Bearer ${val('openai', 'apiKey')}` }, signal: AbortSignal.timeout(8000) });
-        ok = r.ok;
-        if (ok) { updateSettings('ai', { ...settings.ai, apiKey: val('openai', 'apiKey'), provider: 'openai' }); notify('success', '✅ OpenAI متصل ويعمل!'); }
-        else notify('error', `❌ مفتاح غير صحيح (${(await r.json()).error?.message?.slice(0,50)})`);
+        try {
+          const authTok2 = localStorage.getItem('ai_commerce_token') || '';
+          const r2 = await fetch('/api/settings/verify-connection', {
+            method: 'POST', signal: AbortSignal.timeout(12000),
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authTok2}` },
+            body: JSON.stringify({ service: 'openai', apiKey: val('openai', 'apiKey') }),
+          });
+          const d2 = await r2.json();
+          ok = d2.ok;
+          if (ok) { updateSettings('ai', { ...settings.ai, apiKey: val('openai', 'apiKey'), provider: 'openai' }); notify('success', `✅ OpenAI متصل! ${d2.info || ''}`); }
+          else notify('error', `❌ مفتاح OpenAI غير صحيح: ${d2.error}`);
+        } catch { ok = false; notify('error', '❌ خطأ في الاتصال بـ OpenAI'); }
       } else if (svc.id === 'gemini') {
         const k = val('gemini', 'geminiKey');
         const r = await fetch(`https://generativelanguage.googleapis.com/v1/models?key=${k}`, { signal: AbortSignal.timeout(8000) });
@@ -100,15 +108,25 @@ export default function ConnectionsPage() {
         else notify('error', '❌ مفتاح Gemini غير صحيح');
       } else {
         const token = val(svc.id, 'accessToken'); const pageId = val(svc.id, 'pageId') || val(svc.id, 'phoneId') || '';
+        // Use backend proxy to avoid CORS
         try {
-          const r = await fetch(`https://graph.facebook.com/v19.0/me?access_token=${token}`, { signal: AbortSignal.timeout(8000) });
-          const d = await r.json(); ok = !d.error;
-          if (ok) { updateSettings('social', { ...settings.social, [svc.id]: { ...settings.social[svc.id as keyof typeof settings.social], connected: true, pageId, accessToken: token, name: d.name || svc.name } }); notify('success', `✅ ${svc.name} متصل${d.name ? ` — ${d.name}` : ''}!`); }
-          else notify('error', `❌ Token غير صحيح: ${d.error?.message?.slice(0,60)}`);
-        } catch {
-          updateSettings('social', { ...settings.social, [svc.id]: { ...settings.social[svc.id as keyof typeof settings.social], connected: true, pageId, accessToken: token } });
-          notify('warning', '⚠️ تم الحفظ — لم يمكن التحقق (CORS). الإرسال الحقيقي يحتاج Backend.');
-          ok = true;
+          const authTok = localStorage.getItem('ai_commerce_token') || '';
+          const r = await fetch('/api/settings/verify-connection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authTok}` },
+            body: JSON.stringify({ service: svc.id, token, pageId }),
+            signal: AbortSignal.timeout(12000),
+          });
+          const d = await r.json();
+          ok = d.ok;
+          if (ok) {
+            updateSettings('social', { ...settings.social, [svc.id]: { ...settings.social[svc.id as keyof typeof settings.social], connected: true, pageId, accessToken: token, name: d.name || svc.name } });
+            notify('success', `✅ ${svc.name} متصل${d.name ? ` — ${d.name}` : ''}!`);
+          } else {
+            notify('error', `❌ ${svc.name}: ${d.error || 'Token غير صحيح'}`);
+          }
+        } catch (err: any) {
+          notify('error', `❌ خطأ: ${err.message}`);
         }
       }
     } catch (e: any) { notify('error', `❌ ${e.message || 'خطأ في الاتصال'}`); }

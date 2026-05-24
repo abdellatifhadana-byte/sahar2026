@@ -76,4 +76,60 @@ router.post('/change-password', require('../middleware/auth'), async (req, res) 
   } catch (e) { res.status(500).json({ error: 'Server error' }); }
 });
 
+// In-memory OTP store (in production use Redis)
+const otpStore = new Map(); // email -> { code, expires }
+
+// POST /api/auth/request-otp — send OTP for 2FA
+router.post('/request-otp', auth, (req, res) => {
+  const user = db.getUserById(req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  const expires = Date.now() + 5 * 60 * 1000; // 5 minutes
+  otpStore.set(user.email, { code, expires });
+  
+  // In production: send via email/SMS
+  // For now: return in response (development mode)
+  const isDev = process.env.NODE_ENV !== 'production';
+  console.log(`[2FA] OTP for ${user.email}: ${code}`);
+  
+  res.json({ 
+    sent: true, 
+    email: user.email.replace(/(.{2}).*(@)/, '$1***$2'),
+    ...(isDev ? { code } : {}) // Show code in dev mode only
+  });
+});
+
+// POST /api/auth/verify-otp — verify OTP
+router.post('/verify-otp', auth, (req, res) => {
+  const { code } = req.body;
+  const user = db.getUserById(req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  
+  const stored = otpStore.get(user.email);
+  if (!stored) return res.status(400).json({ error: 'لم يتم طلب رمز التحقق' });
+  if (Date.now() > stored.expires) { otpStore.delete(user.email); return res.status(400).json({ error: 'انتهت صلاحية الرمز — اطلب رمزاً جديداً' }); }
+  if (stored.code !== code) return res.status(400).json({ error: 'رمز غير صحيح' });
+  
+  otpStore.delete(user.email);
+  res.json({ verified: true, message: 'تم التحقق بنجاح' });
+});
+
+// POST /api/auth/change-password — change password (requires old password)
+router.post('/change-password', auth, async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) return res.status(400).json({ error: 'كلا الحقلين مطلوبان' });
+  if (newPassword.length < 6) return res.status(400).json({ error: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' });
+  
+  const user = db.getUserById(req.user.id);
+  if (!user) return res.status(404).json({ error: 'Not found' });
+  
+  const match = await bcrypt.compare(oldPassword, user.password);
+  if (!match) return res.status(400).json({ error: 'كلمة المرور الحالية غير صحيحة' });
+  
+  const hashed = await bcrypt.hash(newPassword, 10);
+  db.updateUserPassword(req.user.id, hashed);
+  res.json({ success: true, message: 'تم تغيير كلمة المرور' });
+});
+
 module.exports = router;
