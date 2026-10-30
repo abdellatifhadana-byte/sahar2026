@@ -1,0 +1,384 @@
+/* ========= ROOT COLORS لكل دور ========= */
+:root {
+  /* ألوان عامة افتراضية */
+  --primary: #2874a6;
+  --primary-dark: #1a4b6e;
+  --secondary: #8e44ad;
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --info: #3498db;
+  --card: #fff;
+  --bg: #f6f7fb;
+  --sidebar: #f4f7fa;
+  --gray: #eee;
+  --border: #e1e7ed;
+  --hotspot-room: #2874a6;
+  --hotspot-baie: #8e44ad;
+  --hotspot-eq: #27ae60;
+  --hotspot-warning: #f1c40f;
+  --hotspot-danger: #e74c3c;
+}
+
+/* --------- ألوان الأدمن --------- */
+body.admin-page {
+  --primary: #2874a6;
+  --primary-dark: #13395d;
+  --secondary: #8e44ad;
+  --bg: #f6f8fb;
+  --sidebar: #e6e9ef;
+  --card: #fff;
+  --header: linear-gradient(90deg, #2874a6 70%, #8e44ad 120%);
+  --badge-role: #2874a6;
+}
+/* --------- ألوان التقني --------- */
+body.tech-page {
+  --primary: #18a5a3;
+  --primary-dark: #116f6d;
+  --secondary: #21bfae;
+  --bg: #ebf7f9;
+  --sidebar: #d5f5f6;
+  --card: #fff;
+  --header: linear-gradient(90deg, #18a5a3 70%, #21bfae 120%);
+  --badge-role: #18a5a3;
+}
+/* --------- ألوان المسؤول --------- */
+body.resp-page {
+  --primary: #e67e22;
+  --primary-dark: #a65100;
+  --secondary: #8e44ad;
+  --bg: #fff7ec;
+  --sidebar: #fde6c3;
+  --card: #fff;
+  --header: linear-gradient(90deg, #e67e22 70%, #8e44ad 120%);
+  --badge-role: #e67e22;
+}
+/* --------- ألوان الزائر --------- */
+body.visitor-page {
+  --primary: #8883b1;
+  --primary-dark: #544b7a;
+  --secondary: #a5b6e6;
+  --bg: #f8faff;
+  --sidebar: #eef0fa;
+  --card: #fff;
+  --header: linear-gradient(90deg, #8883b1 60%, #a5b6e6 120%);
+  --badge-role: #8883b1;
+}
+
+/* ========= RESET & GENERAL ========= */
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: #233243; margin:0; padding:0; font-family: "Segoe UI", "Tahoma", "Verdana", Arial, sans-serif;}
+body { min-height: 100vh; transition: background 0.3s, color 0.3s; }
+.card { background: var(--card); border-radius: 14px; box-shadow: 0 2px 16px #e4e8ee22; padding: 28px 30px 25px 30px; margin-bottom: 22px; max-width: 960px; margin-left: auto; margin-right: auto; }
+
+/* ========= HEADER ========= */
+.admin-header, .tech-header, .resp-header, .visitor-header {
+  background: var(--header, var(--primary));
+  color: #fff;
+  padding: 16px 34px 13px 34px;
+  display: flex; align-items: center; justify-content: space-between;
+  min-height: 60px;
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 2px 8px #b3cbe1;
+  position: relative; z-index: 100;
+}
+.admin-header h1, .tech-header h1, .resp-header h1, .visitor-header h1 {
+  font-size: 1.37em; font-weight: 800; margin: 0;
+  letter-spacing: 1.2px;
+}
+
+/* ========= SIDEBAR ========= */
+.admin-sidebar, .tech-sidebar, .resp-sidebar, .visitor-sidebar {
+  width: 228px;
+  background: var(--sidebar);
+  min-height: 100vh;
+  position: fixed; left:0; top:0; bottom:0; z-index: 10;
+  border-right: 1.5px solid var(--border);
+  box-shadow: 2px 0 11px #e3e7ef29;
+  padding-top: 22px;
+  transition: width 0.19s;
+}
+.sidebar-menu ul { list-style: none; margin: 0; padding: 0; }
+.sidebar-menu li { margin-bottom: 11px; }
+.sidebar-menu a {
+  display: flex; align-items: center; gap: 13px;
+  padding: 10px 19px; border-radius: 8px; text-decoration: none;
+  color: #333; font-weight: 500; font-size: 16px;
+  transition: background 0.14s, color 0.14s;
+}
+.sidebar-menu a.active, .sidebar-menu a:hover {
+  background: var(--primary, #f6f6fc); color: #fff;
+  box-shadow: 0 2px 10px #e5e8fc23;
+}
+.sidebar-menu .fa { min-width: 22px; text-align: center; font-size: 17px; }
+.admin-sidebar.collapsed, .tech-sidebar.collapsed, .resp-sidebar.collapsed, .visitor-sidebar.collapsed { width: 54px;}
+.sidebar-menu a span { display: inline;}
+.admin-sidebar.collapsed .sidebar-menu a span,
+.tech-sidebar.collapsed .sidebar-menu a span,
+.resp-sidebar.collapsed .sidebar-menu a span,
+.visitor-sidebar.collapsed .sidebar-menu a span { display: none; }
+
+/* ---------------------------------------------------------------------------
+   INTERTITRES DU MENU — vingt entrées plates deviennent sept familles.
+
+   L'intertitre est volontairement PLUS DISCRET que les sections qu'il coiffe :
+   il sert à découper la liste, pas à concurrencer ce qu'on vient y chercher.
+   D'où la petite taille, la casse haute et l'absence de fond.
+   --------------------------------------------------------------------------- */
+.sidebar-menu li.nav-group { margin: 10px 0 2px; }
+.sidebar-menu li.nav-group:first-child { margin-top: 0; }
+.sidebar-menu .nav-group-header {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 5px 19px; border: 0; background: transparent; cursor: pointer;
+  color: #7a8b9b; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
+  /* Propriétés détaillées, PAS le raccourci `font` : `font: 700 11px/1.2 inherit` est
+     invalide — `inherit` n'est pas une famille acceptable dans le raccourci — et la
+     déclaration entière était donc ignorée. Mesuré : l'intertitre s'affichait en 13,33 px,
+     la taille par défaut du navigateur pour un <button>, au lieu des 11 px demandés. */
+  font-family: inherit; font-size: 11px; font-weight: 700; line-height: 1.2;
+}
+.sidebar-menu .nav-group-header:hover { color: #2a5f86; }
+.sidebar-menu .nav-group-header:focus-visible { outline: 2px solid #3e91c2; outline-offset: -2px; border-radius: 7px; }
+.sidebar-menu .nav-group-header > span { flex: 1; text-align: left; }
+.sidebar-menu .nav-group-chevron { font-size: 9px; transition: transform .16s ease; }
+.sidebar-menu .nav-group-header[aria-expanded="false"] .nav-group-chevron { transform: rotate(-90deg); }
+.sidebar-menu li.nav-item[hidden] { display: none; }
+
+/* Barre réduite aux icônes : le titre du groupe n'a plus la place de s'écrire, mais le
+   chevron doit disparaître AUSSI — sans quoi il reste seul, sans rien à annoncer. */
+.admin-sidebar.collapsed .sidebar-menu .nav-group-header > span,
+.admin-sidebar.collapsed .sidebar-menu .nav-group-chevron { display: none; }
+.admin-sidebar.collapsed .sidebar-menu .nav-group-header { justify-content: center; padding-inline: 8px; }
+
+body.dark-theme .sidebar-menu .nav-group-header { color: #8ea3b4; }
+body.dark-theme .sidebar-menu .nav-group-header:hover { color: #cfe3f2; }
+
+@media (max-width: 950px) {
+  .admin-sidebar, .tech-sidebar, .resp-sidebar, .visitor-sidebar { width: 55px;}
+  .sidebar-menu a span { display: none; }
+  .sidebar-menu .nav-group-header > span,
+  .sidebar-menu .nav-group-chevron { display: none; }
+  .sidebar-menu .nav-group-header { justify-content: center; padding-inline: 8px; }
+}
+
+/* ========= CONTENT AREA ========= */
+.admin-content, .tech-content, .resp-content, .visitor-content {
+  margin-left: 230px;
+  padding: 35px 35px 35px 25px;
+  background: none;
+}
+@media (max-width: 900px) {
+  .admin-content, .tech-content, .resp-content, .visitor-content { margin-left: 55px; padding: 13px;}
+}
+@media (max-width: 600px) {
+  .admin-content, .tech-content, .resp-content, .visitor-content { margin-left: 0; padding: 7px;}
+  .admin-sidebar, .tech-sidebar, .resp-sidebar, .visitor-sidebar { display: none; }
+}
+
+/* ========= BUTTONS ========= */
+.btn, .btn.gray, .btn.danger, .btn.primary {
+  padding: 8px 17px; border-radius: 8px;
+  border: none; outline: none;
+  font-weight: 600; font-size: 15px;
+  background: var(--primary); color: #fff; cursor: pointer;
+  margin: 0 2px; transition: background 0.2s;
+}
+.btn.gray { background: #7b8c9e; }
+.btn.danger { background: var(--danger); }
+.btn.primary { background: var(--primary); }
+.btn:active { opacity: 0.8; }
+.btn:disabled { background: #ccc; cursor: not-allowed; }
+.btn-icon { background: none; border: none; color: var(--primary); font-size: 19px; cursor: pointer; }
+
+/* ========= BADGES ========= */
+.role-badge, .status-badge {
+  display: inline-block; padding: 2px 11px; border-radius: 13px;
+  font-size: 13px; font-weight: 600; text-transform: capitalize;
+}
+.role-badge.admin { background: #2874a6; color: #fff;}
+.role-badge.technician { background: #18a5a3; color: #fff;}
+.role-badge.responsible { background: #e67e22; color: #fff;}
+.role-badge.visitor { background: #8883b1; color: #fff;}
+.status-badge.active { background: var(--success); color: #fff; }
+.status-badge.inactive { background: var(--danger); color: #fff; }
+.status-badge.maintenance { background: var(--warning); color: #fff; }
+.status-badge.hors-service { background: #636e72; color: #fff; }
+
+/* ========= CARDS & TABLES ========= */
+.tableau { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 15px; background: #fff; border-radius: 9px; overflow: hidden;}
+.tableau th, .tableau td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+.tableau tr:hover { background: #f2f8fc; }
+.img-preview { max-width: 60px; max-height: 38px; border-radius: 7px; border: 1px solid #d6dae1; box-shadow: 0 1px 3px #b9c3d0cc; }
+
+/* ========= NOTIFICATIONS ========= */
+.notification, .tech-notif { font-size: 16px; background: var(--primary); color: #fff; border-radius: 14px; padding: 12px 23px; box-shadow: 0 2px 18px #bde5f6; }
+
+/* ========= TOOLBAR فوق الخريطة ========= */
+.map-toolbar {
+  position: absolute; top: 25px; right: 40px; z-index: 22;
+  display: flex; gap: 12px; align-items: center;
+  background: rgba(33,43,60,0.89); padding: 11px 28px;
+  border-radius: 16px; box-shadow: 0 2px 14px #0004;
+}
+.map-toolbar input[type="search"] {
+  background: #192638; color: #fff; border: 1.2px solid var(--primary);
+  border-radius: 8px; padding: 8px 16px; width: 230px; font-size: 17px;
+}
+.map-toolbar button, .map-toolbar .btn { background: var(--primary); color: #fff; }
+
+/* ========= HOTSPOTS ========= */
+.map-hotspot, .img-hotspot {
+  box-shadow: 0 2px 14px #3b3d42a3; border-radius: 50%; border: 2px solid #fff;
+  display: flex; align-items: center; justify-content: center;
+  position: absolute; cursor: pointer; z-index: 11;
+  transition: box-shadow 0.21s, transform 0.18s; animation: pulse 1.2s infinite;
+}
+.img-hotspot { width: 24px; height: 24px; background: var(--primary);}
+.map-hotspot.room { background: var(--hotspot-room);}
+.map-hotspot.baie { background: var(--hotspot-baie);}
+.map-hotspot.equipment { background: var(--hotspot-eq);}
+.map-hotspot.equipment[statut="maintenance"] { background: var(--hotspot-warning);}
+.map-hotspot.equipment[statut="hors-service"], .map-hotspot.equipment[statut="faulty"] { background: var(--hotspot-danger);}
+@keyframes pulse { 0% { box-shadow: 0 0 0 0px #4a90e2aa; } 70% { box-shadow: 0 0 0 14px #4a90e220; } 100% { box-shadow: 0 0 0 0px #4a90e2aa; } }
+
+/* ========= DARK THEME ========= */
+body.dark-theme {
+  --bg: #181d29;
+  --card: #212a3b;
+  --sidebar: #171c2c;
+  --primary: #1a2334;
+  --primary-dark: #14212e;
+  --border: #374262;
+  --gray: #2b3545;
+  color: #ecf5fa;
+}
+body.dark-theme .card, body.dark-theme .tableau, body.dark-theme .user-table {
+  background: #222d39; color: #ecf5fa;
+}
+body.dark-theme .admin-header, body.dark-theme .tech-header, body.dark-theme .resp-header, body.dark-theme .visitor-header {
+  background: #222c36; color: #f5f6fa;
+}
+body.dark-theme .sidebar-menu a.active, body.dark-theme .sidebar-menu a:hover {
+  background: #1a2334; color: #f1c40f;
+}
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 1100px) { .card { padding: 12px 4vw; } }
+@media (max-width: 700px) { .admin-header, .tech-header, .resp-header, .visitor-header { flex-direction: column; align-items: flex-start; } .admin-content, .tech-content, .resp-content, .visitor-content { padding: 9px; } }
+
+/* ---------------------------------------------------------------------------
+   BARRE DE CONTEXTE — « Infrastructure › Équipements »
+
+   Elle vit DANS `#admin-content` et hérite donc de la marge gauche qui suit la
+   largeur de la barre latérale (236 px, puis 74, 52, 46 selon le palier). La
+   poser à côté du contenu aurait obligé à recopier ces quatre paliers.
+
+   Volontairement discrète : elle situe, elle ne réclame pas l'attention. La
+   page ouverte est le seul maillon en encre pleine.
+   --------------------------------------------------------------------------- */
+.context-bar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px 7px;
+  margin: 0 0 14px; padding: 0 2px 11px;
+  border-bottom: 1px solid var(--ui-border, #e4ebf2);
+  font-size: 12.5px; line-height: 1.5;
+}
+.context-bar .ctx-crumb {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: #6d8395; font-weight: 600; letter-spacing: .01em;
+}
+.context-bar .ctx-crumb i { font-size: 11px; opacity: .85; }
+.context-bar .ctx-crumb.is-current { color: #17334a; font-weight: 700; }
+.context-bar .ctx-sep { font-style: normal; color: #b3c2cd; font-size: 12px; }
+
+body.dark-theme .context-bar { border-bottom-color: #2c3f4f; }
+body.dark-theme .context-bar .ctx-crumb { color: #91a7b7; }
+body.dark-theme .context-bar .ctx-crumb.is-current { color: #e8f1f7; }
+body.dark-theme .context-bar .ctx-sep { color: #5b7183; }
+
+/* Barre réduite aux icônes : le contexte reste utile, mais il ne doit pas
+   manger deux lignes sur un téléphone. */
+@media (max-width: 640px) {
+  .context-bar { margin-bottom: 10px; padding-bottom: 8px; font-size: 11.5px; }
+}
+
+/* ---------------------------------------------------------------------------
+   LÉGENDE DE L'ANNEAU D'ÉTAT — quatre couleurs qui disent enfin leur nom.
+
+   L'anneau et cette légende lisent la même table dans `dashboard.js` : deux
+   listes tenues d'accord à la main finiraient par se contredire.
+   --------------------------------------------------------------------------- */
+.chart-legend {
+  list-style: none; margin: 12px 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center;
+}
+.chart-legend li {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 13px; color: #4a5f70; margin: 0;
+}
+.chart-legend-dot {
+  width: 10px; height: 10px; border-radius: 3px; flex: 0 0 auto;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
+}
+body.dark-theme .chart-legend li { color: #9fb3c2; }
+
+/* ---------------------------------------------------------------------------
+   EMPLACEMENT D'UNE SALLE — le rattachement structuré redevient visible.
+
+   La colonne n'affichait que le texte libre : on choisissait un rattachement
+   dans le formulaire, puis plus rien à l'écran ne disait où l'unité était
+   rattachée. Le chemin (« Casablanca › Siège › Régie ») passe donc devant, et
+   le texte libre reste en dessous, en retrait — il est complémentaire, pas
+   concurrent.
+   --------------------------------------------------------------------------- */
+.tableau td.salle-lieu { line-height: 1.4; }
+.salle-lieu-chemin,
+.salle-lieu-libre,
+.salle-lieu-orphelin { display: block; }
+.salle-lieu-chemin { color: #2c4d63; }
+.salle-lieu-libre { color: #7d8b98; font-size: 13px; }
+/* Un rattachement qui ne mène nulle part se lisait comme une case vide :
+   indiscernable d'une salle jamais rattachée. */
+.salle-lieu-orphelin { color: #b9541f; font-size: 13px; }
+body.dark-theme .salle-lieu-chemin { color: #cfe0ec; }
+body.dark-theme .salle-lieu-libre { color: #8ea2b2; }
+body.dark-theme .salle-lieu-orphelin { color: #e08b5c; }
+
+/* ---------------------------------------------------------------------------
+   CE QUE LE RÔLE NE PERMET PAS D'ÉCRIRE RESTE LISIBLE.
+   ---------------------------------------------------------------------------
+   Trois messages, un seul principe : quand une autorisation manque, on montre
+   l'état actuel et on nomme ce qui manque, au lieu d'offrir un champ dont
+   l'enregistrement finira en refus après la saisie.
+   --------------------------------------------------------------------------- */
+.salle-zone-absente {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border-left: 3px solid #b9541f;
+  border-radius: 4px;
+  background: #fdf4ee;
+  color: #7a4526;
+  line-height: 1.5;
+}
+/* Une panne de lecture n'est pas un refus : le ton est neutre, et le message dit quoi
+   attendre plutôt que quoi demander. */
+.salle-zone-indisponible {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border-left: 3px solid #6b7f8f;
+  border-radius: 4px;
+  background: #eef2f5;
+  color: #3f5261;
+  line-height: 1.5;
+}
+.salle-responsable-fige,
+.baie-salle-figee {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: #f1f4f7;
+  color: #5b6b78;
+}
+body.dark-theme .salle-zone-absente { background: #3a2a20; color: #e8c4ac; }
+body.dark-theme .salle-zone-indisponible { background: #26313a; color: #b6c6d2; }
+body.dark-theme .salle-responsable-fige,
+body.dark-theme .baie-salle-figee { background: #2a343d; color: #a9bac7; }

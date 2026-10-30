@@ -1,0 +1,59 @@
+/* =========================================================================
+   LOCALISATIONS — Ville › Région › Département
+   L'échelle au-dessus de la salle, qui n'était jusqu'ici qu'un champ de texte
+   libre : sans structure, sans parent, impossible à parcourir ni à totaliser.
+   ========================================================================= */
+.locations-section{padding:4px 2px 32px}
+.locations-head{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
+.locations-eyebrow{display:block;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--primary);opacity:.85}
+.locations-head h2{margin:4px 0 2px;font-size:clamp(18px,2.6vw,23px)}
+.locations-lead{margin:0;font-size:13px;color:#6b7b88}
+.locations-actions{display:flex;flex-wrap:wrap;gap:8px}
+.locations-actions .btn{min-height:38px}
+
+.locations-counters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.locations-counter{flex:1 1 130px;padding:12px 14px;border-radius:11px;
+  border:1px solid rgba(120,150,175,.24);background:rgba(125,165,200,.07)}
+.locations-counter-value{display:block;font-size:22px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.locations-counter-label{display:block;margin-top:2px;font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:#7b8b98}
+
+.locations-empty{padding:16px 18px;border-radius:11px;border:1px dashed rgba(120,150,175,.4);
+  color:#6b7b88;font-size:13px;line-height:1.6}
+
+/* L'arbre : chaque niveau se décale, et un filet vertical relie les frères — la
+   hiérarchie doit se lire sans avoir à comparer les libellés. */
+.locations-tree ul{list-style:none;margin:0;padding:0}
+.locations-branch{margin-left:0}
+.locations-node>.locations-branch{margin-left:18px;padding-left:14px;border-left:1px solid rgba(120,150,175,.28)}
+.locations-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 12px;margin:4px 0;
+  border-radius:9px;border:1px solid rgba(120,150,175,.2);background:rgba(255,255,255,.55);transition:border-color 160ms ease,background 160ms ease}
+.locations-row:hover{border-color:var(--primary);background:rgba(125,165,200,.1)}
+.locations-icon{color:var(--primary);width:18px;text-align:center}
+.locations-name{font-weight:600}
+.locations-kind{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#7b8b98;
+  padding:2px 7px;border-radius:99px;border:1px solid rgba(120,150,175,.3)}
+.locations-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#5a6b78}
+.locations-rooms{font-size:11px;color:#5a6b78}
+.locations-row-actions{margin-left:auto;display:flex;gap:4px}
+.locations-row-actions .btn-icon{min-width:34px;min-height:34px}
+.locations-row-actions .btn-icon.danger{color:#c0392b}
+
+.locations-detached{margin-top:26px;padding:14px 16px;border-radius:11px;
+  border:1px solid rgba(216,160,60,.45);background:rgba(216,160,60,.08)}
+.locations-detached h3{margin:0 0 4px;font-size:14px}
+.locations-detached p{margin:0 0 8px;font-size:12px;color:#7a6a45}
+.locations-detached ul{list-style:none;margin:0;padding:0}
+
+.locations-modal .modal-content{max-width:min(520px,94vw)}
+.locations-modal .form-hint{margin:4px 0 0;font-size:11px;color:#8a7550}
+
+body.dark-theme .locations-row{background:rgba(255,255,255,.04)}
+body.dark-theme .locations-counter{background:rgba(255,255,255,.04)}
+
+@media(max-width:640px){
+  .locations-head{flex-direction:column}
+  .locations-actions{width:100%}
+  .locations-actions .btn{flex:1 1 auto}
+  .locations-node>.locations-branch{margin-left:8px;padding-left:8px}
+  .locations-row-actions{margin-left:0;width:100%;justify-content:flex-end}
+}

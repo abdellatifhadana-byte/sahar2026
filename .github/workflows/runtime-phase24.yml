@@ -1,0 +1,86 @@
+name: Phase 24 — Runtime central
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  phase24:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: tech
+          POSTGRES_PASSWORD: techpass
+          POSTGRES_DB: tech_platform_phase24
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U tech -d tech_platform_phase24"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+      - name: Installer les dépendances runtime
+        run: npm install --omit=dev
+      - name: Contrats Phase 24 et régressions Splash/Mobile
+        run: node --test tests/runtime-corrections-phase24.test.js tests/splash-phase20.test.js tests/mobile-runtime-phase21.test.js tests/zone-discovery-image-scope.test.js
+      - name: Syntaxe des correctifs Phase 24
+        run: |
+          node --check catalog-seed-guard.js
+          node --check equipment-table-runtime.js
+          node --check zone-access-runtime-fix.js
+          node --check scripts/catalog-seed-preload.js
+          node --check scripts/catalog-seed-e2e.mjs
+          node --check scripts/zone-access-e2e.mjs
+          node --check scripts/zone-image-scope-e2e.mjs
+      - name: PostgreSQL — catalogue central et accès zones
+        shell: bash
+        env:
+          PORT: '4191'
+          DATABASE_URL: postgresql://tech:techpass@127.0.0.1:5432/tech_platform_phase24
+          PLATFORM_ADMIN_USERNAME: phase24-admin
+          PLATFORM_ADMIN_PASSWORD: Phase24-Admin-Password-2026!
+          PLATFORM_ADMIN_FULLNAME: Administrateur Phase 24
+          PLATFORM_ADMIN_RESET_VERSION: phase24-reset-v1
+          SESSION_SECRET: phase24-ci-session-secret-2m-tech-platform-2026
+          E2E_BASE_URL: http://127.0.0.1:4191
+          E2E_ADMIN_PASSWORD: Phase24-Admin-Password-2026!
+        run: |
+          set -euo pipefail
+          setsid npm start >/tmp/2m-phase24.log 2>&1 &
+          pid=$!
+          cleanup() {
+            kill -TERM -- "-$pid" 2>/dev/null || true
+            wait "$pid" 2>/dev/null || true
+            cat /tmp/2m-phase24.log 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4191/api/health >/tmp/phase24-health.json; then break; fi
+            sleep 0.5
+          done
+          grep -q '"database":"postgresql"' /tmp/phase24-health.json
+          grep -q '"zoneAccess":true' /tmp/phase24-health.json
+          node scripts/catalog-seed-e2e.mjs
+          node scripts/zone-access-e2e.mjs
+          # A02 — le périmètre de l'image de zone, mesuré sur la RÉPONSE du serveur pour
+          # les six rôles : une correction d'écran seule laisserait l'image dans le JSON.
+          node scripts/zone-image-scope-e2e.mjs
+          curl -fsS http://127.0.0.1:4191/catalog-seed-guard.js >/dev/null
+          curl -fsS http://127.0.0.1:4191/equipment-table-runtime.js >/dev/null
+          curl -fsS http://127.0.0.1:4191/equipment-table-runtime.css >/dev/null
+          curl -fsS http://127.0.0.1:4191/zone-access-runtime-fix.js >/dev/null
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4191/scripts/catalog-seed-preload.js)" = "404"

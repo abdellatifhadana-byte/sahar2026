@@ -1,0 +1,781 @@
+/* 2M TECH — maquette UI finale 2026
+ * Couche purement visuelle. Aucun contrat métier, route, store, permission ou événement n'est modifié.
+ */
+
+:root {
+  --final-navy: #082f55;
+  --final-navy-2: #0b4678;
+  --final-blue: #0b66d9;
+  --final-blue-2: #2788e9;
+  --final-cyan: #5fb7e7;
+  --final-bg: #f3f7fc;
+  --final-card: #ffffff;
+  --final-text: #0f2f4e;
+  --final-muted: #69809a;
+  --final-line: #dce7f1;
+  --final-line-soft: #edf3f8;
+  --final-success: #24a36a;
+  --final-warning: #e5a13a;
+  --final-danger: #ef4d58;
+  --final-shadow: 0 16px 42px rgba(16, 58, 96, .09);
+  --final-shadow-soft: 0 7px 22px rgba(16, 58, 96, .07);
+  --final-radius: 18px;
+}
+
+/* =========================================================
+   APPLICATION SHELL
+   ========================================================= */
+body {
+  background:
+    radial-gradient(circle at 84% -10%, rgba(56, 156, 225, .10), transparent 30%),
+    var(--final-bg) !important;
+}
+
+.admin-header {
+  min-height: 78px !important;
+  padding: 12px 26px !important;
+  border-radius: 0 !important;
+  background: linear-gradient(100deg, #082f55 0%, #064a84 52%, #0964a6 100%) !important;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 8px 26px rgba(7, 44, 75, .18) !important;
+}
+
+.admin-header > div:first-child::before {
+  width: 48px !important;
+  height: 48px !important;
+  flex-basis: 48px !important;
+  border-radius: 12px !important;
+  background-size: 39px 39px !important;
+  border: 1px solid rgba(255,255,255,.65);
+  box-shadow: 0 5px 16px rgba(2, 22, 40, .25) !important;
+}
+
+.admin-header #platform-title {
+  font-size: 1.34rem !important;
+  letter-spacing: -.15px !important;
+}
+
+.admin-header .header-center {
+  position: relative;
+  max-width: 690px !important;
+  margin-inline: 18px !important;
+}
+
+#global-search {
+  height: 46px !important;
+  padding: 0 58px 0 42px !important;
+  border: 1px solid rgba(255,255,255,.2) !important;
+  border-radius: 12px !important;
+  background:
+    #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2329587d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") 15px center/18px 18px no-repeat !important;
+  color: #1b3650 !important;
+  box-shadow: 0 7px 22px rgba(7, 35, 60, .12) !important;
+}
+
+.admin-header .header-center::after {
+  content: "⌘ K";
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px 7px;
+  border-radius: 7px;
+  color: #60788d;
+  background: #eef3f7;
+  font-size: 11px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+/* LES DEUX ACTIONS DE L'EN-TÊTE SONT DES JUMELLES.
+   « Carte interactive » et « Preuves terrain » mènent au même genre d'endroit et
+   doivent donc peser pareil. Mesuré avant : la première avait un fond sombre à
+   0,26 et la seconde le bleu plein des boutons ordinaires — c'était la
+   SECONDAIRE qui criait le plus fort. Les deux partagent désormais une seule
+   déclaration : elles ne peuvent plus diverger. */
+.admin-header .btn-map,
+.admin-header #field-evidence-intake-open {
+  height: 38px;
+  padding-inline: 16px !important;
+  border-radius: 10px !important;
+  background: rgba(255, 255, 255, .13) !important;
+  border: 1px solid rgba(255,255,255,.22) !important;
+  box-shadow: none !important;
+  font-weight: 600;
+}
+.admin-header .btn-map:hover,
+.admin-header #field-evidence-intake-open:hover {
+  background: rgba(255, 255, 255, .22) !important;
+  border-color: rgba(255,255,255,.34) !important;
+}
+
+/* Le NOM de la personne n'est pas un bouton : il était habillé en pastille —
+   fond, bordure, coins ronds, remplissage — ce qui portait le bloc d'identité à
+   52 px contre 38 pour tout le reste, et le faisait lire comme une action. */
+.admin-header .user-name {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  font-size: 13.5px;
+}
+
+/* SE DÉCONNECTER N'EST PAS UNE ALARME PERMANENTE.
+   Le bouton était le seul élément saturé de l'en-tête — rouge vif en continu —
+   alors qu'il désigne l'action qu'on souhaite le MOINS déclencher par mégarde.
+   Il redevient rouge quand on le vise, au survol et au focus. */
+.admin-header .btn.danger {
+  width: 38px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 !important;
+  display: grid;
+  place-items: center;
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  color: rgba(255,255,255,.78);
+  box-shadow: none !important;
+}
+.admin-header .btn.danger:hover,
+.admin-header .btn.danger:focus-visible {
+  background: rgba(231, 76, 60, .95) !important;
+  border-color: rgba(231, 76, 60, .95) !important;
+  color: #fff;
+}
+
+.admin-sidebar {
+  top: 78px !important;
+  width: 236px !important;
+  padding: 20px 14px !important;
+  background: rgba(255,255,255,.97) !important;
+  border-right: 1px solid #e2ebf3 !important;
+  box-shadow: 6px 0 24px rgba(23, 58, 88, .04) !important;
+}
+
+.admin-sidebar .sidebar-menu a {
+  min-height: 44px !important;
+  padding: 10px 13px !important;
+  border-radius: 11px !important;
+  color: #23415e !important;
+}
+
+.admin-sidebar .sidebar-menu a.active {
+  background: linear-gradient(135deg, #075fcb, #1376e5) !important;
+  box-shadow: 0 8px 18px rgba(11, 102, 217, .21) !important;
+}
+
+.admin-sidebar .sidebar-menu a.active::before {
+  left: -14px !important;
+  width: 4px !important;
+  background: #ef4d58 !important;
+}
+
+.admin-content {
+  margin-left: 236px !important;
+  min-height: calc(100vh - 78px) !important;
+  padding: 30px 36px 44px !important;
+}
+
+/* =========================================================
+   LOGIN — MAQUETTE SOBRE ET PREMIUM
+   ========================================================= */
+/* =========================================================
+   PAGE SETTINGS
+   ========================================================= */
+.system-settings {
+  width: min(100%, 1280px) !important;
+  max-width: 1280px !important;
+  margin-top: 0 !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+}
+
+.system-settings::before {
+  content: "Paramètres\A Configurez l'apparence, la sécurité et la gestion des données de la plateforme.";
+  grid-column: 1 / -1;
+  white-space: pre-line;
+  display: block;
+  margin: 3px 0 4px;
+  color: #0d2f50;
+  font-size: 27px;
+  line-height: 1.45;
+  font-weight: 850;
+  letter-spacing: -.35px;
+}
+
+.system-settings .settings-section {
+  border: 1px solid #dce7f1 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 10px 30px rgba(20,61,97,.055) !important;
+}
+
+.system-settings .settings-section:first-child {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 0;
+}
+.system-settings .settings-section:first-child > h3 { grid-column: 1 / -1; }
+.system-settings .settings-section:first-child > .settings-group:nth-of-type(3) { grid-column: 1 / -1; }
+
+.system-settings .settings-section h3 {
+  font-size: 18px !important;
+  color: #102f4c !important;
+}
+.system-settings .settings-section h3 i {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: #e9f4ff !important;
+  color: #0b66d9 !important;
+}
+
+.system-settings .settings-group > label {
+  color: #365572 !important;
+  font-size: 12px !important;
+}
+.system-settings select,
+.system-settings input[type="text"],
+.system-settings input[type="number"] {
+  height: 46px !important;
+  background: #fff !important;
+  border-color: #d7e3ef !important;
+}
+
+.system-settings #plan-img-preview {
+  width: 165px !important;
+  height: 108px !important;
+  border-radius: 12px !important;
+}
+.system-settings #upload-map-image-btn,
+.system-settings #reset-map-image-btn {
+  min-width: 104px;
+  min-height: 52px;
+  display: inline-flex !important;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  color: #0b66d9 !important;
+  background: #fff !important;
+  border: 1px solid #d8e5f0 !important;
+}
+.system-settings #upload-map-image-btn::after { content: "Importer"; font-size: 11px; }
+.system-settings #reset-map-image-btn::after { content: "Réinitialiser"; font-size: 11px; }
+
+.system-settings #map-image-link {
+  width: min(100%, 520px) !important;
+}
+.system-settings #set-map-image-link-btn {
+  min-width: 70px;
+  height: 46px;
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+
+.system-settings .settings-actions .btn {
+  flex: 1 1 190px;
+  justify-content: center;
+  min-height: 43px;
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+.system-settings .settings-footer .btn:first-child {
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+.system-settings .settings-footer .btn:last-child {
+  color: #0b66d9 !important;
+  background: #fff !important;
+  border: 1px solid #b8d2ea !important;
+}
+
+/* =========================================================
+   ÉQUIPEMENTS
+   ========================================================= */
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) {
+  width: min(100%, 1460px) !important;
+  max-width: 1460px !important;
+  padding: 26px 28px 24px !important;
+}
+
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .card-header h2 {
+  font-size: 27px !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .card-actions .btn {
+  min-height: 40px;
+  padding-inline: 17px !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) #open-add-eq {
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) #export-eq,
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) #import-eq {
+  color: #0b66d9 !important;
+  background: #fff !important;
+  border: 1px solid #cbddec !important;
+}
+
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .filters-container {
+  grid-template-columns: minmax(260px, 1.55fr) repeat(3, minmax(170px, 1fr)) 46px !important;
+  /* Par le haut, comme dans `ui-polish.css` : la colonne « Salle » porte une pile
+     recherche + liste et fait deux rangées de haut. */
+  align-items: start !important;
+  padding: 14px !important;
+  background: #f8fbfe !important;
+  border: 1px solid #e1eaf2 !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) #equip-search {
+  padding-left: 40px !important;
+  background:
+    #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewBox='0 0 24 24' fill='none' stroke='%235a7791' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") 14px center/17px 17px no-repeat !important;
+}
+
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) > div[style*="overflow-x"] {
+  border: 1px solid #dfe8f1;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .tableau {
+  min-width: 1420px;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .tableau th {
+  padding: 13px 10px !important;
+  color: #183852;
+  background: #f6f9fc !important;
+  font-size: 11.5px;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .tableau td {
+  min-height: 44px;
+  padding: 12px 10px !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(#equip-search) .eq-quickview {
+  color: #0768da !important;
+  font-weight: 750 !important;
+}
+
+/* =========================================================
+   DIAGNOSTIC ÉCRANS
+   ========================================================= */
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) {
+  width: min(100%, 1380px) !important;
+  max-width: 1380px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header {
+  padding: 4px 6px 18px !important;
+  border-bottom: 0 !important;
+  align-items: center;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header h2 {
+  position: relative;
+  padding-left: 72px;
+  font-size: 25px !important;
+  line-height: 1.15;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header h2::before {
+  content: "\f26c";
+  position: absolute;
+  left: 0;
+  top: -9px;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 20px;
+  color: #0b66d9;
+  background: #eaf3ff;
+  border: 1px solid #d7e6fa;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header h2::after {
+  content: "Détectez, analysez et résolvez les problèmes d'affichage de votre infrastructure.";
+  display: block;
+  margin-top: 7px;
+  color: #73869a;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) .card-actions .btn:first-child {
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) .card-actions .btn.gray {
+  color: #163b60 !important;
+  background: #fff !important;
+  border: 1px solid #d6e2ee !important;
+}
+
+.diagnostic-interface {
+  gap: 18px !important;
+}
+.diagnostic-interface .screen-selection-section,
+.diagnostic-interface .admin-section,
+.diagnostic-interface .technician-section {
+  padding: 24px !important;
+  border: 1px solid #dce7f1 !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  box-shadow: var(--final-shadow-soft) !important;
+}
+.diagnostic-interface .screen-selection-section h3,
+.diagnostic-interface .admin-section h3,
+.diagnostic-interface .technician-section h3 {
+  margin: 0 0 18px !important;
+  color: #173751 !important;
+  font-size: 19px !important;
+}
+
+.diagnostic-interface .option-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px !important;
+  padding: 5px !important;
+  border: 1px solid #dfe8f0;
+  border-radius: 12px !important;
+  background: #f3f7fb !important;
+}
+.diagnostic-interface .tab-btn {
+  min-height: 44px !important;
+  border-radius: 9px !important;
+  border: 1px solid transparent !important;
+  color: #536d85 !important;
+  background: transparent !important;
+  font-weight: 700 !important;
+}
+.diagnostic-interface .tab-btn.active {
+  color: #0b66d9 !important;
+  background: #fff !important;
+  border-color: #8bb9ef !important;
+  box-shadow: 0 5px 14px rgba(11,102,217,.08);
+}
+.diagnostic-interface .tab-content select.form-control {
+  min-height: 50px !important;
+  border-color: #d8e4ef !important;
+  background: #fff !important;
+}
+.diagnostic-interface #start-diagnosis-btn {
+  min-height: 44px;
+  margin-top: 16px;
+}
+.diagnostic-interface #start-diagnosis-btn:not(:disabled) {
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+
+.diagnostic-interface .admin-section .issues-list:has(.empty-state) {
+  min-height: 185px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed #d9e4ee;
+  border-radius: 14px;
+  background: #fcfdff;
+}
+.diagnostic-interface .empty-state {
+  padding: 20px !important;
+  color: #75899e !important;
+  font-style: normal !important;
+}
+.diagnostic-interface .empty-state i {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 10px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #4b7fc4;
+  background: #eaf3ff;
+  font-size: 29px;
+}
+.diagnostic-interface .empty-state p {
+  margin: 0 !important;
+  color: #183b5d;
+  font-weight: 800;
+}
+.diagnostic-interface .empty-state p::after {
+  content: "Les problèmes détectés et signalés apparaîtront ici.";
+  display: block;
+  margin-top: 7px;
+  color: #7d8fa1;
+  font-size: 12px;
+  font-weight: 500;
+}
+.diagnostic-interface .quick-actions {
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+.diagnostic-interface .quick-actions .btn {
+  color: #173b60 !important;
+  background: #fff !important;
+  border: 1px solid #d7e3ee !important;
+}
+
+/* =========================================================
+   MUR D'IMAGES
+   ========================================================= */
+.wall-page.card {
+  width: min(100%, 1380px) !important;
+  max-width: 1380px !important;
+  min-height: 650px;
+  padding: 28px 30px 32px !important;
+  border: 1px solid #dce7f1 !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  box-shadow: var(--final-shadow-soft) !important;
+}
+.wall-header {
+  padding-bottom: 22px !important;
+  border-bottom: 1px solid #e8eef4;
+}
+.wall-header h2 {
+  margin: 0 0 8px !important;
+  color: #113451 !important;
+  font-size: 27px !important;
+}
+.wall-header p {
+  margin: 0 !important;
+  color: #6f8296 !important;
+  font-size: 14px;
+}
+.wall-navigation {
+  gap: 10px !important;
+  align-items: center !important;
+}
+.wall-navigation .btn {
+  min-height: 42px;
+  color: #173b60 !important;
+  background: #fff !important;
+  border: 1px solid #d5e2ed !important;
+}
+.wall-navigation label {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  color: #617a91 !important;
+}
+.wall-navigation select {
+  width: 270px !important;
+  min-height: 42px;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+}
+
+#wall-empty:not([hidden]) {
+  width: min(100%, 650px);
+  min-height: 270px;
+  margin: 70px auto 0 !important;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #183a5a !important;
+  font-size: 20px !important;
+  font-weight: 850;
+  text-align: center;
+  font-style: normal !important;
+}
+#wall-empty:not([hidden])::before {
+  content: "\f03e";
+  width: 120px;
+  height: 96px;
+  margin-bottom: 25px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed #c9d9e8;
+  border-radius: 16px;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  font-size: 40px;
+  color: #a4bad0;
+  background: #fbfdff;
+}
+#wall-empty:not([hidden])::after {
+  content: "Vous n'avez pas encore configuré de mur d'images pour la salle sélectionnée. Commencez par dessiner ou importer une image de référence, puis placez vos écrans.";
+  max-width: 540px;
+  margin-top: 10px;
+  color: #72879c;
+  font-size: 14px;
+  line-height: 1.55;
+  font-weight: 500;
+}
+#wall-empty:not([hidden]) + #wall-toolbar {
+  justify-content: center !important;
+}
+#wall-empty:not([hidden]) + #wall-toolbar .btn {
+  min-width: 280px;
+  min-height: 48px;
+  justify-content: center;
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+  box-shadow: 0 10px 24px rgba(11,102,217,.20);
+}
+
+.wall-toolbar {
+  gap: 8px !important;
+  padding: 16px 0 !important;
+}
+.wall-canvas {
+  border: 1px solid #cfdeea !important;
+  border-radius: 14px !important;
+  background-color: #f8fbfe !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+}
+.wall-screen {
+  border-radius: 8px !important;
+  box-shadow: 0 5px 16px rgba(18,54,82,.14) !important;
+}
+.wall-editor {
+  border-radius: 14px;
+}
+
+/* =========================================================
+   BOUTONS, CHAMPS, TABLES — FINITION COMMUNE
+   ========================================================= */
+.admin-content .btn {
+  min-height: 38px;
+  font-weight: 750;
+}
+.admin-content .btn-primary,
+.admin-content .btn.primary {
+  background: linear-gradient(135deg, #075fcb, #1477e3) !important;
+}
+.admin-content .btn.gray {
+  background: #8094a8;
+}
+.admin-content .btn.danger {
+  background: #ef4d58 !important;
+}
+.admin-content input,
+.admin-content select,
+.admin-content textarea {
+  color: #1c3a54;
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+body.dark-theme {
+  --final-bg: #111b25;
+  --final-card: #1b2834;
+  --final-text: #edf5fb;
+  --final-muted: #a9b9c6;
+  --final-line: #33495a;
+  --final-line-soft: #2a3b48;
+  background: #111b25 !important;
+}
+body.dark-theme .wall-page.card,
+body.dark-theme .diagnostic-interface .screen-selection-section,
+body.dark-theme .diagnostic-interface .admin-section,
+body.dark-theme .diagnostic-interface .technician-section,
+body.dark-theme .system-settings .settings-section,
+body.dark-theme :is(#admin-content,#responsible-content) > .card:has(#equip-search) {
+  background: #1b2834 !important;
+  border-color: #33495a !important;
+  color: #edf5fb;
+}
+body.dark-theme .wall-header h2,
+body.dark-theme .system-settings::before,
+body.dark-theme .diagnostic-interface h3,
+body.dark-theme :is(#admin-content,#responsible-content) > .card:has(#equip-search) h2 {
+  color: #f4f8fb !important;
+}
+body.dark-theme .diagnostic-interface .option-tabs,
+body.dark-theme :is(#admin-content,#responsible-content) > .card:has(#equip-search) .filters-container {
+  background: #14222d !important;
+  border-color: #33495a !important;
+}
+body.dark-theme .diagnostic-interface .tab-btn.active,
+body.dark-theme .wall-navigation .btn,
+body.dark-theme .system-settings #upload-map-image-btn,
+body.dark-theme .system-settings #reset-map-image-btn {
+  background: #223545 !important;
+  color: #dcecff !important;
+  border-color: #3b5366 !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 1280px) {
+  .admin-header .header-center::after { display: none; }
+  #global-search { padding-right: 16px !important; }
+  /* Le rôle N'EST PLUS masqué sous 1280.
+     Constat P0-6 : à 1280 et à 1024, le bloc identité perdait sa seconde ligne — on ne
+     savait plus à quel titre on était connecté, ce qui est précisément l'information que
+     cette interface doit rappeler en permanence. La place qu'il fallait est venue de
+     l'empilement du bloc identité (voir `ui-refresh.css`), pas de sa mutilation. */
+  .wall-navigation select { width: 220px !important; }
+}
+
+@media (max-width: 1100px) {
+  .admin-sidebar { width: 74px !important; }
+  .admin-sidebar .sidebar-menu a span,
+  .admin-sidebar .system-status span { display: none !important; }
+  .admin-content { margin-left: 74px !important; padding: 24px !important; }
+  .admin-header #platform-title { display: none; }
+  .admin-header .header-center { margin-inline: 6px !important; }
+  .system-settings .settings-section:first-child { grid-template-columns: 1fr; }
+  .system-settings .settings-section:first-child > h3,
+  .system-settings .settings-section:first-child > .settings-group:nth-of-type(3) { grid-column: auto; }
+  :is(#admin-content,#responsible-content) > .card:has(#equip-search) .filters-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .diagnostic-interface .option-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .wall-header { align-items: flex-start !important; flex-direction: column; gap: 16px; }
+}
+
+@media (max-width: 760px) {
+  .admin-header { padding: 10px 12px !important; gap: 8px !important; }
+  .admin-header > div:first-child::before { width: 40px !important; height: 40px !important; flex-basis: 40px !important; background-size: 32px !important; }
+  .admin-header .btn-map { font-size: 0; padding: 0 12px !important; }
+  .admin-header .btn-map i { font-size: 15px; }
+  .admin-header .user-name { display: none; }
+  .admin-content { padding: 16px !important; }
+  .system-settings { grid-template-columns: 1fr !important; }
+  .system-settings::before { font-size: 23px; }
+  :is(#admin-content,#responsible-content) > .card:has(#equip-search) .filters-container { grid-template-columns: 1fr !important; }
+  .diagnostic-interface .option-tabs { grid-template-columns: 1fr; }
+  :is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header { align-items: flex-start; flex-direction: column; }
+  :is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header h2 { padding-left: 0; padding-top: 62px; }
+  :is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header h2::before { top: 0; }
+  .wall-navigation { width: 100%; flex-wrap: wrap; }
+  .wall-navigation label { width: 100%; }
+  .wall-navigation select { width: 100% !important; }
+}
+
+/* =========================================================
+   SAUVEGARDES CONSERVÉES
+   Rendues visibles : elles étaient écrites nulle part et
+   affichées nulle part.
+   ========================================================= */
+
+.system-settings .backup-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.system-settings .backup-empty { margin: 0; color: #6b82a0; font-size: 13px; }
+.system-settings .backup-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  padding: 12px 14px; border: 1px solid #dde7f1; border-radius: 12px; background: #fbfdff;
+}
+.system-settings .backup-meta { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.system-settings .backup-meta strong { color: #123a5e; font-size: 14px; }
+.system-settings .backup-meta span { color: #6b82a0; font-size: 12px; }
+.system-settings .backup-row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.system-settings .backup-row-actions .btn { min-height: 36px; padding: 0 14px; font-size: 13px; }
+
+@media (max-width: 600px) {
+  .system-settings .backup-row { align-items: stretch; }
+  .system-settings .backup-row-actions { width: 100%; }
+  .system-settings .backup-row-actions .btn { flex: 1; }
+}
+
+/* Indicateur de robustesse du mot de passe — la règle doit se voir pendant la saisie. */
+#password-hint[data-force] { font-weight: 700; }
+#password-hint[data-force="faible"]      { color: #c0392b; }
+#password-hint[data-force="insuffisant"] { color: #c0392b; }
+#password-hint[data-force="acceptable"]  { color: #b9770e; }
+#password-hint[data-force="solide"]      { color: #1e8449; }
+#password-hint[data-force="excellent"]   { color: #148f5b; }

@@ -1,0 +1,123 @@
+/* =============================================================================
+   LE FIL DU SIGNAL — bandeau permanent de la chaîne d'antenne.
+
+   Le vocabulaire est celui du reste de la plateforme : étiquette en petites
+   capitales, chiffres en chasse tabulaire, filets d'un pixel, états dits en
+   couleur ET en toutes lettres — la couleur seule ne se lit pas pour tout le
+   monde.
+
+   La forme, elle, vient du métier : quatre segments reliés par un trait, comme
+   un synoptique de chaîne. Le trait entre deux segments porte l'idée que le
+   signal passe de l'un à l'autre ; c'est ce qui distingue ce bandeau d'une
+   simple rangée de pastilles.
+   ========================================================================== */
+
+.signal-spine{
+  --sp-line:var(--tk-line, #DCE6F0);
+  --sp-ink:var(--tk-ink, #0F2B45);
+  --sp-ink-3:var(--tk-ink-3, #7690A8);
+  --sp-locked:var(--tk-locked, #1E8449);
+  --sp-degraded:var(--tk-degraded, #B9770E);
+  --sp-lost:var(--tk-lost, #C0392B);
+  --sp-idle:var(--tk-idle, #7690A8);
+
+  position:relative;
+  margin:0 0 16px;
+  padding:10px 12px 11px;
+  border:1px solid var(--sp-line);
+  border-radius:10px;
+  background:var(--tk-surface, #fff);
+  box-shadow:0 1px 2px rgba(15,43,69,.04)
+}
+
+.signal-spine .spine-eyebrow{
+  display:block;margin-bottom:8px;
+  font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sp-ink-3)
+}
+
+.signal-spine .spine-track{
+  display:flex;align-items:stretch;gap:0;
+  overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin
+}
+
+/* Le trait de liaison : ce qui fait un synoptique plutôt qu'une rangée de pastilles. */
+.signal-spine .spine-link{
+  flex:0 0 18px;align-self:center;height:1px;background:var(--sp-line)
+}
+.signal-spine .spine-break{
+  flex:0 0 20px;align-self:center;height:1px;
+  background:repeating-linear-gradient(90deg,var(--sp-line) 0 3px,transparent 3px 6px)
+}
+
+.signal-spine .spine-segment{
+  flex:1 1 0;min-width:104px;
+  display:flex;flex-direction:column;gap:3px;align-items:flex-start;
+  padding:7px 9px 7px 11px;
+  border:1px solid transparent;border-left:3px solid var(--sp-idle);
+  border-radius:7px;
+  background:transparent;font:inherit;text-align:left;cursor:pointer;
+  transition:background 160ms ease,border-color 160ms ease
+}
+.signal-spine .spine-segment:hover{background:var(--tk-surface-2, #F7FAFD)}
+.signal-spine .spine-segment:focus-visible{outline:2px solid var(--tk-accent, #0B66D9);outline-offset:2px}
+.signal-spine .spine-segment[aria-pressed="true"]{
+  background:var(--tk-accent-soft, rgba(11,102,217,.09));
+  border-color:var(--tk-line-strong, #C3D4E4);
+  border-left-color:currentColor
+}
+
+.signal-spine .spine-segment-name{
+  font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--sp-ink-3);white-space:nowrap
+}
+/* Le total, son unité, puis l'état : trois choses séparées à l'œil comme au texte.
+   La rangée s'enroule plutôt que de déborder — un segment étroit garde ses deux
+   grandeurs lisibles au lieu d'en tronquer une. */
+.signal-spine .spine-segment-figures{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 5px}
+.signal-spine .spine-segment-count{
+  font-size:19px;font-weight:300;letter-spacing:-.02em;color:var(--sp-ink);
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1,"lnum" 1
+}
+.signal-spine .spine-segment-unit{font-size:10.5px;font-weight:600;color:var(--sp-ink-3);white-space:nowrap}
+.signal-spine .spine-sep{font-size:10.5px;color:var(--sp-line)}
+.signal-spine .spine-segment-state{font-size:10px;font-weight:700;letter-spacing:.03em;white-space:nowrap}
+
+/* L'ATTENTE SE DIT — elle ne se déguise pas en chiffre.
+   Tant que la première synchronisation n'a pas conclu, le segment porte ce mot à la
+   place de son total : un nombre annoncé puis démenti coûte plus qu'un mot d'attente. */
+.signal-spine .spine-segment-sync{
+  font-size:11px;font-weight:700;letter-spacing:.02em;color:var(--sp-ink-3);white-space:nowrap
+}
+.signal-spine .spine-segment[data-state="pending"]{border-left-color:var(--sp-line)}
+.signal-spine[data-chargement="oui"] .spine-segment{cursor:default}
+
+/* États — la couleur accompagne le mot, elle ne le remplace pas. */
+.signal-spine .spine-segment[data-state="locked"]{border-left-color:var(--sp-locked)}
+.signal-spine .spine-segment[data-state="locked"] .spine-segment-state{color:var(--sp-locked)}
+.signal-spine .spine-segment[data-state="degraded"]{border-left-color:var(--sp-degraded)}
+.signal-spine .spine-segment[data-state="degraded"] .spine-segment-state{color:var(--sp-degraded)}
+.signal-spine .spine-segment[data-state="lost"]{border-left-color:var(--sp-lost)}
+.signal-spine .spine-segment[data-state="lost"] .spine-segment-state{color:var(--sp-lost)}
+.signal-spine .spine-segment[data-state="unverified"]{border-left-color:var(--sp-idle)}
+.signal-spine .spine-segment[data-state="unverified"] .spine-segment-state{color:var(--sp-idle)}
+.signal-spine .spine-segment[data-state="empty"]{border-left-color:var(--sp-line)}
+.signal-spine .spine-segment[data-state="empty"] .spine-segment-state{color:var(--sp-ink-3)}
+
+/* Le hors-chaîne se distingue : il n'est pas une étape, c'est ce qui reste à qualifier. */
+.signal-spine .spine-segment.is-pending{border-left-style:dashed}
+
+.signal-spine .spine-detail{
+  margin-top:9px;padding-top:9px;border-top:1px solid var(--sp-line)
+}
+.signal-spine .spine-detail-lead{margin:0 0 3px;font-size:12.5px;line-height:1.45;color:var(--sp-ink)}
+.signal-spine .spine-detail-figures{margin:0;font-size:11.5px;color:var(--sp-ink-3);font-variant-numeric:tabular-nums}
+.signal-spine .spine-detail-figures strong{color:var(--sp-ink);font-weight:700}
+
+@media(max-width:760px){
+  .signal-spine{padding:9px 10px 10px;margin-bottom:12px}
+  .signal-spine .spine-segment{min-width:96px}
+  .signal-spine .spine-link,.signal-spine .spine-break{flex-basis:10px}
+}
+
+.dark-theme .signal-spine{background:var(--tk-surface, #12212F)}

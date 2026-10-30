@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Aucune image disponible">
+  <rect width="640" height="360" fill="#e7ecef"/>
+  <g fill="none" stroke="#a9bcc6" stroke-width="3">
+    <rect x="248" y="140" width="144" height="104" rx="8"/>
+    <path d="M248 214l38-34 30 26 34-40 42 46"/>
+  </g>
+  <circle cx="292" cy="170" r="10" fill="#a9bcc6"/>
+  <text x="320" y="288" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', Arial, sans-serif"
+        font-size="19" fill="#6d808d">Aucune image disponible</text>
+</svg>

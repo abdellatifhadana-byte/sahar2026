@@ -1,0 +1,322 @@
+/* =============================================================================
+   2M TECH PLATFORM — SYSTÈME VISUEL
+   =============================================================================
+
+   POURQUOI CETTE FEUILLE EXISTE
+   -----------------------------
+   Trente et une feuilles de style sont chargées, totalisant 8136 règles et
+   1264 déclarations `!important`. Mesuré : 301 propriétés déclarées de façon
+   contradictoire entre feuilles, dont 76 « batailles » où la même propriété est
+   forcée par jusqu'à CINQ feuilles — `.admin-content { padding }` est disputé par
+   main.css, admin.css, ui-refresh.css, ui-final.css et mobile-runtime.css.
+
+   Le résultat visible n'était donc pas décidé : il tombait de l'ordre de
+   chargement. Toute retouche exigeait un `!important` de plus, et le comportement
+   changeait selon la page.
+
+   Cette feuille ne s'ajoute pas à la pile : elle l'ARBITRE. Chargée en dernier,
+   elle tranche explicitement les conflits mesurés, une fois, à un seul endroit.
+   Les feuilles précédentes gardent tout ce qui n'est pas disputé.
+
+   L'IDÉE VISUELLE
+   ---------------
+   Pas un thème générique de tableau de bord. Le vocabulaire vient du métier :
+
+   · Rythme de baie — les espacements dérivent de l'unité de rack (1U = 44,45 mm),
+     ramenée à une trame de 4 px. Une cadence inhabituelle, mais qui est celle du
+     matériel que cette plateforme décrit.
+   · Chiffres d'instrument — chasse tabulaire, graisse légère, étiquette en
+     petites capitales dessous, comme un afficheur de mesure et non un argument
+     commercial. Les nombres s'alignent en colonne et se comparent d'un coup d'œil.
+   · État en bandeau latéral — un filet vertical à gauche du panneau porte l'état,
+     à la manière des bandeaux LED d'une baie, au lieu d'une pastille décorative.
+   · Marques de repérage — les mêmes équerres d'angle que l'écran de démarrage.
+     L'application et son boot parlent la même langue ; rien d'autre ne le fait.
+   · Filets d'un pixel plutôt qu'ombres diffuses — la précision se lit, le flou non.
+
+   RÈGLE DE TENUE
+   --------------
+   Aucune géométrie de mise en page n'est modifiée ici : ni largeur de colonne, ni
+   nombre de colonnes de grille, ni position de la coque. Uniquement le traitement
+   de surface. C'est ce qui permet de garantir qu'aucune page ne se déforme.
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   A. JETONS
+   Portés par `.admin-page` et les hôtes de contenu, jamais par `:root` : posés
+   globalement, ils écraseraient les variables des feuilles existantes.
+   -------------------------------------------------------------------------- */
+
+/* Les jetons sont portés AUSSI par les fenêtres modales. Mesuré : `#eq-modal` est un enfant
+   direct de `<body>`, hors de `#app` — les formulaires de saisie ne sont donc pas dans la
+   coque de l'application. Sans cette ligne, `var(--tk-…)` ne résoudrait rien à l'intérieur
+   d'une fenêtre, c'est-à-dire là où l'utilisateur saisit ses données. */
+.admin-page,
+.responsible-page,
+.tech-page,
+#admin-content,
+#responsible-content,
+#tech-content,
+.modal,
+[role="dialog"],
+.sf-modal {
+  /* Trame de baie : 1U ≈ 11 × 4 px. Les paliers suivent les fractions d'unité. */
+  --tk-u: 4px;
+  --tk-u1: 4px;    /* 1/11 U */
+  --tk-u2: 8px;
+  --tk-u3: 12px;
+  --tk-u4: 16px;
+  --tk-u6: 24px;
+  --tk-u8: 32px;
+  --tk-u11: 44px;  /* 1 U */
+
+  /* Encre et surfaces — accordées à l'existant, resserrées en contraste. */
+  --tk-ink: #0F2B45;
+  --tk-ink-2: #40607D;
+  --tk-ink-3: #7690A8;
+  --tk-line: #DCE6F0;
+  --tk-line-strong: #C3D4E4;
+  --tk-surface: #FFFFFF;
+  --tk-surface-2: #F7FAFD;
+  --tk-accent: #0B66D9;
+  --tk-accent-soft: rgba(11, 102, 217, .09);
+
+  /* Langage d'état : vocabulaire de diffusion, pas « succès / erreur ». */
+  --tk-locked: #1E8449;    /* verrouillé — le signal passe */
+  --tk-degraded: #B9770E;  /* dégradé — à vérifier */
+  --tk-lost: #C0392B;      /* perdu — hors service */
+  --tk-idle: #7690A8;      /* au repos — non renseigné */
+
+  --tk-radius: 10px;
+  --tk-radius-s: 6px;
+
+  /* Bordure des champs : valeur majoritaire des trois gris relevés, pour que la
+     mise en cohérence ne déplace pas la teinte de la majorité des pages. */
+  --tk-field-line: #D7E3EF;
+}
+
+/* -----------------------------------------------------------------------------
+   B. ARBITRAGE DES CONFLITS MESURÉS
+   Chaque règle ci-dessous tranche une bataille identifiée par
+   `npm run check:css`. La valeur retenue est celle qui gagnait déjà à
+   l'exécution : l'arbitrage rend la décision LISIBLE, il ne la change pas.
+   -------------------------------------------------------------------------- */
+
+/* `.admin-content { padding }` et `{ margin-left }` : disputés par cinq feuilles.
+   La valeur effective vient de la dernière chargée, mobile-runtime.css, qui ne
+   s'applique qu'en dessous de son point de rupture ; au-dessus, c'est ui-final.css.
+   On fige donc l'état observé, sans le modifier. */
+.admin-page .admin-content { padding: var(--tk-u6); }
+@media (max-width: 900px) { .admin-page .admin-content { padding: var(--tk-u4); } }
+
+/* PLACE RÉSERVÉE À LA FICHE ACCOSTÉE.
+   La Fiche 360 s'accoste à droite sur grand écran ; sans cette réserve, elle
+   recouvre la colonne « Actions » du tableau.
+   Le `!important` n'est pas un réflexe : mesuré dans le navigateur,
+   `ui-final.css` impose `padding: 30px 36px 44px !important` sur `.admin-content`,
+   ce qui bat la spécificité et neutralise même la règle d'arbitrage ci-dessus.
+   Tant que ce `!important`-là subsiste, seul un `!important` peut arbitrer.
+   LE RETIRER EST L'ÉTAPE DE NETTOYAGE SUIVANTE : elle change la marge de tout
+   l'écran (36 px → 24 px) et mérite donc sa propre mesure avant/après, pas
+   d'être glissée dans un changement de fiche. */
+@media (min-width: 1280px) {
+  /* `!important` : seul moyen de battre le `padding … !important` de ui-final.css. */
+  body.has-equipment-panel .admin-page .admin-content {
+    padding-right: min(536px, calc(42vw + 16px)) !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   C. LANGAGE VISUEL — PANNEAUX
+   -------------------------------------------------------------------------- */
+
+/* `!important` est employé ICI, et nulle part ailleurs désormais. Ce n'est pas une
+   surenchère : c'est la conséquence des 1264 déclarations forcées déjà présentes dans
+   les neuf feuilles précédentes. Sans cela, l'arbitre perdrait contre les plaideurs et
+   la décision continuerait de tomber de l'ordre de chargement. Chaque marque ci-dessous
+   règle une bataille identifiée par `npm run check:css`. */
+#app .admin-page .stat-card,
+#app .admin-page .dashboard-section,
+#app .admin-page .card,
+#app .admin-page .panel {
+  position: relative;
+  border: 1px solid var(--tk-line) !important;          /* disputé : main.css, ui-refresh.css */
+  border-radius: var(--tk-radius) !important;           /* disputé : main.css, ui-refresh.css, mobile-runtime.css */
+  background: var(--tk-surface) !important;
+  box-shadow: 0 1px 2px rgba(15, 43, 69, .04) !important; /* ombres diffuses → filet net */
+}
+
+/* Marques de repérage : les mêmes équerres que l'écran de démarrage. C'est le
+   seul motif qui relie visuellement le boot à l'application. */
+#app .admin-page .dashboard-section::before,
+#app .admin-page .dashboard-section::after {
+  content: "";
+  position: absolute;
+  width: 9px; height: 9px;
+  pointer-events: none;
+  opacity: .5;
+  border-color: var(--tk-line-strong);
+  border-style: solid;
+}
+#app .admin-page .dashboard-section::before {
+  top: 7px; left: 7px;
+  border-width: 1px 0 0 1px;
+}
+#app .admin-page .dashboard-section::after {
+  bottom: 7px; right: 7px;
+  border-width: 0 1px 1px 0;
+}
+
+/* État en bandeau latéral, comme un bandeau de baie. Le filet inférieur coloré
+   existant est conservé : on ne retire rien, on ajoute la lecture verticale. */
+#app .admin-page .stat-card {
+  border-left: 3px solid var(--tk-idle) !important;   /* disputé : main.css, wall.css, ui-refresh.css */
+}
+.admin-page .stat-card.is-locked,
+.admin-page .stat-card.ok      { border-left-color: var(--tk-locked); }
+.admin-page .stat-card.is-degraded,
+.admin-page .stat-card.warning { border-left-color: var(--tk-degraded); }
+.admin-page .stat-card.is-lost,
+.admin-page .stat-card.danger  { border-left-color: var(--tk-lost); }
+
+/* -----------------------------------------------------------------------------
+   D. CHIFFRES D'INSTRUMENT
+   Chasse tabulaire : les nombres s'alignent en colonne d'une tuile à l'autre et
+   se comparent d'un coup d'œil. Rarement fait, et pourtant décisif dès qu'un
+   tableau de bord sert à surveiller plutôt qu'à impressionner.
+   -------------------------------------------------------------------------- */
+
+.admin-page .stat-card strong,
+.admin-page .stat-value,
+.admin-page .stat-card .value,
+.admin-page td,
+.admin-page .metric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+#app .admin-page .stat-card strong,
+#app .admin-page .stat-value {
+  font-weight: 300 !important;
+  letter-spacing: -.02em !important;
+  color: var(--tk-ink) !important;
+}
+
+/* Étiquette en petites capitales sous le chiffre : hiérarchie d'afficheur.
+   La tuile est `<button><i><strong>52</strong><span>Équipements</span></button>` — mesuré,
+   pas supposé : l'étiquette est un `span` nu, d'où le `> span`. La spécificité (1,2,1)
+   passe devant `.stat-card span` de main.css sans qu'un `!important` soit nécessaire.
+   `font-size` reste non forcé : mobile-runtime.css le réduit délibérément sous son point
+   de rupture, et cette intention-là doit survivre. */
+#app .admin-page .stat-card > span,
+#app .admin-page .stat-card small,
+#app .admin-page .stat-card .stat-label {
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--tk-ink-3);
+}
+
+/* -----------------------------------------------------------------------------
+   E. TABLEAUX — DENSITÉ TECHNIQUE
+   -------------------------------------------------------------------------- */
+
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) table th {
+  text-transform: uppercase !important;
+  letter-spacing: .07em;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--tk-ink-2);
+  border-bottom: 1px solid var(--tk-line-strong) !important;
+}
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) table td { border-bottom: 1px solid var(--tk-line) !important; }
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) tbody tr:hover { background: var(--tk-surface-2); }
+
+/* Références techniques, numéros de port, numéros de série : en chasse fixe, car
+   ce sont des identifiants qu'on compare caractère par caractère. */
+.admin-page .reference,
+.admin-page .serial,
+.admin-page .port-number,
+.admin-page code {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: .92em;
+  letter-spacing: -.01em;
+}
+
+/* -----------------------------------------------------------------------------
+   G. CONTRÔLES DE SAISIE
+   Mesuré sur huit pages : trois gris de bordure quasi identiques
+   (#DBE5ED, #D7E3EF, #DBE4EC), deux rayons (8 et 10 px), et sur la page Tickets
+   une taille de 13,33 px — c'est-à-dire AUCUNE police déclarée, la valeur par
+   défaut du navigateur. On retient partout la valeur majoritaire, de sorte que
+   sept pages sur huit ne bougent pas et que seule l'exception rentre dans le rang.
+   -------------------------------------------------------------------------- */
+
+/* `:where()` et non `:not()` en chaîne : chaque `:not()` ajoute la spécificité de son
+   argument, si bien que `input:not([type=checkbox]):not([type=radio]):not([type=file])`
+   pèse (0,3,1) et écrasait la règle des identifiants qui suit — mesuré, la chasse fixe
+   ne s'appliquait pas. `:where()` ne compte pour rien : l'exclusion garde son effet
+   sans emporter l'arbitrage. */
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) :is(input:where(:not([type="checkbox"], [type="radio"], [type="file"])), select, textarea) {
+  border-color: var(--tk-field-line);
+  border-radius: var(--tk-radius);
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--tk-ink);
+}
+
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) ::placeholder {
+  color: var(--tk-ink-3);
+  opacity: 1;   /* Firefox l'atténue par défaut, ce qui rend l'indication illisible. */
+}
+
+/* Champs d'IDENTIFIANT en chasse fixe.
+   Un numéro de série, une référence, une adresse IP ou un numéro d'inventaire se
+   comparent caractère par caractère. En police proportionnelle, c'est précisément là
+   qu'on confond 0 et O, 1 et l, 8 et B — et une erreur d'un caractère sur un numéro de
+   série envoie un technicien vers le mauvais équipement. Les identifiants sont déjà en
+   chasse fixe à l'affichage (section E) ; ils le sont maintenant aussi À LA SAISIE,
+   c'est-à-dire au moment où l'erreur se commet.
+   Champs relevés dans l'application, pas supposés. */
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) :is(#numSerie, #reference, #ipAddress, #immoNumber, #grilleINOUT),
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) :is([name="numSerie"], [name="reference"], [name="ipAddress"], [name="immoNumber"], [name="grilleINOUT"]) {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  font-size: 14px;
+  letter-spacing: .02em;
+}
+
+/* -----------------------------------------------------------------------------
+   F. ACCESSIBILITÉ
+   -------------------------------------------------------------------------- */
+
+:is(#app .admin-page, .modal, [role="dialog"], .sf-modal) :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--tk-accent);
+  outline-offset: 2px;
+  border-radius: var(--tk-radius-s);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-page * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* Thème sombre : les jetons suivent, les règles ne sont pas dupliquées.
+   Les coques Responsable et Technicien affichent les MÊMES sections que
+   l'Administrateur : sans elles dans cette liste, leurs jetons sombres
+   restaient ceux du thème clair et le contenu passait en texte sombre sur
+   fond sombre dès que le thème était basculé. */
+.dark-theme .admin-page,
+.dark-theme .responsible-page,
+.dark-theme .tech-page,
+.dark-theme #admin-content,
+.dark-theme #responsible-content,
+.dark-theme #tech-content {
+  --tk-ink: #E8F1F8;
+  --tk-ink-2: #A9C0D4;
+  --tk-ink-3: #7B95AC;
+  --tk-line: rgba(150, 180, 210, .16);
+  --tk-line-strong: rgba(150, 180, 210, .28);
+  --tk-surface: #12212F;
+  --tk-surface-2: #16283A;
+}

@@ -1,0 +1,128 @@
+/* 2M TECH PLATFORM — page de connexion.
+   Unique feuille de style de cet écran. Elle remplace trois couches empilées
+   (`ui-refresh.css`, `ui-final.css`, `ui-tune.css`) qui totalisaient plus de quarante
+   déclarations `!important` : chaque retouche exigeait alors d'en ajouter une de plus.
+   Ici, aucune : la spécificité suffit parce qu'il n'y a plus qu'un seul auteur. */
+
+.login-screen{
+  --lg-navy:#0C2F50;
+  --lg-ink:#173650;
+  --lg-muted:#6B82A0;
+  --lg-border:#D6E3EF;
+  --lg-accent:#0B66D9;
+  --lg-danger:#C0392B;
+  position:relative;
+  display:flex;align-items:flex-start;justify-content:center;
+  min-height:100vh;min-height:100dvh;
+  padding:max(6vh,32px) 20px max(32px,env(safe-area-inset-bottom));
+  background:
+    radial-gradient(circle at 4% 12%,rgba(36,117,213,.08) 0 7%,transparent 7.2%),
+    radial-gradient(circle at 4% 12%,rgba(36,117,213,.07) 0 20%,transparent 20.2%),
+    radial-gradient(circle at 94% 89%,rgba(70,147,235,.07) 0 15%,transparent 15.2%),
+    linear-gradient(135deg,#F8FBFF,#EEF5FD 58%,#F9FBFF);
+  overflow:hidden
+}
+
+/* Cercles d'ambiance. Ils étaient posés sur `body:has(#login-box)` — un sélecteur qui
+   dépendait de la présence d'un identifiant ailleurs dans le document. Ils appartiennent
+   à cet écran, donc ils vivent dedans. */
+.login-screen::before,.login-screen::after{
+  content:"";position:absolute;pointer-events:none;
+  border:1px solid rgba(38,119,218,.16);border-radius:50%
+}
+.login-screen::before{width:580px;height:580px;left:-310px;top:-250px}
+.login-screen::after{width:680px;height:680px;right:-430px;bottom:-430px}
+
+.login-screen .login-card{
+  position:relative;z-index:1;
+  width:min(92vw,520px);
+  padding:42px 40px 38px;
+  border:1px solid #DBE7F2;border-radius:20px;
+  background:rgba(255,255,255,.985);
+  box-shadow:0 28px 80px rgba(21,64,103,.13);
+  text-align:center
+}
+
+.login-screen .login-brand{margin-bottom:32px}
+
+/* Le symbole vectoriel de la plateforme, le même que l'écran de démarrage. Il remplace
+   l'image bitmap `images/2m-logo.webp` : une seule représentation de la marque. */
+.login-screen .login-mark{
+  display:flex;align-items:center;justify-content:center;
+  width:82px;height:82px;margin:0 auto 18px;
+  border:1px solid #E1E9F1;border-radius:18px;
+  background:#fff;box-shadow:0 10px 28px rgba(18,54,82,.10)
+}
+.login-screen .login-mark .startup-logo-svg{width:60px;height:60px;filter:none}
+
+.login-screen h2{margin:0;color:var(--lg-navy);font-size:clamp(22px,4vw,28px);letter-spacing:-.4px}
+
+/* Texte réel, et non `content:` d'un pseudo-élément : sélectionnable, traduisible,
+   présent dans le DOM et donc lisible par les outils d'accessibilité. */
+.login-screen .login-subtitle{margin:9px 0 0;color:var(--lg-muted);font-size:13px;font-weight:500}
+
+.login-screen .login-error{
+  margin:0 0 18px;padding:11px 14px;
+  border:1px solid rgba(192,57,43,.22);border-radius:10px;
+  background:rgba(192,57,43,.06);
+  color:var(--lg-danger);font-size:13.5px;font-weight:600;text-align:left
+}
+.login-screen .login-error[hidden]{display:none}
+
+.login-screen form{text-align:left}
+.login-screen .form-group{margin-bottom:18px}
+.login-screen label{display:block;margin-bottom:7px;color:#304D6B;font-size:13px;font-weight:700}
+
+.login-screen input{
+  width:100%;height:50px;margin:0;
+  padding:0 15px 0 44px;
+  border:1px solid var(--lg-border);border-radius:12px;
+  background:#fff no-repeat 14px center;
+  color:var(--lg-ink);font:inherit;font-size:15px;
+  box-shadow:inset 0 1px 1px rgba(14,52,84,.02)
+}
+.login-screen input:focus{
+  outline:none;
+  border-color:#5DA4E7;
+  box-shadow:0 0 0 4px rgba(11,102,217,.09)
+}
+
+/* Icônes rattachées au RÔLE du champ, plus à sa position. Elles étaient liées à
+   `:nth-of-type(1)` et `(2)` : ajouter ou réordonner un champ les déplaçait en silence
+   sur le mauvais. */
+.login-screen .login-field[data-field="username"] input{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230b66d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21a8 8 0 0 0-16 0'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E")
+}
+.login-screen .login-field[data-field="password"] input{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%230b66d9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='18' height='11' x='3' y='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E")
+}
+
+.login-screen .login-submit{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;min-height:52px;margin-top:8px;
+  border:none;border-radius:12px;
+  background:linear-gradient(100deg,#075FCB,#1C83ED);
+  box-shadow:0 12px 25px rgba(11,102,217,.23);
+  color:#fff;font:inherit;font-size:15px;font-weight:800;cursor:pointer;
+  transition:transform 160ms ease,box-shadow 160ms ease,opacity 160ms ease
+}
+.login-screen .login-submit::after{content:"→";font-size:20px;line-height:1}
+.login-screen .login-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 16px 32px rgba(11,102,217,.28)}
+.login-screen .login-submit:disabled{opacity:.62;cursor:progress;transform:none}
+
+.login-screen .login-progress{
+  margin:12px 0 0;color:#2874A6;font-size:13.5px;font-weight:600;text-align:center
+}
+.login-screen .login-progress[hidden]{display:none}
+
+@media(max-width:600px){
+  .login-screen{padding-top:7vh}
+  .login-screen .login-card{padding:32px 24px 28px}
+  .login-screen .login-mark{width:72px;height:72px}
+  .login-screen .login-mark .startup-logo-svg{width:52px;height:52px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .login-screen .login-submit{transition:none}
+  .login-screen .login-submit:hover:not(:disabled){transform:none}
+}

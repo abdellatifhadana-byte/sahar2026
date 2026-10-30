@@ -1,27 +1,19 @@
-# Dependencies
 node_modules/
-server/node_modules/
-
-# Build output
-dist/
-
-# Environment - NEVER commit
 .env
-server/.env
-
-# Database - regenerates automatically
-server/data/
-server/data/*.db
-
-# OS files
+.env.*
+!.env.example
+coverage/
+playwright-report/
+test-results/
+*.log
 .DS_Store
 Thumbs.db
-*.log
+package-lock.json
 
-# Editor
-.vscode/
-.idea/
-
-# Temp
-*.tmp
-*.temp
+# Données opérationnelles/imports locaux 2M — ne jamais publier dans le dépôt public.
+2mtechinventairereelimport.json
+Inventaire_Équipements_Techniques*.xlsx
+DOMAINES BDD V3.xlsx
+Extraction_complete_2M*.xlsx
+Extraction_complete_2M*.json
+private-inventory/

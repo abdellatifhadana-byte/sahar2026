@@ -1,0 +1,406 @@
+/* 2M TECH — Correctifs visuels du diagnostic écrans et des icônes */
+
+/* Les fichiers Font Awesome sont stockés sous /assets/webfonts. Les CSS historiques
+   utilisent ../webfonts, ce qui pointe vers /webfonts sur Railway. Ces déclarations
+   rétablissent explicitement les chemins locaux corrects. */
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("./assets/webfonts/fa-solid-900.woff2") format("woff2"),
+       url("./assets/webfonts/fa-solid-900.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Font Awesome 6 Free";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./assets/webfonts/fa-regular-400.woff2") format("woff2"),
+       url("./assets/webfonts/fa-regular-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Font Awesome 6 Brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("./assets/webfonts/fa-brands-400.woff2") format("woff2"),
+       url("./assets/webfonts/fa-brands-400.ttf") format("truetype");
+}
+.fas, .fa-solid { font-family: "Font Awesome 6 Free" !important; font-weight: 900 !important; }
+.far, .fa-regular { font-family: "Font Awesome 6 Free" !important; font-weight: 400 !important; }
+.fab, .fa-brands { font-family: "Font Awesome 6 Brands" !important; font-weight: 400 !important; }
+
+/* Zone diagnostic */
+#admin-content .diagnostic-interface,
+#responsible-content .diagnostic-interface {
+  display: grid;
+  gap: 22px;
+}
+
+#admin-content > .card,
+#responsible-content > .card {
+  width: min(1180px, calc(100% - 32px));
+  margin: 26px auto;
+}
+
+#admin-content .card-header,
+#responsible-content .card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+#admin-content .card-header h2,
+#responsible-content .card-header h2 {
+  margin: 0;
+  color: #17324d;
+  font-size: 1.55rem;
+  line-height: 1.25;
+}
+
+#admin-content .card-actions,
+#responsible-content .card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+#admin-content .screen-selection-section,
+#responsible-content .screen-selection-section,
+#admin-content .admin-section,
+#responsible-content .admin-section,
+#admin-content .technician-section,
+#responsible-content .technician-section {
+  background: #fff;
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 5px 20px rgba(23, 50, 77, 0.06);
+}
+
+#admin-content .screen-selection-section h3,
+#responsible-content .screen-selection-section h3,
+#admin-content .admin-section h3,
+#responsible-content .admin-section h3,
+#admin-content .technician-section h3,
+#responsible-content .technician-section h3 {
+  margin: 0 0 14px;
+  color: #17324d;
+}
+
+#admin-content .option-tabs,
+#responsible-content .option-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  padding: 5px;
+  border-radius: 12px;
+  background: #eef4f8;
+}
+
+#admin-content .option-tabs .tab-btn,
+#responsible-content .option-tabs .tab-btn {
+  appearance: none;
+  border: 0;
+  border-radius: 9px;
+  padding: 9px 14px;
+  background: transparent;
+  color: #526579;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+#admin-content .option-tabs .tab-btn:hover,
+#responsible-content .option-tabs .tab-btn:hover {
+  background: rgba(255,255,255,.8);
+  color: #1f6f9f;
+}
+
+#admin-content .option-tabs .tab-btn.active,
+#responsible-content .option-tabs .tab-btn.active {
+  background: #287eae;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(40,126,174,.22);
+}
+
+/* C'est cette règle qui manquait : un seul onglet est visible à la fois. */
+#admin-content .tab-content,
+#responsible-content .tab-content {
+  display: none;
+}
+#admin-content .tab-content.active,
+#responsible-content .tab-content.active {
+  display: block;
+}
+
+#admin-content .selection-options .form-control,
+#responsible-content .selection-options .form-control,
+#admin-content #diagnosis-step-value,
+#responsible-content #diagnosis-step-value {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid #cbd8e4;
+  border-radius: 9px;
+  background: #fff;
+  padding: 9px 12px;
+  color: #1e2d3d;
+  font: inherit;
+  outline: none;
+}
+#admin-content .selection-options .form-control:focus,
+#responsible-content .selection-options .form-control:focus,
+#admin-content #diagnosis-step-value:focus,
+#responsible-content #diagnosis-step-value:focus {
+  border-color: #287eae;
+  box-shadow: 0 0 0 3px rgba(40,126,174,.13);
+}
+
+#admin-content .screen-grid,
+#responsible-content .screen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+#admin-content .screen-item,
+#responsible-content .screen-item {
+  min-width: 0;
+}
+
+#admin-content .screen-item > input,
+#responsible-content .screen-item > input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#admin-content .screen-item > label,
+#responsible-content .screen-item > label {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 11px;
+  align-items: center;
+  min-height: 76px;
+  border: 1px solid #d8e2ec;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+#admin-content .screen-item > label:hover,
+#responsible-content .screen-item > label:hover {
+  transform: translateY(-1px);
+  border-color: #76afd0;
+  box-shadow: 0 5px 16px rgba(39,94,126,.10);
+}
+
+#admin-content .screen-item > input:checked + label,
+#responsible-content .screen-item > input:checked + label {
+  border-color: #287eae;
+  background: #f0f9fe;
+  box-shadow: 0 0 0 3px rgba(40,126,174,.10);
+}
+
+#admin-content .screen-icon,
+#responsible-content .screen-icon {
+  grid-row: 1 / 3;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #fff;
+  background: #2d87b7;
+}
+#admin-content .screen-icon.offline,
+#responsible-content .screen-icon.offline { background: #c94a4a; }
+#admin-content .screen-item label > span,
+#responsible-content .screen-item label > span { font-weight: 700; color: #203348; }
+#admin-content .screen-item label > small,
+#responsible-content .screen-item label > small { color: #728295; }
+
+#admin-content .room-visualization,
+#responsible-content .room-visualization {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+#admin-content .room-card,
+#responsible-content .room-card {
+  border: 1px solid #dbe4ee;
+  border-radius: 12px;
+  padding: 13px;
+  background: #f9fbfd;
+}
+#admin-content .room-card h4,
+#responsible-content .room-card h4 { margin: 0 0 10px; color: #27445f; }
+#admin-content .room-image-container,
+#responsible-content .room-image-container {
+  position: relative;
+  min-height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(135deg,#eef4f8,#dfeaf1);
+}
+#admin-content .room-image,
+#responsible-content .room-image { width: 100%; height: auto; display: block; }
+#admin-content .screen-markers,
+#responsible-content .screen-markers { position: absolute; inset: 0; }
+#admin-content .screen-marker,
+#responsible-content .screen-marker {
+  position: absolute;
+  transform: translate(-50%,-50%);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #287eae;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,.20);
+}
+
+#admin-content #start-diagnosis-btn,
+#responsible-content #start-diagnosis-btn {
+  margin-top: 16px;
+}
+
+#admin-content .quick-actions,
+#responsible-content .quick-actions {
+  position: static;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+#admin-content .quick-fixes,
+#responsible-content .quick-fixes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+  gap: 10px;
+}
+
+#admin-content .issues-table,
+#responsible-content .issues-table,
+#admin-content .cables-table,
+#responsible-content .cables-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#admin-content .issues-table th,
+#admin-content .issues-table td,
+#responsible-content .issues-table th,
+#responsible-content .issues-table td,
+#admin-content .cables-table th,
+#admin-content .cables-table td,
+#responsible-content .cables-table th,
+#responsible-content .cables-table td {
+  padding: 10px 9px;
+  border-bottom: 1px solid #e5ecf2;
+  text-align: left;
+  vertical-align: top;
+}
+#admin-content .issues-table th,
+#responsible-content .issues-table th,
+#admin-content .cables-table th,
+#responsible-content .cables-table th { color: #526579; background: #f6f9fb; }
+
+#admin-content .empty-state,
+#responsible-content .empty-state {
+  text-align: center;
+  color: #738396;
+  padding: 22px 10px;
+}
+
+#admin-content .diagnosis-flow,
+#responsible-content .diagnosis-flow {
+  display: grid;
+  gap: 18px;
+}
+#admin-content .diagnosis-header,
+#responsible-content .diagnosis-header,
+#admin-content .step-content,
+#responsible-content .step-content {
+  border: 1px solid #dbe4ee;
+  border-radius: 14px;
+  padding: 18px;
+  background: #fff;
+}
+#admin-content .progress,
+#responsible-content .progress {
+  position: relative;
+  height: 9px;
+  margin: 14px 0 24px;
+  border-radius: 99px;
+  background: #e6edf3;
+}
+#admin-content .progress-bar,
+#responsible-content .progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: #287eae;
+}
+#admin-content .progress > span,
+#responsible-content .progress > span {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  color: #66788c;
+  font-size: .85rem;
+}
+#admin-content .screen-tag,
+#responsible-content .screen-tag {
+  display: inline-block;
+  margin: 4px 6px 0 0;
+  padding: 4px 9px;
+  border-radius: 99px;
+  background: #e7f4fb;
+  color: #1f6f9f;
+  font-size: .85rem;
+  font-weight: 700;
+}
+#admin-content .step-actions,
+#responsible-content .step-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* État actif de la navigation latérale : lisible même après navigation hash. */
+.admin-sidebar .sidebar-menu a.active {
+  background: linear-gradient(90deg,#2f8ab9,#5d9fc2);
+  color: #fff;
+  box-shadow: inset 3px 0 0 rgba(255,255,255,.35);
+}
+.admin-sidebar .sidebar-menu a.active i { color: #fff; }
+
+@media (max-width: 760px) {
+  #admin-content > .card,
+  #responsible-content > .card { width: calc(100% - 18px); margin: 12px auto; }
+  #admin-content .screen-selection-section,
+  #responsible-content .screen-selection-section,
+  #admin-content .admin-section,
+  #responsible-content .admin-section { padding: 13px; }
+  #admin-content .option-tabs,
+  #responsible-content .option-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+  #admin-content .option-tabs .tab-btn,
+  #responsible-content .option-tabs .tab-btn { width: 100%; }
+  #admin-content .screen-grid,
+  #responsible-content .screen-grid { grid-template-columns: 1fr; }
+}

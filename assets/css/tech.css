@@ -1,0 +1,190 @@
+/* أنماط خاصة بلوحة التقني */
+
+.tech-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--bg-gray);
+}
+
+.tech-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-md);
+}
+
+.tech-header h1 {
+  font-size: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#tech-logout-btn {
+  background: none;
+  border: 1px solid white;
+  margin-right: var(--space-md);
+}
+
+#tech-logout-btn:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+.tech-main {
+  flex: 1;
+  padding: var(--space-lg);
+}
+
+.tech-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.filter-buttons {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.filter-btn {
+  padding: var(--space-xs) var(--space-md);
+  background-color: white;
+  border: 1px solid #ddd;
+  color: var(--text-medium);
+}
+
+.filter-btn.active {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: white;
+}
+
+#report-issue-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.equipment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.equipment-card {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-md);
+  transition: all 0.2s ease;
+}
+
+.equipment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.equipment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.equipment-header h3 {
+  font-size: 16px;
+}
+
+.status-badge {
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge.working {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-badge.maintenance {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.status-badge.faulty {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.equipment-details {
+  margin-bottom: var(--space-md);
+}
+
+.equipment-details p {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 13px;
+  color: var(--text-medium);
+  margin-bottom: var(--space-xs);
+}
+
+.equipment-details i {
+  color: var(--text-light);
+}
+
+.equipment-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.btn-view, .btn-status {
+  flex: 1;
+  padding: var(--space-xs);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+}
+
+.btn-view {
+  background-color: var(--secondary-color);
+}
+
+.btn-status {
+  background-color: var(--warning-color);
+}
+
+/* التكيف مع الأجهزة المحمولة */
+@media (max-width: 768px) {
+  .tech-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+  
+  .filter-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .equipment-list {
+    grid-template-columns: 1fr;
+  }
+}

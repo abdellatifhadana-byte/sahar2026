@@ -1,0 +1,1955 @@
+/*
+ * 2M TECH Platform — Pilote Technique UI Preview
+ * ------------------------------------------------
+ * Couche VISUELLE opt-in uniquement.
+ * Aucune donnée, permission, route, ACL, synchronisation ou contrat serveur n'est modifié ici.
+ * Activation: ?pilote=1 (désactivation: ?pilote=0)
+ */
+
+html.pilot-technique-ui,
+body.pilot-technique-ui {
+  --pilot-bg: #061321;
+  --pilot-bg-2: #081a2b;
+  --pilot-panel: #0b2034;
+  --pilot-panel-2: #0e2941;
+  --pilot-panel-3: #102f49;
+  --pilot-line: rgba(142, 184, 219, .18);
+  --pilot-line-strong: rgba(142, 184, 219, .32);
+  --pilot-text: #ecf6ff;
+  --pilot-muted: #8fa9bd;
+  --pilot-blue: #2d83f7;
+  --pilot-cyan: #14b8c4;
+  --pilot-green: #31c777;
+  --pilot-amber: #f5b83d;
+  --pilot-red: #f05b61;
+  --pilot-purple: #a36bf0;
+  --pilot-radius: 10px;
+  --pilot-shadow: 0 14px 34px rgba(0, 0, 0, .22);
+  background: var(--pilot-bg) !important;
+  color: var(--pilot-text) !important;
+  color-scheme: dark;
+}
+
+body.pilot-technique-ui {
+  --bg: var(--pilot-bg);
+  --card: var(--pilot-panel);
+  --sidebar: #071827;
+  --border: var(--pilot-line);
+  --primary: var(--pilot-blue);
+  --primary-dark: #1768c9;
+  --gray: #173047;
+  --success: var(--pilot-green);
+  --warning: var(--pilot-amber);
+  --danger: var(--pilot-red);
+
+  /*
+   * LES JETONS DE SURFACE, ET NON SEULEMENT LES RÈGLES.
+   *
+   * La plateforme peint la plupart de ses surfaces à travers des variables — `.card` fait
+   * `background: var(--card-bg)`, et plusieurs pages écrivent des styles EN LIGNE du type
+   * `background: var(--card-bg,#fff)`. Un style en ligne l'emporte sur toute règle de
+   * feuille non `!important` : aucune bataille de sélecteurs ne pouvait donc les atteindre.
+   *
+   * Redéfinir les JETONS règle ces cas à la racine, sans spécificité ni `!important` : la
+   * règle d'origine reste la sienne, elle résout simplement vers la palette sombre. Les
+   * valeurs sombres existent déjà dans le produit (`body.dark-theme` les définit) ; la
+   * prévisualisation se contente de les lier à sa propre palette.
+   */
+  --card-bg: var(--pilot-panel);
+  --surface: var(--pilot-panel);
+  --tk-surface: var(--pilot-panel);
+  --ui-canvas: var(--pilot-bg);
+  --ui-border: var(--pilot-line);
+  --border-color: var(--pilot-line);
+  --text-color: var(--pilot-text);
+  --text-light: var(--pilot-muted);
+  --text-muted: var(--pilot-muted);
+  /* `--dark-color` sert de couleur de TEXTE sur fond clair : sur fond sombre elle doit
+   * s'éclaircir, sinon les titres qui l'emploient deviennent noirs sur bleu nuit. */
+  --dark-color: var(--pilot-text);
+  --box-shadow: none;
+
+  /* Les jetons employés UNIQUEMENT dans des styles en ligne, avec un repli clair — donc
+   * hors d'atteinte de toute règle de feuille. Relevés par recherche des `var(--x,#clair)`
+   * réellement écrits dans les modules : `integrity-center.js` peint ses compteurs avec
+   * `var(--surface-soft,#fafcfd)`, et rien d'autre ne pouvait les atteindre. */
+  --surface-soft: var(--pilot-panel-2);
+  --body-bg: var(--pilot-bg);
+  --light-bg: var(--pilot-panel-2);
+  --input-bg: #0a1e30;
+  --input-border: var(--pilot-line);
+  --muted: var(--pilot-muted);
+  --muted-color: var(--pilot-muted);
+  --text: var(--pilot-text);
+
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  letter-spacing: -.005em;
+}
+
+/* ---------- Shell ---------- */
+body.pilot-technique-ui .admin-page,
+body.pilot-technique-ui .tech-page,
+body.pilot-technique-ui .responsible-page,
+body.pilot-technique-ui .visitor-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 55% -20%, rgba(28, 94, 150, .16), transparent 36%),
+    linear-gradient(180deg, #061321 0%, #071725 100%);
+}
+
+body.pilot-technique-ui :is(.admin-header,.smart-tech-header,.responsible-header,.visitor-header) {
+  min-height: 66px;
+  padding: 10px 18px 10px 20px;
+  border-radius: 0;
+  background: rgba(5, 18, 31, .97) !important;
+  border-bottom: 1px solid var(--pilot-line);
+  box-shadow: none;
+  backdrop-filter: blur(14px);
+}
+
+body.pilot-technique-ui :is(.admin-header,.smart-tech-header,.responsible-header,.visitor-header) h1 {
+  color: var(--pilot-text);
+  font-size: 20px;
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+
+body.pilot-technique-ui .pilot-technique-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 9px;
+  padding: 4px 8px;
+  border: 1px solid rgba(20,184,196,.35);
+  border-radius: 999px;
+  color: #7ee8ef;
+  background: rgba(20,184,196,.09);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+body.pilot-technique-ui .pilot-technique-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pilot-green);
+  box-shadow: 0 0 0 3px rgba(49,199,119,.12);
+}
+
+/*
+ * LA BARRE SUPÉRIEURE : LA RECHERCHE CESSE DE RECOUVRIR LES ACTIONS
+ * -----------------------------------------------------------------
+ * `#global-search` portait une largeur FIXE (`min(480px, 42vw)`) dans `.header-center`, un
+ * item flex en `flex: 1 1 90px`. Mesuré : à 1440, 1366 et 1024, l'en-tête est
+ * sur-souscrit — `.header-right` réclame 906 px pour 832 disponibles — donc
+ * `.header-center` tombait à ~80 px pendant que l'input gardait ses 480 px et débordait
+ * par-dessus le bloc de droite.
+ *
+ * Le premier enfant de ce bloc est « Interface classique ». Mesuré à 1440, 1366 et 1024 :
+ * `elementFromPoint` au centre du bouton renvoyait l'INPUT, pas le bouton. La seule sortie
+ * de la prévisualisation était donc un contrôle MORT sur trois des quatre résolutions.
+ *
+ * Deux règles suffisent, sans décalage en pixels ni position absolue :
+ *   · l'input se mesure sur son conteneur (`width: 100%`) et ne peut plus le déborder ;
+ *   · `.header-center` reçoit un plancher, si bien que ce sont les blocs voisins qui
+ *     cèdent — leurs textes s'élident au lieu d'écraser des commandes.
+ */
+body.pilot-technique-ui .header-center {
+  flex: 1 1 auto;
+  min-width: 190px;
+  display: flex;
+  align-items: center;
+}
+
+/* Les voisins acceptent de se réduire ; sans `min-width: 0` un item flex ne descend jamais
+   sous la largeur intrinsèque de son contenu, et c'est le centre qui paie. */
+body.pilot-technique-ui .admin-header > div:first-child,
+body.pilot-technique-ui .header-right { min-width: 0; }
+
+body.pilot-technique-ui .admin-header #platform-title,
+body.pilot-technique-ui .header-right .user-info,
+body.pilot-technique-ui .header-right .user-name,
+body.pilot-technique-ui .header-right .user-role {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.pilot-technique-ui .header-right .user-info { max-width: 150px; }
+
+body.pilot-technique-ui #global-search {
+  width: 100%;
+  max-width: 480px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 14px 0 38px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 9px;
+  background: #0a1b2c;
+  color: var(--pilot-text);
+  outline: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.015);
+}
+body.pilot-technique-ui #global-search:focus {
+  border-color: rgba(45,131,247,.7);
+  box-shadow: 0 0 0 3px rgba(45,131,247,.12);
+}
+body.pilot-technique-ui #global-search::placeholder { color: #6f8ba1; }
+
+/* `#global-tech-search` : le même champ, sous l'identifiant réel du Technicien. */
+body.pilot-technique-ui #global-tech-search {
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 9px;
+  background: #0a1b2c;
+  color: var(--pilot-text);
+  outline: none;
+}
+body.pilot-technique-ui #global-tech-search:focus {
+  border-color: rgba(45,131,247,.7);
+  box-shadow: 0 0 0 3px rgba(45,131,247,.12);
+}
+body.pilot-technique-ui #global-tech-search::placeholder { color: #6f8ba1; }
+body.pilot-technique-ui .smart-tech-header .header-left h1,
+body.pilot-technique-ui .smart-tech-header .header-left { color: var(--pilot-text); }
+
+body.pilot-technique-ui :is(.admin-sidebar,.tech-sidebar,.responsible-sidebar,.visitor-sidebar) {
+  width: 210px;
+  background: linear-gradient(180deg,#081a2a 0%,#071523 100%) !important;
+  border-right: 1px solid var(--pilot-line);
+  box-shadow: none;
+  padding-top: 76px;
+}
+
+body.pilot-technique-ui .sidebar-menu li { margin-bottom: 2px; }
+body.pilot-technique-ui .sidebar-menu li.nav-group { margin: 10px 0 3px; }
+body.pilot-technique-ui .sidebar-menu .nav-group-header {
+  padding: 5px 13px;
+  color: #718aa0;
+  font-size: 9.5px;
+  letter-spacing: .075em;
+}
+body.pilot-technique-ui .sidebar-menu a {
+  min-height: 38px;
+  gap: 10px;
+  margin: 0 7px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: #b9cbd9;
+  font-size: 12.5px;
+  font-weight: 560;
+}
+body.pilot-technique-ui .sidebar-menu a i {
+  width: 18px;
+  min-width: 18px;
+  color: #7da3c1;
+  text-align: center;
+  font-size: 13px;
+}
+body.pilot-technique-ui .sidebar-menu a:hover {
+  color: #f2f8ff;
+  background: rgba(45,131,247,.10);
+  box-shadow: none;
+}
+body.pilot-technique-ui .sidebar-menu a.active {
+  color: #fff;
+  background: linear-gradient(90deg, rgba(45,131,247,.36), rgba(45,131,247,.18));
+  border: 1px solid rgba(45,131,247,.18);
+  box-shadow: inset 3px 0 0 #3b8fff;
+}
+body.pilot-technique-ui .sidebar-menu a.active i { color: #9bc5ff; }
+body.pilot-technique-ui .system-status {
+  margin: 12px 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 8px;
+  background: rgba(255,255,255,.025);
+  color: var(--pilot-muted);
+  font-size: 11px;
+}
+
+body.pilot-technique-ui :is(.admin-content,.tech-content,.responsible-content,.visitor-content) {
+  margin-left: 210px;
+  padding: 18px 12px 28px;
+  color: var(--pilot-text);
+}
+
+body.pilot-technique-ui .admin-tabs {
+  margin-left: 210px;
+  min-height: 36px;
+  background: #071827;
+  border-bottom: 1px solid var(--pilot-line);
+  box-shadow: none;
+}
+body.pilot-technique-ui .tab {
+  min-height: 30px;
+  border-radius: 7px 7px 0 0;
+  color: var(--pilot-muted);
+  font-size: 11px;
+}
+body.pilot-technique-ui .tab.active { color: #fff; background: rgba(45,131,247,.12); }
+
+body.pilot-technique-ui .context-bar {
+  min-height: 34px;
+  margin: 0 0 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 8px;
+  background: rgba(7,24,39,.8);
+  color: var(--pilot-muted);
+  box-shadow: none;
+}
+
+body.pilot-technique-ui :is(.card,.ops-card) {
+  max-width: none;
+  border: 1px solid var(--pilot-line);
+  border-radius: var(--pilot-radius);
+  background: linear-gradient(180deg,rgba(14,41,65,.92),rgba(10,31,50,.94));
+  color: var(--pilot-text);
+  box-shadow: none;
+}
+body.pilot-technique-ui .card { padding: 14px; margin-bottom: 12px; }
+body.pilot-technique-ui .card-header {
+  min-height: 44px;
+  margin-bottom: 8px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .card-header h2 { margin: 0; color: #f3f8fd; font-size: 20px; }
+body.pilot-technique-ui .card-actions { gap: 6px; }
+
+body.pilot-technique-ui :is(.btn,.btn.gray,.btn.danger,.btn.primary) {
+  min-height: 34px;
+  padding: 6px 11px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 7px;
+  background: #112c44;
+  color: #dcebf6;
+  font-size: 11.5px;
+  font-weight: 700;
+  box-shadow: none;
+}
+body.pilot-technique-ui .btn:hover { border-color: rgba(72,151,237,.45); background: #153753; }
+body.pilot-technique-ui .btn.gray { background: #10273b; }
+body.pilot-technique-ui .btn.danger { background: rgba(240,91,97,.14); color: #ff9da1; border-color: rgba(240,91,97,.25); }
+body.pilot-technique-ui .btn-map,
+body.pilot-technique-ui #open-add-eq {
+  background: linear-gradient(180deg,#267fea,#1768cb);
+  border-color: #348eff;
+  color: #fff;
+}
+body.pilot-technique-ui .btn-icon { color: #9cb8cc; }
+
+body.pilot-technique-ui .user-avatar {
+  background: #143b64;
+  border: 1px solid rgba(85,155,245,.3);
+  color: #fff;
+}
+body.pilot-technique-ui .user-name { color: #eff7ff; font-size: 11.5px; }
+body.pilot-technique-ui .user-role { color: var(--pilot-muted); font-size: 10.5px; }
+
+body.pilot-technique-ui .pilot-preview-exit {
+  min-height: 32px;
+  padding: 5px 9px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 7px;
+  background: transparent;
+  color: #95afc2;
+  font: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+}
+body.pilot-technique-ui .pilot-preview-exit:hover { color: #fff; border-color: #47677f; }
+
+/* ---------- Équipements: densité NOC / broadcast ---------- */
+body.pilot-technique-ui .pilot-equipments-shell {
+  padding: 0;
+  overflow: hidden;
+  background: #091c2e;
+}
+body.pilot-technique-ui .pilot-equipments-shell > .card-header,
+body.pilot-technique-ui .pilot-equipments-shell > .filters-container,
+body.pilot-technique-ui .pilot-equipments-shell > .zone-scope-notice {
+  margin-inline: 12px;
+}
+body.pilot-technique-ui .pilot-equipments-shell > .card-header { margin-top: 10px; }
+
+/*
+ * LA BARRE DE FILTRES COMPTE UN NOMBRE VARIABLE DE CONTRÔLES.
+ *
+ * Une grille à CINQ colonnes fixes était écrite ici, alors qu'aucune page n'en a cinq :
+ * Salles en pose trois (recherche, responsable, réinitialiser), Baies quatre, Équipements
+ * six — et `entity-select-search.js` en INJECTE un de plus après le rendu, sur les pages
+ * qui portent `data-entity-search`. Mesuré à 1920 : le sixième contrôle d'Équipements
+ * passait à la ligne et laissait un vide de la largeur d'une colonne à côté de lui.
+ *
+ * Une rangée flexible s'ajuste au nombre réel, quel qu'il soit, et n'a rien à savoir des
+ * contrôles ajoutés plus tard.
+ */
+body.pilot-technique-ui .filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  padding: 9px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 8px;
+  background: rgba(6,20,34,.68);
+}
+/*
+ * Les champs se partagent la place ; le bouton de réinitialisation suit le dernier d'entre
+ * eux. Il portait `margin-left: auto` pour se coller à droite : cet espace élastique
+ * consommait toute la fin de la rangée et REPOUSSAIT le contrôle suivant à la ligne — c'est
+ * ce qui laissait « Salle : Toutes » seul sur un second rang, à côté d'un vide. Un bouton
+ * compact à la suite des champs range la barre en une rangée.
+ */
+body.pilot-technique-ui .filters-container > :is(input,select,.form-control,.entity-search-select) {
+  flex: 1 1 150px;
+  min-width: 0;
+  max-width: 320px;
+  width: auto !important;
+}
+body.pilot-technique-ui .filters-container > button { flex: 0 0 auto; }
+
+/*
+ * `entity-select-search.js` REMPLACE un `<select>` par un groupe : il crée
+ * `div.entity-search-select`, y déplace le select, et lui ajoute un champ de recherche plus
+ * un `<small>` d'état. Ce groupe empilait ses deux contrôles verticalement au milieu d'une
+ * barre horizontale : la barre de filtres d'Équipements mesurait 134 px de haut pour une
+ * seule rangée de contrôles de 40 px. Le groupe se range donc lui aussi en rangée.
+ */
+body.pilot-technique-ui .filters-container > .entity-search-select {
+  display: flex;
+  flex: 1 1 300px;
+  max-width: 460px;
+  align-items: center;
+  gap: 6px;
+}
+body.pilot-technique-ui .filters-container > .entity-search-select > :is(input,select) {
+  flex: 1 1 130px;
+  min-width: 0;
+  width: auto !important;
+}
+/* L'état ne prend de la place que lorsqu'il a quelque chose à dire. */
+body.pilot-technique-ui .filters-container > .entity-search-select > .entity-search-select-status:empty {
+  display: none;
+}
+body.pilot-technique-ui :is(.form-control,select,input,textarea) {
+  border-color: var(--pilot-line);
+}
+body.pilot-technique-ui .filters-container :is(.form-control,input,select) {
+  width: 100% !important;
+  min-height: 34px;
+  padding: 6px 9px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 7px;
+  background: #0c2237;
+  color: #d9e9f5;
+  font-size: 11.5px;
+}
+body.pilot-technique-ui .filters-container :is(input,select):focus {
+  outline: none;
+  border-color: rgba(45,131,247,.65);
+  box-shadow: 0 0 0 2px rgba(45,131,247,.1);
+}
+
+body.pilot-technique-ui .pilot-equipments-shell > div[style*="overflow-x"] {
+  margin: 0;
+  border-top: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .pilot-equipments-shell .tableau {
+  min-width: 980px;
+  margin: 0;
+  border-radius: 0;
+  background: #091b2d;
+  color: #d8e7f2;
+  font-size: 11px;
+  table-layout: auto;
+}
+body.pilot-technique-ui .pilot-equipments-shell .tableau th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: 34px;
+  padding: 7px 8px;
+  border-color: var(--pilot-line);
+  background: #102b44;
+  color: #90abc0;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+body.pilot-technique-ui .pilot-equipments-shell .tableau td {
+  height: 42px;
+  padding: 6px 8px;
+  border-color: rgba(142,184,219,.1);
+  color: #cfe0ed;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+body.pilot-technique-ui .pilot-equipments-shell .tableau tr:nth-child(even) td { background: rgba(255,255,255,.012); }
+body.pilot-technique-ui .pilot-equipments-shell .tableau tr:hover td { background: rgba(45,131,247,.10); }
+body.pilot-technique-ui .pilot-equipments-shell .eq-quickview { color: #f0f7fd !important; text-decoration: none; }
+body.pilot-technique-ui .pilot-equipments-shell .eq-quickview:hover { color: #7eb8ff !important; }
+
+/* Les colonnes secondaires restent disponibles dans l'inspecteur, mais ne surchargent pas le tableau principal. */
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(8),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(12),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(13),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(14),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(15),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(16),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(17),
+body.pilot-technique-ui .pilot-equipments-shell .tableau :is(th,td):nth-child(18) { display: none; }
+
+/* Quick view -> panneau latéral, sans modifier son contenu ni sa logique. */
+body.pilot-technique-ui #equip-quickview-modal.pilot-equipment-inspector {
+  position: fixed;
+  inset: 66px 0 0 auto;
+  width: min(390px, 96vw);
+  height: calc(100vh - 66px);
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 10020;
+}
+body.pilot-technique-ui #equip-quickview-modal.pilot-equipment-inspector > .modal-content {
+  position: absolute;
+  inset: 0;
+  min-width: 0 !important;
+  max-width: none !important;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 14px;
+  overflow: auto;
+  border: 1px solid var(--pilot-line-strong);
+  border-right: 0;
+  border-radius: 12px 0 0 12px;
+  background: linear-gradient(180deg,#0c2439,#081a2b);
+  color: var(--pilot-text);
+  box-shadow: -18px 0 42px rgba(0,0,0,.32);
+  pointer-events: auto;
+}
+body.pilot-technique-ui #equip-quickview-modal .details-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #dbeaf5;
+  font-size: 11px;
+}
+body.pilot-technique-ui #equip-quickview-modal .details-table td {
+  padding: 7px 5px;
+  border-bottom: 1px solid rgba(142,184,219,.12);
+}
+body.pilot-technique-ui #equip-quickview-modal .details-table td:first-child { color: #7896ad; width: 43%; }
+
+/* Inspecteur en blocs nommés : mêmes données, mêmes lignes, regroupées et étiquetées. */
+body.pilot-technique-ui #equip-quickview-modal .pilot-inspector-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+body.pilot-technique-ui #equip-quickview-modal .pilot-inspector-block {
+  padding: 10px 12px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 8px;
+  background: rgba(255,255,255,.02);
+}
+body.pilot-technique-ui #equip-quickview-modal .pilot-inspector-block h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 8px;
+  color: #8fb4d6;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+body.pilot-technique-ui #equip-quickview-modal .pilot-inspector-block h4 i { color: #5ca3ff; }
+body.pilot-technique-ui #equip-quickview-modal .pilot-inspector-block .details-table td {
+  border-bottom: 1px solid rgba(142,184,219,.08);
+}
+body.pilot-technique-ui #equip-quickview-modal .pilot-inspector-block tr:last-child td { border-bottom: none; }
+body.pilot-technique-ui #equip-quickview-modal .pilot-empty-value { color: #5e7386; font-style: italic; }
+
+/*
+ * ---------- Fiche technique 360° (operations-suite.js) ----------
+ *
+ * `#equip-quickview-modal` (au-dessus) n'est PAS le chemin réel : mesuré au navigateur,
+ * `equipment-component-integration.js` remplace `Equipements.prototype.showQuickView` au
+ * chargement et ouvre `window.TechOperations.openEquipment360` dès qu'il existe — ce qui
+ * est le cas dès qu'`operations-suite.js` est chargé, donc toujours en pratique. La fiche
+ * RÉELLEMENT vue est `#ops-equipment-360` / `.ops-modal`, déjà organisée en blocs nommés
+ * (Identité & emplacement, Signal Flow, Relations, Historique) avec des données RÉELLES
+ * (câbles, écrans, tickets, notes, journal) — exactement ce que #145 demandait, déjà bâti.
+ * Ce bloc l'habille, il ne le réécrit pas.
+ */
+body.pilot-technique-ui .ops-modal-card {
+  border: 1px solid var(--pilot-line-strong);
+  background: linear-gradient(180deg,#0c2439,#081a2b);
+  color: var(--pilot-text);
+  box-shadow: var(--pilot-shadow);
+}
+body.pilot-technique-ui .ops-modal-head {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--pilot-line);
+  background: rgba(5,18,31,.85);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-modal-head div div { color: var(--pilot-muted); }
+body.pilot-technique-ui .ops-close {
+  border: 1px solid var(--pilot-line);
+  border-radius: 7px;
+  background: rgba(240,91,97,.12);
+  color: #ff9da1;
+}
+body.pilot-technique-ui .ops-modal-body { background: transparent; }
+body.pilot-technique-ui .ops-card {
+  border: 1px solid var(--pilot-line);
+  border-radius: var(--pilot-radius);
+  background: rgba(255,255,255,.02);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-card h3 { color: #8fb4d6; font-size: 12px; letter-spacing: .03em; }
+body.pilot-technique-ui .ops-card h3 i { color: #5ca3ff; }
+body.pilot-technique-ui .ops-card-sub { color: var(--pilot-muted); }
+/*
+ * `.ops-fact` GARDAIT SON FOND CLAIR : LE TEXTE DEVENAIT INVISIBLE.
+ *
+ * Relevé au navigateur, panneau accosté ouvert sur un équipement réel : `operations-suite.css`
+ * pose `.ops-fact { background:#f8fbfd }` (quasi blanc) sans condition, et la règle Pilote ne
+ * reprenait que la couleur du texte — jamais le fond. Résultat mesuré : texte
+ * `rgb(236,246,255)` sur fond `rgb(248,251,253)`, un texte quasi blanc sur un fond quasi
+ * blanc. « Nom : CAM 1 — Sony RCP-1500 » existait dans le DOM et restait illisible.
+ *
+ * La cause profonde : ce panneau (`#ops-equipment-360`) est ajouté à `document.body`,
+ * PAS à `#admin-content` — aucune des reprises scopées à `#admin-content,#responsible-content`
+ * ne pouvait donc jamais l'atteindre. Les classes `.ops-*` doivent être reprises À PART,
+ * sans dépendre de leur conteneur.
+ */
+body.pilot-technique-ui .ops-fact {
+  border-bottom: 1px solid rgba(142,184,219,.1);
+  background: rgba(255,255,255,.03);
+}
+body.pilot-technique-ui .ops-fact small { color: #7896ad; }
+body.pilot-technique-ui .ops-fact strong { color: var(--pilot-text); }
+
+/*
+ * Les autres surfaces `.ops-*` qui vivent HORS de `#admin-content` — recherche globale,
+ * formulaire de passation, en-tête de statut — et que le même défaut touche pour la même
+ * raison : aucune n'était couverte, ni par les reprises scopées, ni par une règle propre.
+ */
+body.pilot-technique-ui .ops-hero {
+  background: linear-gradient(135deg,rgba(14,41,65,.7),rgba(10,31,50,.75));
+  border: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .ops-hero h2 { color: #f1f8ff; }
+body.pilot-technique-ui .ops-hero p { color: var(--pilot-muted); }
+body.pilot-technique-ui .ops-header-sync {
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--pilot-line);
+  color: var(--pilot-muted);
+}
+body.pilot-technique-ui :is(.ops-form input,.ops-form select,.ops-form textarea) {
+  background: #0a1e30;
+  border: 1px solid var(--pilot-line);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-form label { color: #a9c2d5; }
+/*
+ * SÉLECTEUR DE PÉRIMÈTRE (EXPLOITATION) — même carte sombre que le reste du tableau de bord.
+ * `.ops-scope-bar` n'a pas de teinte propre dans le classique (fond clair discret) ; ici elle
+ * reprend le panneau `--pilot-panel` déjà utilisé par les autres bandeaux de contrôle.
+ */
+body.pilot-technique-ui .ops-scope-bar {
+  background: var(--pilot-panel);
+  border: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .ops-scope-picker { color: #a9c2d5; }
+body.pilot-technique-ui .ops-scope-picker select {
+  background: #0a1e30;
+  border: 1px solid var(--pilot-line);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-scope-current {
+  border: 1px solid var(--pilot-line);
+  background: rgba(45,131,247,.11);
+  color: #7db4ff;
+}
+body.pilot-technique-ui .ops-search-card {
+  background: linear-gradient(180deg,#0c2439,#081a2b);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-search-box { border-bottom: 1px solid var(--pilot-line); }
+body.pilot-technique-ui .ops-search-box input {
+  background: #0a1e30;
+  border: 1px solid var(--pilot-line);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-search-result {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--pilot-line);
+  color: var(--pilot-text);
+}
+body.pilot-technique-ui .ops-search-result:hover {
+  background: rgba(45,131,247,.10);
+  border-color: rgba(45,131,247,.4);
+}
+body.pilot-technique-ui .ops-search-result strong { color: #f1f8ff; }
+body.pilot-technique-ui .ops-search-result small { color: var(--pilot-muted); }
+/* `.ops-badge.ok` restait couverte par la teinte grise générique, sans la teinte verte que
+ * `.status-operationnel` porte partout ailleurs dans le produit sous Pilote. */
+body.pilot-technique-ui .ops-badge.ok {
+  border-color: rgba(49,199,119,.35);
+  color: #6fe0a4;
+  background: rgba(49,199,119,.1);
+}
+
+/*
+ * `equipment-media.css` : les vignettes de photos vivent, elles aussi, dans un panneau
+ * ajouté à `document.body` — mêmes causes, même correction propre à `.eq-media-*`.
+ */
+body.pilot-technique-ui .eq-media-group h4 { color: #eaf4ff; }
+body.pilot-technique-ui .eq-media-placeholder {
+  border-color: rgba(142,184,219,.28);
+  background: rgba(255,255,255,.03);
+  color: var(--pilot-muted);
+}
+body.pilot-technique-ui .eq-media-existing > small { color: var(--pilot-muted); }
+body.pilot-technique-ui .eq-media-warning { color: #ffd27a; }
+body.pilot-technique-ui .equipment-media-legacy { border-top-color: var(--pilot-line); }
+body.pilot-technique-ui .ops-flow-row { border: 1px solid var(--pilot-line); background: rgba(6,20,34,.6); }
+body.pilot-technique-ui .ops-flow-node { color: var(--pilot-text); }
+body.pilot-technique-ui .ops-flow-node small { color: var(--pilot-muted); }
+body.pilot-technique-ui .ops-flow-arrow { color: #5ca3ff; }
+body.pilot-technique-ui .ops-stat { border: 1px solid var(--pilot-line); background: rgba(6,20,34,.6); color: var(--pilot-text); }
+/* `.ops-stat strong` porte SA PROPRE couleur (`#123e5d`, un bleu nuit pour fond blanc) plus
+ * spécifique que `.ops-stat` seul : la couvrir ne suffisait pas, il fallait viser l'enfant. */
+body.pilot-technique-ui .ops-stat strong { color: #eaf4ff; }
+body.pilot-technique-ui .ops-stat span { color: var(--pilot-muted); }
+
+/*
+ * « 3 Écrans » devient un compteur QU'ON PEUT OUVRIR — `relationsAvecDetail()`
+ * (pilot-technique-shell.js) rend `.ops-stat` en `<button>` sous Pilote : même carte,
+ * même chiffre, mais un vrai contrôle plutôt qu'un `<div>` inerte. `.ops-stat` porte déjà
+ * fond/bordure/couleur ci-dessus ; ce bloc ne fait que retirer les à-plats par défaut d'un
+ * `<button>` (fond, bordure, police) pour qu'il se confonde avec les autres cartes.
+ */
+body.pilot-technique-ui .ops-stat-toggle {
+  font: inherit;
+  cursor: pointer;
+  text-align: inherit;
+}
+body.pilot-technique-ui .ops-stat-toggle:hover { border-color: rgba(45,131,247,.4); background: rgba(45,131,247,.08); }
+body.pilot-technique-ui .ops-stat-toggle[aria-expanded="true"] { border-color: rgba(45,131,247,.5); background: rgba(45,131,247,.12); }
+body.pilot-technique-ui .ops-relation-list {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 9px;
+  background: rgba(255,255,255,.03);
+}
+body.pilot-technique-ui .ops-relation-list ul { margin: 0; padding-left: 18px; }
+body.pilot-technique-ui .ops-relation-list li { color: var(--pilot-text); font-size: 12px; margin: 3px 0; }
+body.pilot-technique-ui .ops-relation-list li small { color: var(--pilot-muted); }
+body.pilot-technique-ui .ops-relation-ticket {
+  font: inherit;
+  color: #8fc0ff;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+body.pilot-technique-ui .ops-relation-ticket:hover { color: #cfe4ff; }
+body.pilot-technique-ui .ops-list .ops-row,
+body.pilot-technique-ui .ops-empty { border: 1px solid var(--pilot-line); background: rgba(6,20,34,.5); color: var(--pilot-muted); }
+body.pilot-technique-ui .ops-row-main strong { color: var(--pilot-text); }
+
+/*
+ * LE FIL D'ARIANE DE LA FICHE 360 : LE MAILLON COURANT ÉTAIT LE PLUS ILLISIBLE DES DEUX.
+ *
+ * `.ops-crumb.is-current` — le DERNIER maillon, celui qui nomme l'équipement qu'on est en
+ * train de regarder — vaut `color:#12354f` dans `operations-suite.css` : un bleu nuit
+ * pensé pour du texte sur fond blanc. Sur `.ops-modal-card`, désormais sombre, ce maillon
+ * précis se fondait dans le fond. Le produit corrige déjà ce cas pour `body.dark-theme` ;
+ * la prévisualisation n'est pas ce thème et reprend donc les mêmes teintes pour son propre
+ * drapeau, plutôt que d'attendre un thème qui ne s'applique jamais ici.
+ */
+body.pilot-technique-ui .ops-crumb { color: #8fc8ee; background: rgba(143,200,238,.12); }
+body.pilot-technique-ui .ops-crumb:hover,
+body.pilot-technique-ui .ops-crumb:focus-visible { background: rgba(143,200,238,.22); color: #d3ecfb; }
+body.pilot-technique-ui .ops-crumb.is-current { color: #eaf4ff; background: transparent; }
+body.pilot-technique-ui .ops-crumb-sep { color: var(--pilot-muted); }
+
+/* Le tableau des ports de grille (`gc-ports`) et ses pastilles de sens IN/OUT. */
+body.pilot-technique-ui .gc-ports-wrap { border: 1px solid var(--pilot-line); }
+body.pilot-technique-ui .gc-ports th {
+  background: #0a2135;
+  color: #94b0c6;
+  border-bottom: 1px solid var(--pilot-line-strong);
+}
+body.pilot-technique-ui .gc-ports td { color: var(--pilot-text); border-top: 1px solid rgba(142,184,219,.09); }
+body.pilot-technique-ui .gc-ports tbody tr:hover { background: rgba(45,131,247,.10); }
+body.pilot-technique-ui .gc-port-dir.gc-input { background: rgba(45,131,247,.16); color: #7db4ff; }
+body.pilot-technique-ui .gc-port-dir.gc-output { background: rgba(49,199,119,.16); color: #6fe0a4; }
+body.pilot-technique-ui .ops-badge { border: 1px solid var(--pilot-line); color: var(--pilot-muted); }
+body.pilot-technique-ui .ops-badge.critical { border-color: rgba(240,91,97,.35); color: #ff9da1; background: rgba(240,91,97,.1); }
+body.pilot-technique-ui .ops-badge.watch { border-color: rgba(245,184,61,.35); color: #f5c877; background: rgba(245,184,61,.1); }
+
+/* ---------- Carte interactive ---------- */
+body.pilot-technique-ui #map-modal.pilot-map-modal {
+  background: #061321 !important;
+}
+body.pilot-technique-ui #map-modal.pilot-map-modal #main-map-img {
+  filter: saturate(.9) contrast(1.02) brightness(.78);
+}
+body.pilot-technique-ui #map-modal.pilot-map-modal .map-toolbar {
+  top: 16px !important;
+  right: 16px !important;
+  gap: 5px !important;
+  padding: 7px !important;
+  border: 1px solid var(--pilot-line-strong);
+  border-radius: 9px !important;
+  background: rgba(5,19,32,.91) !important;
+  box-shadow: var(--pilot-shadow) !important;
+  backdrop-filter: blur(13px);
+}
+body.pilot-technique-ui #map-modal.pilot-map-modal #map-search {
+  width: min(340px,34vw);
+  min-width: 210px !important;
+  height: 34px;
+  padding: 6px 10px !important;
+  border: 1px solid var(--pilot-line) !important;
+  border-radius: 7px !important;
+  background: #0b2237 !important;
+  color: #e8f3fb !important;
+  font-size: 11.5px !important;
+}
+body.pilot-technique-ui #map-modal.pilot-map-modal .map-toolbar .btn {
+  min-width: 34px;
+  min-height: 34px;
+  margin: 0;
+  padding: 5px 8px !important;
+  border-radius: 7px !important;
+  background: #102c44 !important;
+}
+body.pilot-technique-ui #map-modal.pilot-map-modal #close-map { background: rgba(240,91,97,.18) !important; }
+body.pilot-technique-ui #map-modal.pilot-map-modal #map-search-results {
+  top: 61px !important;
+  right: 16px !important;
+  border: 1px solid var(--pilot-line-strong);
+  background: #0a2033 !important;
+  color: #dbe9f4;
+  box-shadow: var(--pilot-shadow) !important;
+}
+
+body.pilot-technique-ui .pilot-map-label {
+  position: fixed;
+  top: 17px;
+  left: 18px;
+  z-index: 10010;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid var(--pilot-line-strong);
+  border-radius: 8px;
+  background: rgba(5,19,32,.9);
+  color: #e8f5ff;
+  box-shadow: var(--pilot-shadow);
+  backdrop-filter: blur(12px);
+  font-size: 11px;
+  font-weight: 750;
+}
+body.pilot-technique-ui .pilot-map-label i { color: #5ca3ff; }
+body.pilot-technique-ui .pilot-map-label small { color: #7898af; font-weight: 600; }
+
+/* Bandeau de contexte de la salle sélectionnée : mêmes données déjà calculées, juste rendues visibles. */
+body.pilot-technique-ui .pilot-room-context-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+body.pilot-technique-ui .pilot-room-context-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 999px;
+  background: rgba(5,19,32,.75);
+  color: var(--pilot-muted);
+  font-size: 11px;
+}
+body.pilot-technique-ui .pilot-room-context-strip i { color: #5ca3ff; }
+
+/*
+ * LE CORPS DE LA FICHE DE SALLE DANS L'INSPECTEUR
+ * ------------------------------------------------
+ * Mesuré avant : le dock de 440 px était vide à 87 %. Il ne portait que le nom, trois
+ * puces et la rangée de boutons. Ce bloc n'ajoute AUCUNE donnée nouvelle : la description,
+ * l'emplacement et l'origine viennent des mêmes enregistrements que le plan possède déjà,
+ * et `detailSalle()` n'écrit rien quand le champ est absent — pas de ligne « — » pour
+ * remplir.
+ */
+body.pilot-technique-ui .pilot-room-detail {
+  margin-top: 14px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+body.pilot-technique-ui .pilot-room-description {
+  margin: 0;
+  color: #c8dcec;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+body.pilot-technique-ui .pilot-room-faits {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 5px 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--pilot-line);
+  font-size: 12px;
+}
+body.pilot-technique-ui .pilot-room-faits dt {
+  color: var(--pilot-muted);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: .05em;
+  align-self: center;
+}
+body.pilot-technique-ui .pilot-room-faits dd {
+  margin: 0;
+  color: #eaf4ff;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/*
+ * ---------- Carte : le panneau de détail devient un inspecteur accosté, pas un cache-carte ----------
+ *
+ * CE QUI N'ALLAIT PAS
+ * --------------------
+ * `#map-panel` (interactive-map.js) est un calque `position:absolute;inset:0` qui recouvre
+ * la carte AU COMPLET dès qu'on sélectionne une salle, une baie ou un équipement — fond
+ * `rgba(15,25,40,.94)`, `width:100vw;height:100vh`. Le plan reste dans le DOM mais devient
+ * invisible : on ne peut plus le voir en même temps que ce qu'on vient de sélectionner. Ce
+ * n'est pas un panneau contextuel, c'est un remplacement plein écran.
+ *
+ * CE QUI CHANGE, ET CE QUI NE CHANGE PAS
+ * ----------------------------------------
+ * SEULE la présentation du panneau change, à ≥1280 px — même seuil que l'inspecteur de la
+ * Fiche 360 (`equipment-panel-mode.js`), pour que le produit parle d'une seule voix. Le
+ * plan (`#main-map-img`, `#areas-canvas`, `#map-hotspots`) garde EXACTEMENT sa taille, son
+ * échelle et ses coordonnées : aucune de ces trois lignes ne touche à leur transform, à leur
+ * largeur ni à leur hauteur. Seul `#map-panel` — et LUI SEUL — se resserre en colonne
+ * accostée à droite, laissant le plan visible et cliquable sur le reste de l'écran.
+ *
+ * `interactive-map.js` régénère le contenu de `#map-panel` par une chaîne de gabarit à
+ * chaque ouverture, avec des styles EN LIGNE (`width:100vw;height:100vh`, `max-width:96vw`…)
+ * pensés pour un plein écran. Aucune classe n'est disponible pour les cibler : ce fichier ne
+ * touchant pas `interactive-map.js`, la seule prise est le sélecteur structurel
+ * `#map-panel > div`, avec `!important` pour battre l'attribut `style`.
+ */
+@media (min-width: 1280px) {
+  body.pilot-technique-ui #map-panel {
+    inset: auto 0 0 auto !important;
+    left: auto !important;
+    top: 0 !important;
+    width: min(440px, 34vw) !important;
+    height: 100vh !important;
+    background: linear-gradient(180deg,#0c2439,#081a2b) !important;
+    border-left: 1px solid var(--pilot-line-strong);
+    box-shadow: -18px 0 44px rgba(0,0,0,.38);
+    overflow-y: auto;
+  }
+  /* Le rembourrage vient d'ici plutôt que du gabarit : un panneau accosté a besoin de
+   * marges propres, là où le plein écran centrait tout au milieu de la page. */
+  body.pilot-technique-ui #map-panel > div {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 100% !important;
+    padding: 20px 18px 28px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+    box-sizing: border-box;
+    color: var(--pilot-text);
+  }
+  /* Salle / Baie : l'image occupait jusqu'à 96 % de la largeur de l'écran ; elle doit tenir
+   * dans une colonne de 440 px sans dépasser, sans perdre son ratio. */
+  body.pilot-technique-ui #map-panel #room-image-stage,
+  body.pilot-technique-ui #map-panel > div > img {
+    max-width: 100% !important;
+    max-height: 40vh !important;
+    align-self: center;
+  }
+  body.pilot-technique-ui #map-panel #room-detail-image { max-width: 100% !important; max-height: 40vh !important; }
+  /* Équipement : la mini-fiche portait son propre fond blanc, pensée pour flotter au milieu
+   * d'un fond sombre plein écran — elle devient la surface native du panneau accosté. */
+  body.pilot-technique-ui #map-panel > div > div[style*="background:#fff"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    background: transparent !important;
+    color: var(--pilot-text) !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  /* Le nom de la salle/baie, centré en plein écran, reste lisible resserré à gauche. */
+  body.pilot-technique-ui #map-panel > div > div[style*="color:#fff"] { text-align: left !important; color: #eaf4ff !important; }
+  body.pilot-technique-ui #map-panel .pilot-room-context-strip { justify-content: flex-start; }
+  body.pilot-technique-ui #map-panel .pilot-room-detail { width: 100%; }
+  /* Les boutons d'action s'empilent proprement plutôt que de déborder une colonne étroite. */
+  body.pilot-technique-ui #map-panel > div > div:last-child {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+
+  /*
+   * Le plan reste visible : `#map-toolbar` ne doit plus se superposer au panneau. Le
+   * panneau et la barre d'outils sont deux frères dans `#map-container` — sans état
+   * partagé en JavaScript à interroger, `:has()` lit directement l'attribut `style` que
+   * `interactive-map.js` bascule déjà lui-même (`panel.style.display = 'flex' | 'none'`),
+   * sans qu'aucune ligne de ce fichier n'ait besoin d'y toucher.
+   */
+  body.pilot-technique-ui #map-container:has(#map-panel[style*="display: flex"]) #map-toolbar,
+  body.pilot-technique-ui #map-container:has(#map-panel[style*="display:flex"]) #map-toolbar {
+    right: calc(min(440px, 34vw) + 16px) !important;
+  }
+  body.pilot-technique-ui #map-container:has(#map-panel[style*="display: flex"]) #map-search-results,
+  body.pilot-technique-ui #map-container:has(#map-panel[style*="display:flex"]) #map-search-results {
+    right: calc(min(440px, 34vw) + 16px) !important;
+  }
+}
+
+/*
+ * LA LÉGENDE : TROIS COULEURS, CELLES QUE LE PLAN DESSINE RÉELLEMENT.
+ *
+ * `drawAreasAndHotspots()` (interactive-map.js) colore ses hotspots par type — `#2d7dfc`
+ * pour une salle, `#914bce` pour une baie, `#16a085`/`#e74c3c` pour un équipement selon son
+ * état. Cette légende REPREND ces quatre teintes telles quelles plutôt que d'en inventer
+ * une palette séparée : si le plan change un jour ses couleurs, cette légende ne serait
+ * plus qu'un décalage à corriger au même endroit, jamais une fausse information.
+ */
+/*
+ * Sous le repère, pas au-dessus de l'aide de navigation.
+ *
+ * `#map-navigation-hint` (« Glisser : déplacer · Molette : zoomer… ») occupe DÉJÀ le coin
+ * bas-gauche — mesuré : les deux blocs se recouvraient. La légende rejoint donc le repère
+ * « Carte interactive » en haut-gauche, la seule zone laissée libre par le produit.
+ */
+body.pilot-technique-ui .pilot-map-legend {
+  position: fixed;
+  left: 18px;
+  top: 66px;
+  z-index: 10010;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 13px;
+  border: 1px solid var(--pilot-line-strong);
+  border-radius: 9px;
+  background: rgba(5,19,32,.9);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--pilot-shadow);
+  font-size: 11px;
+}
+body.pilot-technique-ui .pilot-map-legend-item { display: flex; align-items: center; gap: 8px; color: #cfe4f6; }
+body.pilot-technique-ui .pilot-map-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.06);
+}
+@media (max-width: 760px) {
+  body.pilot-technique-ui .pilot-map-legend { display: none; }
+}
+
+/* ---------- Tableaux de supervision : la MÊME grammaire sur toutes les pages ----------
+ *
+ * `.tableau` est la table de TOUTE la plateforme : Salles, Baies, Utilisateurs, Tickets,
+ * Rapports, Journal l'emploient exactement comme Équipements. Jusqu'ici seule la table des
+ * équipements était habillée (`.pilot-equipments-shell .tableau`) : les autres pages
+ * gardaient donc, en pleine coque sombre, des lignes claires héritées de `main.css` — le
+ * « thème unique » s'arrêtait à une page. La densité est ici posée UNE fois, pour toutes.
+ *
+ * Les règles propres aux équipements restent plus spécifiques (`.pilot-equipments-shell
+ * .tableau …`, 0-3-1) et continuent donc de l'emporter, notamment le masquage des colonnes
+ * secondaires, qui ne concerne que cette table-là. */
+body.pilot-technique-ui .tableau {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  color: var(--pilot-text);
+  font-size: 12.5px;
+}
+body.pilot-technique-ui .tableau th {
+  height: 38px;
+  padding: 0 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--pilot-line-strong);
+  background: #0a2135;
+  color: #94b0c6;
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+body.pilot-technique-ui .tableau td {
+  height: 44px;
+  padding: 7px 10px;
+  border-bottom: 1px solid rgba(142,184,219,.09);
+  background: transparent;
+  color: #dceaf6;
+  vertical-align: middle;
+}
+body.pilot-technique-ui .tableau tr:nth-child(even) td { background: rgba(255,255,255,.012); }
+body.pilot-technique-ui .tableau tr:hover td { background: rgba(45,131,247,.10); }
+body.pilot-technique-ui .tableau td small { display: block; color: var(--pilot-muted); font-size: 10.5px; }
+body.pilot-technique-ui .tableau td strong { color: #f1f8ff; font-weight: 700; }
+body.pilot-technique-ui .tableau img {
+  border: 1px solid var(--pilot-line);
+  border-radius: 6px;
+  background: #0a1e30;
+}
+
+/* Une table large défile DANS son conteneur, jamais en poussant la page. */
+body.pilot-technique-ui .table-responsive,
+body.pilot-technique-ui div[style*="overflow-x"] {
+  border: 1px solid var(--pilot-line);
+  border-radius: 9px;
+  background: #08192a;
+}
+
+/* ---------- Pastilles de statut ---------- */
+body.pilot-technique-ui .status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.05);
+  color: #cfe1f0;
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+body.pilot-technique-ui .status-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+/* Les classes sémantiques sont celles que les pages posent DÉJÀ (`status-${statut}`,
+ * `${ticket.prio}`) : aucune n'est inventée ici, seule leur couleur est fixée. */
+body.pilot-technique-ui :is(.status-badge.status-operationnel,.status-badge.status-actif,.status-badge.status-resolu,.status-badge.status-ferme,.status-badge.basse) {
+  border-color: rgba(49,199,119,.32); background: rgba(49,199,119,.11); color: #6fe0a4;
+}
+body.pilot-technique-ui :is(.status-badge.status-maintenance,.status-badge.status-en-cours,.status-badge.moyenne) {
+  border-color: rgba(45,131,247,.32); background: rgba(45,131,247,.11); color: #7db4ff;
+}
+body.pilot-technique-ui :is(.status-badge.status-alerte,.status-badge.status-attente,.status-badge.haute) {
+  border-color: rgba(245,184,61,.34); background: rgba(245,184,61,.12); color: #f6cd74;
+}
+body.pilot-technique-ui :is(.status-badge.status-hors-service,.status-badge.status-panne,.status-badge.critique,.status-badge.urgente) {
+  border-color: rgba(240,91,97,.34); background: rgba(240,91,97,.12); color: #ff9da1;
+}
+
+/*
+ * `.sf-badge` (Signal Flow) pose son propre `<style>` inline (signal-flow.js) avec des fonds
+ * clairs (`#edf3f8`…) pensés pour la page classique — jamais couverts ici jusqu'ici. Sous
+ * Pilote, une règle générique de texte clair les rendait quasi invisibles sur ce même fond
+ * resté clair (contraste mesuré 1.12:1, PILOTE-UI-01). Même palette sémantique que
+ * `.status-badge` ci-dessus, appliquée à la même famille de variantes.
+ */
+body.pilot-technique-ui .sf-badge {
+  background: rgba(255,255,255,.05); color: #cfe1f0; border: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .sf-badge.ok { background: rgba(49,199,119,.11); color: #6fe0a4; border-color: rgba(49,199,119,.32); }
+body.pilot-technique-ui .sf-badge.role { background: rgba(45,131,247,.11); color: #7db4ff; border-color: rgba(45,131,247,.32); }
+body.pilot-technique-ui .sf-badge.pending { background: rgba(245,184,61,.12); color: #f6cd74; border-color: rgba(245,184,61,.34); }
+body.pilot-technique-ui .sf-badge.draft { background: rgba(255,255,255,.05); color: var(--pilot-muted); border-color: var(--pilot-line); }
+
+/*
+ * `.sla-pill` (Tickets — escalade visuelle SLA) : le classique colore le TEXTE seul sur un
+ * fond clair ; sous la coque sombre, un texte de couleur reste lisible sans repeindre de
+ * fond (contrairement aux pastilles pleines ci-dessus) — cinq teintes, du calme à l'urgent.
+ */
+body.pilot-technique-ui .sla-pill.sla-normal { color: #6fe0a4; }
+body.pilot-technique-ui .sla-pill.sla-warning { color: #f6cd74; }
+body.pilot-technique-ui .sla-pill.sla-urgent { color: #ffab5e; }
+body.pilot-technique-ui .sla-pill.sla-critical,
+body.pilot-technique-ui .sla-pill.sla-overdue { color: #ff9da1; }
+body.pilot-technique-ui .sla-pill.sla-closed { color: var(--pilot-muted); }
+
+/* ---------- États vides ---------- */
+body.pilot-technique-ui .empty-state {
+  padding: 26px 16px;
+  color: var(--pilot-muted);
+  text-align: center;
+  font-size: 12.5px;
+}
+body.pilot-technique-ui td.empty-state { height: auto; background: transparent; }
+
+/*
+ * `.cable-empty` (Câblage non accessible / inventaire vide) porte, en dehors de Pilote, un
+ * texte sombre (`#1d405d`) pensé pour un fond clair. `.cable-inventory-card` porte AUSSI
+ * `.card` — qui obtient déjà un fond sombre par la règle générique — mais rien ici ne
+ * recolorait ce texte : contraste mesuré 1.73:1 (PILOTE-UI-01). Une règle `.dark-theme
+ * .cable-empty strong` existe déjà côté classique, mais Pilote n'active jamais `dark-theme`
+ * (deux classes indépendantes) : elle ne s'applique donc jamais ici.
+ */
+body.pilot-technique-ui .cable-empty { color: var(--pilot-muted); }
+body.pilot-technique-ui .cable-empty i { color: var(--pilot-muted); }
+body.pilot-technique-ui .cable-empty strong { color: #e7f2fb; }
+
+/* ---------- Pagination ---------- */
+body.pilot-technique-ui .pagination {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .pagination-info { color: var(--pilot-muted); font-size: 11.5px; }
+
+/* ---------- Formulaires et fenêtres : plus d'îlot blanc dans une page sombre ----------
+ *
+ * Toutes les pages éditent par `.modal` + `.modal-content` + `.form-group` : Salles, Baies,
+ * Équipements, Utilisateurs, Tickets, Zones, Relations, Journal. Ces fenêtres n'étaient pas
+ * habillées : elles s'ouvraient BLANCHES au milieu de la coque sombre, avec des libellés
+ * gris clair devenus illisibles. C'est le défaut le plus visible de la prévisualisation, et
+ * il se corrige au même endroit pour tout le produit.
+ *
+ * Aucune validation, aucun gestionnaire, aucun champ n'est touché : uniquement la surface. */
+body.pilot-technique-ui .modal {
+  background: rgba(3,10,18,.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+body.pilot-technique-ui .modal-content {
+  border: 1px solid var(--pilot-line-strong);
+  border-radius: 14px;
+  background: linear-gradient(180deg,#0c2439,#081a2b);
+  color: var(--pilot-text);
+  box-shadow: var(--pilot-shadow);
+}
+body.pilot-technique-ui .modal-content :is(h2,h3,h4) { color: #f1f8ff; }
+body.pilot-technique-ui .modal-content hr { border: 0; border-top: 1px solid var(--pilot-line); }
+body.pilot-technique-ui .close-modal {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 8px;
+  background: rgba(255,255,255,.03);
+  color: #9cb8cc;
+  line-height: 1;
+  cursor: pointer;
+}
+body.pilot-technique-ui .close-modal:hover { color: #fff; border-color: #47677f; }
+
+body.pilot-technique-ui .form-group { margin-bottom: 12px; }
+body.pilot-technique-ui .form-group label,
+body.pilot-technique-ui .modal-content label {
+  display: block;
+  margin-bottom: 5px;
+  color: #a9c2d5;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+body.pilot-technique-ui .form-group small,
+body.pilot-technique-ui .modal-content small { color: var(--pilot-muted); font-size: 11px; }
+
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) :is(input,select,textarea,.form-control) {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 11px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 8px;
+  background: #0a1e30;
+  color: var(--pilot-text);
+  font: inherit;
+  font-size: 12.5px;
+  box-shadow: none;
+}
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) textarea { min-height: 88px; resize: vertical; }
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) :is(input,select,textarea,.form-control):focus {
+  outline: none;
+  border-color: rgba(45,131,247,.7);
+  box-shadow: 0 0 0 3px rgba(45,131,247,.12);
+}
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) ::placeholder { color: #6f8ba1; }
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) :is(input,select,textarea):disabled {
+  background: #0a1725;
+  color: #5d7488;
+  cursor: not-allowed;
+}
+/* Les cases à cocher et boutons radio ne sont PAS des champs pleine largeur. */
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) :is(input[type="checkbox"],input[type="radio"]) {
+  width: auto;
+  min-height: 0;
+  accent-color: var(--pilot-blue);
+}
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) input[type="file"] { padding: 7px 9px; }
+body.pilot-technique-ui :is(.form-group,.modal-content,.card) input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  padding: 6px 11px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 7px;
+  background: #112c44;
+  color: #dcebf6;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- Le formulaire de création se replie ----------
+ *
+ * « Gestion des Salles » plaçait sept champs de création en pleine hauteur entre les filtres
+ * et l'inventaire ; « Gestion des Baies », quatre. Sur un portable l'inventaire commençait
+ * sous la ligne de flottaison. Le dépliant rejoint la grammaire qu'« Équipements » emploie
+ * déjà — une action « Ajouter » qui ouvre la saisie — sans rien retirer au formulaire.
+ *
+ * `<details>` fournit le repli, le clavier et l'état ouvert/fermé : rien à câbler. */
+body.pilot-technique-ui .pilot-create-panel {
+  margin: 0 0 12px;
+  border: 1px solid var(--pilot-line);
+  border-radius: 9px;
+  background: rgba(255,255,255,.02);
+}
+body.pilot-technique-ui .pilot-create-panel > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 0 12px;
+  color: #cfe4f6;
+  font-size: 12px;
+  font-weight: 750;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+body.pilot-technique-ui .pilot-create-panel > summary::-webkit-details-marker { display: none; }
+body.pilot-technique-ui .pilot-create-panel > summary:hover { color: #fff; }
+body.pilot-technique-ui .pilot-create-panel > summary i {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: rgba(45,131,247,.16);
+  color: #7db4ff;
+  font-size: 10px;
+  transition: transform .15s ease;
+}
+body.pilot-technique-ui .pilot-create-panel[open] > summary {
+  border-bottom: 1px solid var(--pilot-line);
+}
+body.pilot-technique-ui .pilot-create-panel[open] > summary i { transform: rotate(45deg); }
+body.pilot-technique-ui .pilot-create-panel-body { padding: 12px; }
+/* Le formulaire d'origine porte `class="flex"` et un `gap` en ligne : il se range en grille
+ * lisible au lieu de s'étirer sur une seule rangée trop étroite. */
+body.pilot-technique-ui .pilot-create-panel-body > form {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  align-items: end;
+  margin-bottom: 0 !important;
+}
+body.pilot-technique-ui .pilot-create-panel-body > form > button { min-height: 40px; }
+
+/* ---------- Notifications : informer sans masquer l'action en cours ----------
+ *
+ * MESURÉ : le bandeau d'avertissement occupait 340 px de large sur toute la colonne droite,
+ * par-dessus les actions d'en-tête et le haut de l'inspecteur. `ui-notifications.css` pose
+ * ses valeurs en `!important` ; les rendre ici sans `!important` ne changerait rien, d'où
+ * leur reprise à l'identique. Le COMPORTEMENT — durée, fermeture, empilement, contenu — est
+ * celui de `notifications.js` et n'est pas touché : seule la surface change. */
+body.pilot-technique-ui .notification-center {
+  top: 74px !important;
+  right: 16px !important;
+  width: min(310px, calc(100vw - 32px)) !important;
+  gap: 7px !important;
+}
+body.pilot-technique-ui .notification-center .notification {
+  min-height: 0;
+  padding: 10px 11px !important;
+  border: 1px solid var(--pilot-line-strong);
+  border-radius: 10px !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.34) !important;
+}
+body.pilot-technique-ui .notification-center .notification-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 9px !important;
+  border-radius: 7px;
+  font-size: 12px !important;
+}
+body.pilot-technique-ui .notification-center .notification-content {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+body.pilot-technique-ui .notification-center .notification-close {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 15px !important;
+}
+/* Une couleur pleine et saturée sur toute la surface écrasait le texte du dessous ; la
+ * teinte passe au liseré et à l'icône, la surface reste celle du produit. */
+body.pilot-technique-ui .notification-center .notification-success {
+  background: linear-gradient(180deg,#0d2b3f,#0a2033) !important;
+  border-left: 3px solid var(--pilot-green);
+}
+body.pilot-technique-ui .notification-center .notification-error {
+  background: linear-gradient(180deg,#2a1420,#1d0f18) !important;
+  border-left: 3px solid var(--pilot-red);
+}
+body.pilot-technique-ui .notification-center .notification-warning {
+  background: linear-gradient(180deg,#2a2214,#1d1810) !important;
+  border-left: 3px solid var(--pilot-amber);
+}
+body.pilot-technique-ui .notification-center .notification-info {
+  background: linear-gradient(180deg,#0d2439,#091a2b) !important;
+  border-left: 3px solid var(--pilot-blue);
+}
+body.pilot-technique-ui .notification-center .notification-success .notification-icon { color: #6fe0a4; }
+body.pilot-technique-ui .notification-center .notification-error .notification-icon { color: #ff9da1; }
+body.pilot-technique-ui .notification-center .notification-warning .notification-icon { color: #f6cd74; }
+body.pilot-technique-ui .notification-center .notification-info .notification-icon { color: #7db4ff; }
+
+/* ================================================================================
+ * REPRISE — LA FEUILLE PILOTE NE GAGNAIT PAS. MESURÉ, PAS SUPPOSÉ.
+ * ================================================================================
+ *
+ * CE QUI N'ALLAIT PAS
+ * -------------------
+ * Relevé au navigateur (Chromium réel, PostgreSQL réel, compte administrateur, `?pilote=1`)
+ * sur sept pages : la coque était bien sombre, et TOUT le contenu restait BLANC.
+ *
+ *     salles   → div.card             luminance 255
+ *     baies    → table.tableau        luminance 255
+ *     devices  → .pilot-equipments-shell  luminance 255
+ *     tickets  → div.card             luminance 255
+ *     logs     → div.card             luminance 255
+ *     users    → .users-management    luminance 255
+ *     reports  → header.card          luminance 255
+ *
+ * Autrement dit : la densité « NOC / broadcast » écrite pour la table des équipements,
+ * l'habillage des cartes, celui des filtres et des champs n'ont JAMAIS été appliqués. Les
+ * règles étaient écrites, chargées, et silencieusement perdantes.
+ *
+ * POURQUOI — ET POURQUOI L'ORDRE DES FEUILLES N'Y CHANGEAIT RIEN
+ * ---------------------------------------------------------------
+ * La cascade se décide d'abord sur la SPÉCIFICITÉ, et `:is()` comme `:has()` prennent celle
+ * de leur argument le plus spécifique. `ui-sections.css` écrit :
+ *
+ *     :is(#admin-content,#responsible-content) > .card:has(#salle-search)  → (2,1,0)
+ *     :is(#admin-content,#responsible-content) > .card                     → (1,1,0)
+ *     #app .admin-page .card                                               → (1,2,0)
+ *
+ * — le tout en `!important`. La règle Pilote, elle, s'écrivait `body.pilot-technique-ui
+ * .card`, soit (0,2,0) : AUCUN identifiant. Charger la feuille en dernier ne pouvait rien
+ * y faire, l'ordre ne départageant que des spécificités ÉGALES. C'est la raison pour
+ * laquelle le défaut ne se voyait pas en relisant la feuille : elle était juste.
+ *
+ * CE QUE FAIT LA REPRISE
+ * ----------------------
+ * Un préfixe unique et suffisant — `body.pilot-technique-ui #app :is(#admin-content,
+ * #responsible-content)` (2,1,1) — porte les surfaces à (2,2,1) et l'emporte sur les trois
+ * familles ci-dessus. `!important` n'est employé que là où la règle adverse l'emploie déjà :
+ * un `!important` ne se bat qu'avec un autre `!important`.
+ *
+ * Rien n'est ajouté au produit : ce bloc REND EFFECTIF ce que la feuille annonçait déjà.
+ */
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) :is(.card,.users-management,.dashboard-section,.panel) {
+  border: 1px solid var(--pilot-line) !important;
+  background: linear-gradient(180deg,rgba(14,41,65,.92),rgba(10,31,50,.94)) !important;
+  color: var(--pilot-text) !important;
+  box-shadow: none !important;
+}
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) :is(.card,.users-management) :is(h1,h2,h3,h4) {
+  color: #f1f8ff !important;
+}
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) :is(.card-header,.section-header) {
+  border-bottom: 1px solid var(--pilot-line) !important;
+  background: transparent !important;
+}
+
+/* Les barres de filtres, sous leurs trois noms réels. */
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) :is(.filters-container,.service-request-filters,.user-controls) {
+  border: 1px solid var(--pilot-line) !important;
+  background: rgba(255,255,255,.02) !important;
+}
+
+/*
+ * TROIS IDENTIFIANTS EN FACE : LES CHAMPS ET LES BOUTONS DEMANDENT UN CRAN DE PLUS.
+ *
+ * `ui-sections.css` descend jusqu'à l'identifiant du champ lui-même :
+ *
+ *     :is(#admin-content,#responsible-content) > .card:has(#salle-search) #salle-search
+ *
+ * — trois identifiants (3,1,0), en `!important`. Le préfixe à deux identifiants employé
+ * ci-dessus (2,x,y) perd contre lui quel que soit le nombre de classes ajoutées : la
+ * comparaison s'arrête au premier rang qui départage, et les identifiants sont ce rang.
+ *
+ * `#app:is(#app)` désigne EXACTEMENT le même élément et vaut deux identifiants : le
+ * préfixe atteint (3,1,1) sans rien changer à ce qui est ciblé. Le procédé est délibéré et
+ * borné à ce bloc ; il n'est pas nécessaire pour les surfaces traitées plus haut.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(input,select,textarea) {
+  border: 1px solid var(--pilot-line) !important;
+  /*
+   * `background-color`, et NON le raccourci `background` : la règle adverse peint le fond
+   * ET pose la loupe du champ de recherche dans la même déclaration
+   * (`background: #fff url("data:image/svg+xml,…")`). Écraser le raccourci recolorerait le
+   * champ en supprimant son icône — une fonction perdue pour une couleur gagnée.
+   */
+  background-color: #0a1e30 !important;
+  color: var(--pilot-text) !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(input,select,textarea)::placeholder {
+  color: #6f8ba1 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(input,select,textarea):focus {
+  border-color: rgba(45,131,247,.7) !important;
+  box-shadow: 0 0 0 3px rgba(45,131,247,.12) !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(input[type="checkbox"],input[type="radio"]) {
+  background-color: transparent !important;
+}
+
+/* Les tables, sous leurs quatre noms réels : `.tableau` (Salles, Baies, Journal, Rapports),
+ * `.equipment-table-runtime` (Équipements), `.service-requests-table` (Tickets),
+ * `.user-table` (Utilisateurs). */
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) :is(.tableau,.user-table,.equipment-table-runtime,.service-requests-table) {
+  background: transparent !important;
+  color: var(--pilot-text) !important;
+}
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) :is(table,tbody,tr) {
+  background: transparent !important;
+}
+/* `… > .card:has(#salle-search) .tableau th` vaut (2,2,1) : le préfixe haut est requis ici
+ * aussi, sans quoi l'en-tête de table restait en gris clair sur toutes les pages. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) th {
+  border-bottom: 1px solid var(--pilot-line-strong) !important;
+  background: #0a2135 !important;
+  color: #94b0c6 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) td {
+  border-bottom: 1px solid rgba(142,184,219,.09) !important;
+  background: transparent !important;
+  color: #dceaf6 !important;
+  padding: 6px 10px !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) tr:hover td {
+  background: rgba(45,131,247,.10) !important;
+}
+
+/*
+ * LA DENSITÉ DE SUPERVISION, MESURÉE À LA LIGNE.
+ *
+ * Relevé à 1920 : les lignes d'Équipements faisaient 89 px, celles d'Utilisateurs 61 px,
+ * celles de Salles 59 px — pour une cible annoncée de 44 à 48 px. Sur un écran de 1080 px,
+ * 89 px par ligne ne laisse voir que huit équipements à la fois : ce n'est plus une table
+ * de supervision, c'est une liste de fiches.
+ *
+ * La hauteur ne venait pas du texte mais de la VIGNETTE : `.eq-media-thumb` et son
+ * remplaçant `.eq-media-empty` mesurent 96 × 64 px. Elles sont CONSERVÉES — la vignette
+ * porte une information réelle, et son absence en porte une autre — mais ramenées à la
+ * hauteur d'une ligne. La grande image (`.eq-media-large`) n'est pas touchée : elle vit
+ * dans la Fiche 360, hors du tableau, et c'est là qu'on veut la voir en grand.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) td :is(.eq-media-thumb,.eq-media-empty) {
+  width: 46px !important;
+  height: 32px !important;
+  padding: 2px !important;
+}
+/* L'icône et la légende de la vignette absente ne tiennent pas dans 32 px : le tiret cadratin
+ * dit la même chose — « pas de média » — sans imposer sa hauteur à toute la table. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) td .eq-media-empty :is(i,small) {
+  display: none !important;
+}
+body.pilot-technique-ui #app :is(#admin-content,#responsible-content) td .eq-media-empty::after {
+  content: "—";
+  color: var(--pilot-muted);
+  font-size: 11px;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) td .eq-media-badge {
+  position: static !important;
+  display: inline-block;
+  margin: 2px 0 0;
+  padding: 1px 5px !important;
+  font-size: 9px !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) td img {
+  max-height: 32px !important;
+  width: auto !important;
+}
+
+/* Le formulaire de création, que `ui-sections.css` habille par identifiant. */
+body.pilot-technique-ui #app :is(#add-salle-form,#add-baie-form) {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/* Les boutons : `… .card:has(#salle-search) .card-actions .btn` vaut (2,3,0) — préfixe haut. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .btn {
+  border: 1px solid var(--pilot-line) !important;
+  background: #112c44 !important;
+  color: #dcebf6 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .btn:hover {
+  border-color: rgba(72,151,237,.45) !important;
+  background: #153753 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .btn.danger {
+  background: rgba(240,91,97,.14) !important;
+  color: #ff9da1 !important;
+  border-color: rgba(240,91,97,.25) !important;
+}
+
+/*
+ * Les pastilles et vignettes que d'autres feuilles peignent en clair.
+ *
+ * `.role-badge` (main.css) et `.eq-media-*` (equipment-media.css) portent des fonds pâles
+ * pensés pour un tableau blanc : ils ressortaient en taches vives sur la coque sombre. Les
+ * teintes SÉMANTIQUES sont conservées — un rôle et un état de média restent reconnaissables
+ * à leur couleur — mais reposées sur des surfaces sombres.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .role-badge {
+  border: 1px solid var(--pilot-line) !important;
+  background: rgba(45,131,247,.13) !important;
+  color: #9cc6ff !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(.eq-media-empty,.eq-media-placeholder) {
+  border-color: rgba(142,184,219,.28) !important;
+  background: rgba(255,255,255,.03) !important;
+  color: var(--pilot-muted) !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(.eq-media-thumb,.eq-media-large) {
+  border-color: var(--pilot-line) !important;
+  background: #0a1e30 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .eq-media-badge.real { background: rgba(49,199,119,.16) !important; color: #6fe0a4 !important; }
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .eq-media-badge.official { background: rgba(45,131,247,.16) !important; color: #7db4ff !important; }
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .eq-media-badge.candidate { background: rgba(245,184,61,.16) !important; color: #f6cd74 !important; }
+
+/*
+ * LES CONTENEURS PROPRES À CHAQUE PAGE.
+ *
+ * Au-delà de `.card`, huit pages posent leurs PROPRES conteneurs de bloc, avec des fonds
+ * clairs écrits pour un fond de page blanc. La liste ci-dessous n'est pas devinée : chaque
+ * nom vient du relevé de luminance page par page, sous `?pilote=1`, dans Chromium réel.
+ *
+ *   dashboard          → .stat-card, .room-stat-card
+ *   flux de signal     → .sf-hero, .sf-panel, .sf-stat, .sf-warning
+ *   continuité         → .continuity-empty
+ *   schémas            → .diagram-empty
+ *   diagnostic écrans  → .screen-selection-section, .admin-section, .issues-list, .option-tabs
+ *   accès zones        → .zone-access-runtime-state
+ *   paramètres         → .settings-section
+ *   exploitation       → .ops-sync
+ *
+ * Aucun module n'est modifié : `screens-diagnostic.js` et les autres restent intouchés,
+ * seule leur surface change, et seulement sous prévisualisation.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(
+  .stat-card, .room-stat-card, .sf-hero, .sf-panel, .sf-stat, .sf-warning,
+  .continuity-empty, .diagram-empty, .screen-selection-section, .admin-section,
+  .issues-list, .option-tabs, .zone-access-runtime-state, .settings-section
+) {
+  border: 1px solid var(--pilot-line) !important;
+  background: linear-gradient(180deg,rgba(14,41,65,.92),rgba(10,31,50,.94)) !important;
+  color: var(--pilot-text) !important;
+  box-shadow: none !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(
+  .stat-card, .room-stat-card, .sf-panel, .sf-stat, .settings-section, .admin-section
+) :is(h1,h2,h3,h4,strong,b,label) {
+  color: #f1f8ff !important;
+}
+/* L'onglet ACTIF doit rester reconnaissable : il prend la teinte de sélection du Pilote,
+ * et non le même fond que les onglets inactifs — sans quoi on perd l'information. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .tab-btn {
+  border: 1px solid transparent !important;
+  background: transparent !important;
+  color: var(--pilot-muted) !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .tab-btn.active {
+  border-color: rgba(45,131,247,.4) !important;
+  background: rgba(45,131,247,.14) !important;
+  color: #cfe4f6 !important;
+}
+/*
+ * Les compteurs en pastille, sous leurs trois parents réels.
+ *
+ * `.relation-summary` (Câbles, Accès zones), `.continuity-stats` (Continuité antenne) et
+ * `.diagram-principles` (Schémas) posent des `<span>` SANS classe : ils ne sont atteignables
+ * que par leur parent. Leur fond pâle formait de petites taches vives sur la coque sombre.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(.relation-summary,.continuity-stats,.diagram-principles,.service-request-stats) > span {
+  border: 1px solid var(--pilot-line) !important;
+  background: rgba(255,255,255,.04) !important;
+  color: #cfe4f6 !important;
+}
+/* L'icône d'un état vide portait sa propre pastille claire. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .empty-state > i {
+  background: rgba(255,255,255,.05) !important;
+  color: var(--pilot-muted) !important;
+}
+/* Paramètres : un `<div class="form-control">` sert d'affichage en lecture seule — ce n'est
+ * pas un champ, mais il doit suivre la même surface. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) div.form-control {
+  border: 1px solid var(--pilot-line) !important;
+  background: #0a1e30 !important;
+  color: var(--pilot-text) !important;
+}
+
+/*
+ * Les états d'exception : ils doivent rester VOYANTS, mais sur une surface du produit.
+ *
+ * `.ops-sync` porte trois états (`synced`, `error`, et le neutre) et `.error-message`
+ * (wall.css) peint `#fff1f2` avec un texte `#9f1239` — un encadré rose pâle, illisible sur
+ * fond sombre : mesuré à 1.01:1 pour « À vérifier ». La teinte d'alerte est conservée, mais
+ * portée par le liseré et le texte plutôt que par un aplat clair.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .ops-sync {
+  border: 1px solid var(--pilot-line) !important;
+  background: rgba(255,255,255,.06) !important;
+  color: #e7f2fb !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .ops-sync.synced {
+  background: rgba(49,199,119,.16) !important;
+  border-color: rgba(49,199,119,.34) !important;
+  color: #8ff0bd !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .ops-sync.error {
+  background: rgba(240,91,97,.16) !important;
+  border-color: rgba(240,91,97,.34) !important;
+  color: #ffb3b6 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .error-message {
+  border: 1px solid rgba(240,91,97,.34) !important;
+  background: rgba(240,91,97,.12) !important;
+  color: #ffb3b6 !important;
+}
+
+/* Le bandeau « Chaîne du signal » (`signal-spine.js`) vit HORS de `#admin-content` : il a
+ * donc besoin de sa propre reprise, et non du préfixe ci-dessus. */
+body.pilot-technique-ui #app .signal-spine,
+body.pilot-technique-ui #signal-spine {
+  border: 1px solid var(--pilot-line) !important;
+  background: linear-gradient(180deg,rgba(14,41,65,.92),rgba(10,31,50,.94)) !important;
+  color: var(--pilot-text) !important;
+  box-shadow: none !important;
+}
+body.pilot-technique-ui #app .signal-spine :is(strong,b,span,small,div) { color: inherit; }
+
+/*
+ * LE TEXTE, MESURÉ AU RAPPORT DE CONTRASTE — PAS À L'ŒIL.
+ *
+ * Une fois les surfaces passées au sombre, les textes écrits POUR un fond clair deviennent
+ * illisibles sans qu'aucune règle ne soit « fausse ». Relevé au navigateur, rapport de
+ * contraste WCAG calculé contre le fond réellement peint :
+ *
+ *     span.ctx-crumb   « Salles »                     1.38 : 1   (seuil 4.5)
+ *     h3               « État des équipements »       1.41 : 1
+ *     span             « Actifs : 21 »                2.82 : 1
+ *     a.eq-quickview   « CAM 1 — Sony RCP-1500 »      3.38 : 1   × 73 sur la page
+ *     span.status-badge « Actif »                     4.12 : 1
+ *
+ * Le fil d'Ariane et les noms d'équipement sont le contenu PRINCIPAL de leurs pages : à
+ * 1.38 et 3.38, ils étaient là sans être lisibles. Les valeurs ci-dessous sont choisies
+ * pour repasser le seuil, puis vérifiées par la même mesure.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(h1,h2,h3,h4,h5) {
+  color: #f1f8ff !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(p,span,small,li,dd,dt,td,label) {
+  color: inherit;
+}
+/* Le fil d'Ariane : la miette COURANTE portait la couleur d'un texte sur fond blanc. */
+body.pilot-technique-ui .ctx-crumb,
+body.pilot-technique-ui #app .context-bar :is(a,span) {
+  color: #b9d0e4 !important;
+}
+body.pilot-technique-ui .ctx-crumb[aria-current],
+body.pilot-technique-ui .ctx-crumb:last-child { color: #eaf4ff !important; }
+
+/* Les liens de contenu — dont les 73 noms d'équipement de la page Équipements. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) a {
+  color: #8fc0ff !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) a:hover {
+  color: #cfe4ff !important;
+}
+/*
+ * LES PASTILLES : LE FOND ET LE TEXTE BOUGENT ENSEMBLE, JAMAIS L'UN SANS L'AUTRE.
+ *
+ * Erreur commise puis mesurée : n'éclaircir que la COULEUR a fait TOMBER le contraste de
+ * « Actif » de 4.12 à 1.03 — `main.css` peint `.status-badge.active` sur `#dbffe5`, un vert
+ * très clair, et un texte clair sur fond clair est pire que le point de départ. Toute
+ * reprise de couleur de texte doit donc reposer le fond à la même spécificité.
+ *
+ * Les noms de classe ci-dessous sont ceux réellement écrits par les pages : `.active`,
+ * `.inactive`, `.maintenance`, `.partial`, `.hors-service`, `.open` (main.css) et les
+ * `status-*` posés par `tickets.js` et `equipements.js`. Aucun n'est inventé.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(.status-badge,.request-kind-badge) {
+  border: 1px solid var(--pilot-line) !important;
+  background: rgba(255,255,255,.06) !important;
+  color: #e7f2fb !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(
+  .status-badge.active, .status-badge.status-operationnel, .status-badge.status-actif,
+  .status-badge.status-resolu, .status-badge.status-ferme, .status-badge.basse
+) { background: rgba(49,199,119,.16) !important; border-color: rgba(49,199,119,.34) !important; color: #8ff0bd !important; }
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(
+  .status-badge.open, .status-badge.status-maintenance, .status-badge.status-en-cours, .status-badge.moyenne
+) { background: rgba(45,131,247,.16) !important; border-color: rgba(45,131,247,.34) !important; color: #a5cdff !important; }
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(
+  .status-badge.maintenance, .status-badge.partial, .status-badge.status-alerte,
+  .status-badge.status-attente, .status-badge.haute
+) { background: rgba(245,184,61,.16) !important; border-color: rgba(245,184,61,.34) !important; color: #ffdd94 !important; }
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(
+  .status-badge.inactive, .status-badge.hors-service, .status-badge.status-hors-service,
+  .status-badge.status-panne, .status-badge.critique, .status-badge.urgente
+) { background: rgba(240,91,97,.16) !important; border-color: rgba(240,91,97,.34) !important; color: #ffb3b6 !important; }
+
+/*
+ * `.kind-*` (nature de la demande — Incident/Service/Information/Vidéo/Intervention) : la
+ * règle générique ci-dessus fixe déjà `.request-kind-badge` à la même teinte neutre que
+ * n'importe quel `.status-badge`, ce qui aplatit les cinq couleurs distinctes de
+ * `service-requests.css` sur un seul gris-bleu — la nature d'une demande redevenait
+ * illisible d'un coup d'œil dans la liste ou la fiche détaillée. Même palette sémantique que
+ * les pastilles de statut ci-dessus (`incident`/`intervention` recouvrent déjà cette
+ * urgence), plus une teinte violette dédiée à `video-transfer`, absente de cette palette.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .kind-incident {
+  background: rgba(240,91,97,.16) !important; border-color: rgba(240,91,97,.34) !important; color: #ffb3b6 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .kind-video-transfer {
+  background: rgba(154,109,255,.16) !important; border-color: rgba(154,109,255,.34) !important; color: #cdbcff !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .kind-information {
+  background: rgba(45,131,247,.16) !important; border-color: rgba(45,131,247,.34) !important; color: #a5cdff !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .kind-intervention {
+  background: rgba(245,184,61,.16) !important; border-color: rgba(245,184,61,.34) !important; color: #ffdd94 !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) .kind-service {
+  background: rgba(49,199,119,.16) !important; border-color: rgba(49,199,119,.34) !important; color: #8ff0bd !important;
+}
+
+/*
+ * Les grands compteurs et les mentions d'accompagnement.
+ *
+ * Mesuré : les nombres de 26 px de « Continuité antenne » (2.56) et d'« Exploitation »
+ * (1.66) et les phrases d'introduction de « Rapports » (3.93), « Mur d'images » (4.19) et
+ * « Intégrité » (3.82) gardaient une teinte pensée pour du texte sur blanc. Un chiffre de
+ * 26 px que l'on ne distingue pas du fond n'est pas un chiffre affiché.
+ */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(.ops-stat,.continuity-stats,.sf-stat,.relation-summary,.service-request-stats) :is(b,strong,span,small) {
+  color: #eaf4ff !important;
+}
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(p,summary,label,legend) {
+  color: #c2d6e6 !important;
+}
+/* L'ambre d'avertissement conserve son sens, mais à une valeur lisible sur fond sombre. */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) [style*="color:#8a6400"],
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) [style*="color:#7a5600"],
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) [style*="color:#9a6614"] {
+  color: #ffd27a !important;
+}
+
+/* Les mentions discrètes écrites en gris pâle pour un fond blanc (`#aaa`, `#bbb`). */
+body.pilot-technique-ui #app:is(#app) :is(#admin-content,#responsible-content) :is(.empty-note,.eq-media-kind-badge) {
+  background: transparent !important;
+  color: var(--pilot-muted) !important;
+}
+
+/* ---------- Accessibilité ---------- */
+body.pilot-technique-ui :is(a,button,input,select,textarea,[tabindex]):focus-visible {
+  outline: 2px solid #59a2ff;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.pilot-technique-ui *,
+  body.pilot-technique-ui *::before,
+  body.pilot-technique-ui *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1180px) {
+  body.pilot-technique-ui :is(.admin-sidebar,.tech-sidebar,.responsible-sidebar,.visitor-sidebar) { width: 64px; }
+  body.pilot-technique-ui .sidebar-menu a { justify-content: center; margin-inline: 6px; padding-inline: 8px; }
+  body.pilot-technique-ui .sidebar-menu a span,
+  body.pilot-technique-ui .sidebar-menu .nav-group-header > span,
+  body.pilot-technique-ui .sidebar-menu .nav-group-chevron { display: none; }
+  body.pilot-technique-ui :is(.admin-content,.tech-content,.responsible-content,.visitor-content),
+  body.pilot-technique-ui .admin-tabs { margin-left: 64px; }
+  /* La rangée reste flexible : deux champs par ligne suffisent à 1180 px. */
+  body.pilot-technique-ui .filters-container > :is(input,select,.form-control,.entity-search-wrapper) { flex: 1 1 45%; max-width: none; }
+}
+
+@media (max-width: 760px) {
+  body.pilot-technique-ui :is(.admin-sidebar,.tech-sidebar,.responsible-sidebar,.visitor-sidebar) { display: none; }
+  body.pilot-technique-ui :is(.admin-content,.tech-content,.responsible-content,.visitor-content),
+  body.pilot-technique-ui .admin-tabs { margin-left: 0; }
+  body.pilot-technique-ui :is(.admin-header,.smart-tech-header,.responsible-header,.visitor-header) { padding-inline: 10px; gap: 7px; }
+  body.pilot-technique-ui .header-center { display: none; }
+  body.pilot-technique-ui .pilot-technique-badge { display: none; }
+  body.pilot-technique-ui .filters-container > :is(input,select,.form-control,.entity-search-wrapper) { flex: 1 1 100%; max-width: none; }
+  body.pilot-technique-ui .filters-container > button { width: 100%; margin-left: 0; }
+  body.pilot-technique-ui #equip-quickview-modal.pilot-equipment-inspector { inset: 66px 0 0 0; width: 100%; }
+  body.pilot-technique-ui #equip-quickview-modal.pilot-equipment-inspector > .modal-content { border-radius: 0; border-left: 0; }
+  body.pilot-technique-ui #map-modal.pilot-map-modal .map-toolbar {
+    left: 8px !important;
+    right: 8px !important;
+    overflow-x: auto;
+  }
+  body.pilot-technique-ui #map-modal.pilot-map-modal #map-search { width: 210px; }
+  body.pilot-technique-ui .pilot-map-label { display: none; }
+}

@@ -1,0 +1,330 @@
+name: Vérification 2M TECH
+
+on:
+  push:
+    branches:
+      - integration/final-main-20260812
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: tech
+          POSTGRES_PASSWORD: techpass
+          POSTGRES_DB: tech_platform_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U tech -d tech_platform_test"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+      - name: Installer les dépendances runtime
+        run: npm install --omit=dev
+      - name: Tests de contrats
+        shell: bash
+        run: |
+          set -uo pipefail
+          full_log=/tmp/2m-contract-tests.log
+          if npm test 2>&1 | tee "$full_log"; then
+            exit 0
+          fi
+          echo '::error::La suite complète des tests de contrats a échoué. Isolation du fichier en échec…'
+          for test_file in tests/*.test.js; do
+            echo "=== diagnostic: $test_file ==="
+            isolated_log=/tmp/2m-contract-isolated.log
+            if ! node --test "$test_file" >"$isolated_log" 2>&1; then
+              cat "$isolated_log"
+              echo "::error file=$test_file::Ce fichier de tests échoue lorsqu’il est exécuté isolément."
+              exit 1
+            fi
+          done
+          echo '::error::La suite complète échoue uniquement en exécution groupée; vérifier une interaction inter-tests.'
+          tail -n 240 "$full_log"
+          exit 1
+      - name: Graphe des modules actifs
+        run: npm run check
+      - name: Syntaxe JavaScript active
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            case "$file" in
+              LEGACY-ROOT/*|SOURCE-WALLS/*|app/*|assets/js/app/*) continue ;;
+            esac
+            node --check "$file"
+          done < <(git ls-files '*.js' '*.mjs')
+      - name: Fichiers critiques
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f wall-manager.js
+          test -f wall-model.js
+          test -f wall-interaction-integration.js
+          test -f screens-diagnostic-host-integration.js
+          test -f entity-permission-integration.js
+          test -f data-integrity.js
+          test -f platform-integrity.js
+          test -f platform-entity-graph.js
+          test -f relationship-contract.js
+          test -f navigation-contract.js
+          test -f role-navigation-integration.js
+          test -f equipment-component-integration.js
+          test -f visitor-canonical-integration.js
+          test -f compat-integrations.js
+          test -f central-sync.js
+          test -f settings-contract.js
+          test -f write-coherence.js
+          test -f startup-splash.js
+          test -f startup-splash.css
+          test -f tech-loading-brand.js
+          test -f tech-loading-brand.css
+          test -f mobile-runtime.css
+          test -f scripts/access-control.js
+          test -f scripts/inventory-replace-preload.js
+          test -f scripts/inventory-replace-e2e.mjs
+          test -f zone-access.js
+          test -f zone-access-integration.js
+          test -f diagnostic-xss-guard.js
+          test -f credential-cache-guard.js
+          test -f map-fit-fix.js
+          test -f connectivity-contract.js
+          test -f continuity-contract.js
+          test -f continuity-center.js
+          test -f diagram-contract.js
+          test -f diagram-studio.js
+          test -f diagram-studio-advanced.js
+          test -f diagram-studio-advanced.css
+          test -f diagram-canonical-authoring.js
+          test -f diagram-workspace.js
+          test -f diagram-workspace.css
+          test -f technical-graph.js
+          test -f equipment-port-template.js
+          test -f equipment-catalog-gap-seed.js
+          test -f inventory-master.js
+          test -f inventory-central-install.js
+          test -f module-hierarchy-contract.js
+          test -f module-assignment.js
+          test -f scripts/security-restart-e2e.mjs
+          test -f PHASE19_PLATFORM_AUDIT.md
+          grep -q "this.version = 14" db.js
+          grep -q "Mur d'images" admin-ui.js
+          grep -q "btn-wall" techui.js
+          grep -q "Mur d'images" responsible-ui.js
+          grep -q "visitor-wall-btn" visitor-ui.js
+          grep -q "roomRect" interactive-map.js
+          grep -q "wallId" wall-manager.js
+          grep -q "equipmentId" wall-manager.js
+          grep -q "wall-screen-form" wall-manager.js
+          grep -q "responsible-screen-diagnostic" screens-diagnostic-host-integration.js
+          grep -q "resolveRoleKey" permissions.js
+          grep -q "PermissionManager.check" entity-permission-integration.js
+          grep -q "PLATFORM_SETTINGS_ID = 'global'" settings-contract.js
+          grep -q "platform-entity-updated" write-coherence.js
+          grep -q "startup-logo-segment" startup-splash.js
+          grep -q "diagram-canonical-authoring.js" index.html
+          grep -q "mobile-runtime.css" index.html
+          grep -q "entity-permission-integration.js" index.html
+          grep -q "screens-diagnostic-host-integration.js" index.html
+          ! grep -q "wallsManager.js" index.html
+          ! grep -q "mur-dimage-loader.js" index.html
+          grep -q "DATABASE_URL" scripts/serve.js
+          grep -q "api/sync" central-sync.js
+          grep -q "inventory-replace-preload" package.json
+          grep -q "api/sync/inventory-replace" inventory-central-install.js
+          grep -q "pull_request:" .github/workflows/verify.yml
+      - name: Serveur Node et API locale
+        shell: bash
+        run: |
+          set -euo pipefail
+          setsid env PORT=4173 npm start >/tmp/2m-node-local.log 2>&1 &
+          pid=$!
+          cleanup() {
+            kill -TERM -- "-$pid" 2>/dev/null || true
+            wait "$pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+          for i in {1..20}; do
+            if curl -fsS http://127.0.0.1:4173/api/health >/tmp/health-local.json; then break; fi
+            sleep 0.5
+          done
+          grep -q '"ok":true' /tmp/health-local.json
+          grep -q '"centralSync":false' /tmp/health-local.json
+          curl -fsS http://127.0.0.1:4173/index.html >/dev/null
+          curl -fsS http://127.0.0.1:4173/core.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/settings-contract.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/write-coherence.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/startup-splash.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/startup-splash.css >/dev/null
+          curl -fsS http://127.0.0.1:4173/tech-loading-brand.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/mobile-runtime.css >/dev/null
+          curl -fsS http://127.0.0.1:4173/central-sync.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/zone-access.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/map-fit-fix.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/wall-manager.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/wall-interaction-integration.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/screens-diagnostic-host-integration.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/entity-permission-integration.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/continuity-center.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/diagram-studio.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/diagram-studio-advanced.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/diagram-studio-advanced.css >/dev/null
+          curl -fsS http://127.0.0.1:4173/diagram-canonical-authoring.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/diagram-workspace.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/diagram-workspace.css >/dev/null
+          curl -fsS http://127.0.0.1:4173/equipment-port-template.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/equipment-catalog-gap-seed.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/inventory-master.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/inventory-central-install.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/module-hierarchy-contract.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/module-assignment.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/navigation-contract.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/role-navigation-integration.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/equipment-component-integration.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/visitor-canonical-integration.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/platform-entity-graph.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/platform-integrity.js >/dev/null
+          curl -fsS http://127.0.0.1:4173/service-worker.js >/dev/null
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/.git/config)" = "404"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/scripts/serve.js)" = "404"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:4173/scripts/inventory-replace-preload.js)" = "404"
+      - name: PostgreSQL — isolation, sécurité et remplacement inventaire
+        shell: bash
+        env:
+          PORT: '4188'
+          DATABASE_URL: postgresql://tech:techpass@127.0.0.1:5432/tech_platform_test
+          PLATFORM_ADMIN_USERNAME: e2e-admin
+          PLATFORM_ADMIN_PASSWORD: E2e-Admin-Password-2026!
+          PLATFORM_ADMIN_FULLNAME: Administrateur E2E
+          PLATFORM_ADMIN_RESET_VERSION: e2e-reset-v1
+          SESSION_SECRET: ci-session-secret-2m-tech-2026-very-long
+          E2E_BASE_URL: http://127.0.0.1:4188
+        run: |
+          set -euo pipefail
+          pid=''
+          stop_server() {
+            if [[ -n "${pid:-}" ]]; then
+              kill -TERM -- "-$pid" 2>/dev/null || true
+              wait "$pid" 2>/dev/null || true
+              pid=''
+            fi
+            for i in {1..20}; do
+              if ! curl -fsS http://127.0.0.1:4188/api/health >/dev/null 2>&1; then return 0; fi
+              sleep 0.1
+            done
+            echo 'Le serveur de test occupe encore le port 4188 après arrêt.' >&2
+            return 1
+          }
+          cleanup() {
+            stop_server || true
+            cat /tmp/2m-node-pg.log 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          setsid npm start >/tmp/2m-node-pg.log 2>&1 &
+          pid=$!
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4188/api/health >/tmp/health-pg.json; then break; fi
+            sleep 0.5
+          done
+          grep -q '"database":"postgresql"' /tmp/health-pg.json
+          grep -q '"zoneAccess":true' /tmp/health-pg.json
+          node scripts/security-e2e.mjs
+          node scripts/cable-route-e2e.mjs
+          stop_server
+
+          setsid npm start >>/tmp/2m-node-pg.log 2>&1 &
+          pid=$!
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4188/api/health >/tmp/health-pg-restart.json; then break; fi
+            sleep 0.5
+          done
+          node scripts/security-restart-e2e.mjs
+          stop_server
+
+          setsid env PLATFORM_ADMIN_PASSWORD='E2e-Admin-Rotated-2026!' PLATFORM_ADMIN_RESET_VERSION='e2e-reset-v2' npm start >>/tmp/2m-node-pg.log 2>&1 &
+          pid=$!
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4188/api/health >/tmp/health-pg-reset.json; then break; fi
+            sleep 0.5
+          done
+          PLATFORM_ADMIN_PASSWORD='E2e-Admin-Rotated-2026!' PLATFORM_ADMIN_RESET_VERSION='e2e-reset-v2' E2E_OLD_ADMIN_PASSWORD='E2e-Admin-Password-2026!' node scripts/admin-recovery-e2e.mjs
+          E2E_ADMIN_PASSWORD='E2e-Admin-Rotated-2026!' node scripts/inventory-replace-e2e.mjs
+          stop_server
+
+          setsid env PLATFORM_ADMIN_PASSWORD='E2e-Admin-Rotated-2026!' PLATFORM_ADMIN_RESET_VERSION='e2e-reset-v2' npm start >>/tmp/2m-node-pg.log 2>&1 &
+          pid=$!
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4188/api/health >/tmp/health-pg-inventory-restart.json; then break; fi
+            sleep 0.5
+          done
+          E2E_ADMIN_PASSWORD='E2e-Admin-Rotated-2026!' E2E_VERIFY_ONLY='1' node scripts/inventory-replace-e2e.mjs
+
+      # #164 — la boucle « synced → reconcile → write → resync » ne doit pas revenir.
+      # `scripts/churn-instrumentation.mjs` mesurait déjà, mais se terminait par
+      # `process.exit(0)` quoi qu'elle trouve : l'intégration serait restée verte avec la
+      # boucle revenue. Elle rend maintenant 1 quand le dernier cycle — instantané
+      # IDENTIQUE, sans action utilisateur — produit encore un événement, une écriture ou
+      # une mutation réseau.
+      - name: "#164 — aucune réécriture au repos après convergence"
+        shell: bash
+        env:
+          PORT: '4189'
+          # Une base NEUVE, pas celle que les étapes précédentes ont déjà fait converger :
+          # sur une base convergée le client n'a plus rien à ensemencer, la sonde ne mesure
+          # rien, et « aucune écriture au repos » ne prouverait rien. Mesuré : 0 geste sur
+          # les trois cycles, contre 16 sur une base neuve.
+          ADMIN_DATABASE_URL: postgresql://tech:techpass@127.0.0.1:5432/postgres
+          DATABASE_URL: postgresql://tech:techpass@127.0.0.1:5432/churn_164
+          PLATFORM_ADMIN_USERNAME: churn-admin
+          PLATFORM_ADMIN_PASSWORD: Churn-Admin-Password-2026!
+          PLATFORM_ADMIN_FULLNAME: Churn Admin
+          PLATFORM_ADMIN_RESET_VERSION: churn-reset-v1
+          SESSION_SECRET: ci-session-secret-2m-tech-2026-very-long
+          E2E_BASE_URL: http://127.0.0.1:4189
+        run: |
+          set -euo pipefail
+          pid=''
+          cleanup() {
+            if [[ -n "${pid:-}" ]]; then
+              kill -TERM -- "-$pid" 2>/dev/null || true
+              wait "$pid" 2>/dev/null || true
+            fi
+            cat /tmp/2m-node-churn.log 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          node -e "
+            const { Client } = require('pg');
+            const client = new Client({ connectionString: process.env.ADMIN_DATABASE_URL });
+            client.connect()
+              .then(() => client.query('CREATE DATABASE churn_164'))
+              .catch(error => { if (!/already exists/i.test(error.message)) throw error; })
+              .finally(() => client.end());
+          "
+
+          setsid npm start >/tmp/2m-node-churn.log 2>&1 &
+          pid=$!
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:4189/api/health >/tmp/health-churn.json; then break; fi
+            sleep 0.5
+          done
+          grep -q '"database":"postgresql"' /tmp/health-churn.json
+          node scripts/churn-instrumentation.mjs

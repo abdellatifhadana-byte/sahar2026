@@ -1,0 +1,68 @@
+/* 2M TECH — notifications toast : finition visuelle uniquement */
+.notification-center {
+  top: 88px !important;
+  right: 24px !important;
+  width: min(340px, calc(100vw - 32px)) !important;
+  gap: 9px !important;
+  z-index: 2600 !important;
+  pointer-events: none;
+}
+
+.notification-center .notification {
+  min-height: 58px;
+  padding: 13px 14px !important;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 14px !important;
+  box-shadow: 0 12px 30px rgba(15,47,73,.18) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto;
+}
+
+.notification-center .notification-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 11px !important;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  background: rgba(255,255,255,.18);
+  font-size: 15px !important;
+}
+
+.notification-center .notification-content {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 650;
+}
+
+.notification-center .notification-close {
+  width: 28px;
+  height: 28px;
+  margin-left: 8px !important;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 18px !important;
+}
+
+.notification-center .notification-close:hover {
+  background: rgba(255,255,255,.16);
+}
+
+.notification-center .notification-success { background: rgba(28,181,106,.96) !important; }
+.notification-center .notification-error   { background: rgba(229,72,79,.97) !important; }
+.notification-center .notification-warning { background: rgba(224,142,27,.97) !important; }
+.notification-center .notification-info    { background: rgba(35,142,209,.97) !important; }
+
+@media (max-width: 760px) {
+  .notification-center {
+    top: 76px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+  }
+}

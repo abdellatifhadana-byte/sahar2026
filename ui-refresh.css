@@ -1,0 +1,818 @@
+/* 2M TECH — rafraîchissement visuel 2026
+ * Couche d'interface uniquement : aucun contrat métier, aucune route, aucune donnée.
+ */
+
+:root {
+  --ui-navy: #0f2f49;
+  --ui-navy-2: #163f5f;
+  --ui-blue: #247bad;
+  --ui-blue-2: #3c91c3;
+  --ui-blue-soft: #eef6fb;
+  --ui-canvas: #f4f7fb;
+  --ui-surface: #ffffff;
+  --ui-text: #1f2f3d;
+  --ui-muted: #6f7f8d;
+  --ui-border: #e4ebf2;
+  --ui-danger: #ea5148;
+  --ui-success: #2d9d69;
+  --ui-warning: #e6a23c;
+  --ui-shadow-sm: 0 4px 14px rgba(19, 54, 82, .07);
+  --ui-shadow: 0 14px 38px rgba(19, 54, 82, .10);
+  --ui-radius: 16px;
+}
+
+html { background: var(--ui-canvas); }
+body { background: var(--ui-canvas); }
+
+/* ---------- Identité visuelle / logo ---------- */
+.admin-header > div:first-child::before,
+.responsible-header > div:first-child::before {
+  content: "";
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: inline-block;
+  border-radius: 12px;
+  background: rgba(255,255,255,.96) url("images/2m-logo.webp") center / 34px 34px no-repeat;
+  box-shadow: 0 5px 18px rgba(4, 23, 39, .18);
+}
+
+.admin-header > div:first-child,
+.responsible-header > div:first-child {
+  display: flex !important;
+  align-items: center;
+  gap: 12px !important;
+}
+
+.tech-logo,
+#app img[src$="assets/images/2m-logo.webp"] {
+  content: url("images/2m-logo.webp");
+}
+
+.tech-logo {
+  width: 44px !important;
+  height: 44px !important;
+  object-fit: contain;
+  padding: 5px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.96);
+  box-shadow: var(--ui-shadow-sm);
+  margin-right: 0 !important;
+}
+
+/* ---------- Admin : structure ---------- */
+.admin-page {
+  min-height: 100vh;
+  color: var(--ui-text);
+  background:
+    radial-gradient(circle at 83% -10%, rgba(57, 142, 194, .11), transparent 32%),
+    var(--ui-canvas);
+}
+
+.admin-header {
+  min-height: 76px;
+  gap: 22px;
+  position: sticky !important;
+  top: 0;
+  z-index: 1000 !important;
+}
+
+.admin-header h1 {
+  font-size: 1.35rem !important;
+  letter-spacing: .2px !important;
+  white-space: nowrap;
+}
+
+.admin-header .btn-icon {
+  color: rgba(255,255,255,.95) !important;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  transition: background .18s ease, transform .18s ease;
+}
+.admin-header .btn-icon:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,.13);
+  transform: translateY(-1px);
+}
+
+/* =============================================================================
+   L'EN-TÊTE TIENT DANS SA LARGEUR — de 1920 à 1024, sans largeur par résolution.
+
+   MESURÉ SUR LA BASE 60c1bc2
+   --------------------------
+   Le contenu de `.admin-header` demandait 1 581 px quelle que soit la fenêtre :
+   à 1440 comme à 1366, le bouton de déconnexion (bord droit 1 579) tombait donc
+   HORS de l'en-tête, et le bloc identité était coupé. La cause tient en deux
+   déclarations : `.header-right { min-width: max-content }` — qui interdisait
+   tout resserrement — et un bloc identité posé en RANGÉE, nom et rôle côte à
+   côte, large de 390 px à lui seul.
+
+   CE QUI EST FAIT
+   ---------------
+   Rien n'est figé par résolution. Le bloc identité s'empile (nom au-dessus du
+   rôle) : il retombe à la largeur du plus long des deux, soit environ 200 px de
+   gagnés. La recherche devient l'élément élastique — c'est elle qui cède en
+   premier, parce qu'elle reste utilisable étroite. Les groupes acceptent enfin
+   de se resserrer (`min-width: 0`), et chaque libellé qui atteindrait sa limite
+   s'abrège proprement plutôt que d'être coupé au milieu d'une lettre.
+   ========================================================================== */
+.admin-header { column-gap: 14px; }
+.admin-header > div { min-width: 0; }
+
+.admin-header .header-center {
+  /* Élastique, et la première à céder : une recherche étroite reste une recherche. */
+  flex: 1 1 90px !important;
+  min-width: 0;
+  max-width: 760px;
+  margin-inline: auto;
+}
+#global-search { width: 100%; min-width: 0; }
+
+#global-search {
+  height: 42px;
+  margin: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 7px 20px rgba(7, 34, 55, .08);
+  transition: box-shadow .18s ease, transform .18s ease;
+}
+#global-search:focus {
+  border-color: rgba(255,255,255,.75) !important;
+  box-shadow: 0 0 0 4px rgba(255,255,255,.16), 0 9px 24px rgba(7, 34, 55, .12);
+  transform: translateY(-1px);
+}
+
+/* `min-width: max-content` interdisait tout resserrement : c'est la déclaration qui
+   poussait la déconnexion hors de l'écran à 1440 et 1366. */
+.admin-header .header-right { min-width: 0; flex: 0 1 auto; flex-wrap: nowrap; }
+/* Les contrôles gardent leur taille : un bouton comprimé coupe son libellé au milieu
+   d'un mot, et une pastille d'avatar écrasée n'est plus un rond. Ce qui cède, c'est la
+   recherche — puis, plus bas, le libellé des deux actions longues. */
+.admin-header .header-right > * { flex: 0 0 auto; }
+/* L'identité ne se comprime PAS : elle est bornée par `max-width`, jamais rabotée de
+   trois pixels par un déficit de place. Ce qui cède reste la recherche. */
+.admin-header .header-right > .user-info { flex: 0 0 auto; }
+.admin-header .user-avatar { flex: 0 0 38px; }
+.admin-header .btn { white-space: nowrap; }
+.admin-header .btn {
+  min-height: 38px;
+  border-radius: 10px !important;
+  box-shadow: none;
+}
+.admin-header .btn-map {
+  backdrop-filter: blur(8px);
+}
+/* Les OUTILS de l'en-tête (thème) sont discrets : ce ne sont pas des actions de
+   même rang que « Carte interactive » ou « Preuves terrain ». */
+.admin-header .btn.gray {
+  background: transparent !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  color: rgba(255,255,255,.82) !important;
+}
+.admin-header .btn.gray:hover { background: rgba(255,255,255,.14) !important; color: #fff !important; }
+
+.admin-header .user-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+}
+/* Le bloc d'identité s'aligne sur la hauteur des contrôles voisins : sans
+   `min-height`, il retombait à 15 px là où tout le reste fait 38, et la ligne de
+   l'en-tête se cassait. */
+.admin-header .user-info {
+  /* Empilé, et non en rangée : 390 px de large deviennent la largeur du plus long
+     des deux libellés. C'est ce qui fait tenir l'en-tête entier à 1366 et à 1280. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 0;
+  max-width: 230px;
+  min-height: 38px;
+  line-height: 1.25;
+}
+.admin-header .user-name,
+.admin-header .user-role {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-header .user-name {
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 13.5px;
+}
+.admin-header .user-role {
+  color: rgba(255,255,255,.86);
+  font-size: 11.5px;
+  text-transform: capitalize;
+}
+
+.admin-sidebar {
+  bottom: 0;
+  min-height: auto !important;
+  backdrop-filter: blur(14px);
+  z-index: 120 !important;
+}
+
+.admin-sidebar .sidebar-menu li { margin-bottom: 5px !important; }
+.admin-sidebar .sidebar-menu a {
+  position: relative;
+  min-height: 42px;
+  gap: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: background .16s ease, color .16s ease, transform .16s ease, box-shadow .16s ease !important;
+}
+.admin-sidebar .sidebar-menu a i {
+  width: 22px;
+  min-width: 22px;
+  color: #577084;
+  text-align: center;
+  transition: color .16s ease, transform .16s ease;
+}
+.admin-sidebar .sidebar-menu a:hover {
+  background: #eef5fa !important;
+  color: var(--ui-navy) !important;
+  transform: translateX(2px);
+  box-shadow: none !important;
+}
+.admin-sidebar .sidebar-menu a:hover i { color: var(--ui-blue); transform: scale(1.04); }
+.admin-sidebar .sidebar-menu a.active {
+  color: #fff !important;
+}
+.admin-sidebar .sidebar-menu a.active i { color: #fff; }
+.admin-sidebar .sidebar-menu a.active::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  width: 4px;
+  height: 22px;
+  border-radius: 0 8px 8px 0;
+  background: #d94343;
+}
+
+.admin-sidebar .system-status {
+  margin: 16px 7px 0;
+  padding: 11px 10px;
+  border-top: 1px solid var(--ui-border);
+  color: #607080;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.admin-sidebar .system-status .fa-circle {
+  font-size: 9px;
+  color: var(--ui-success);
+  filter: drop-shadow(0 0 5px rgba(45,157,105,.32));
+}
+
+.admin-content {
+  background: transparent !important;
+}
+
+/* ---------- Dashboard ---------- */
+.dashboard-main { max-width: 1500px; margin: 0 auto; }
+.dashboard-cards {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
+  gap: 13px !important;
+  justify-content: stretch !important;
+  margin-bottom: 20px !important;
+}
+
+.stat-card {
+  min-width: 0 !important;
+  max-width: none !important;
+  min-height: 112px !important;
+  padding: 15px 14px !important;
+  display: grid !important;
+  grid-template-columns: 42px 1fr !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+  row-gap: 2px !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 15px !important;
+  background: rgba(255,255,255,.97) !important;
+  color: var(--ui-text) !important;
+  box-shadow: var(--ui-shadow-sm) !important;
+  text-align: left;
+  overflow: hidden;
+  position: relative;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease !important;
+}
+.stat-card::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: var(--card-accent, var(--ui-blue));
+  opacity: .78;
+}
+.stat-card:not(:disabled):hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(36,123,173,.28) !important;
+  box-shadow: var(--ui-shadow) !important;
+}
+.stat-card:disabled { cursor: default; opacity: .82; }
+.stat-card i {
+  grid-row: 1 / 3;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card-accent, var(--ui-blue)) 12%, white);
+  color: var(--card-accent, var(--ui-blue));
+  font-size: 20px;
+}
+.stat-card strong {
+  align-self: end;
+  font-size: 25px;
+  line-height: 1;
+  color: #162a3b;
+  font-weight: 800;
+}
+.stat-card span {
+  align-self: start;
+  color: #677988;
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 600;
+}
+.stat-card:nth-child(2) { --card-accent: #2d9d69; }
+.stat-card:nth-child(3) { --card-accent: #e6a23c; }
+.stat-card:nth-child(4) { --card-accent: #e45850; }
+.stat-card:nth-child(5) { --card-accent: #426fa6; }
+.stat-card:nth-child(6) { --card-accent: #6676b3; }
+.stat-card:nth-child(7) { --card-accent: #3b8d92; }
+.stat-card:nth-child(8) { --card-accent: #287bb8; }
+.stat-card:nth-child(9) { --card-accent: #d94c4c; }
+.stat-card:nth-child(10) { --card-accent: #7b6ab2; }
+.stat-card:nth-child(11) { --card-accent: #b27b43; }
+.stat-card:nth-child(12) { --card-accent: #497aaa; }
+.stat-card:nth-child(13) { --card-accent: #718096; }
+.stat-card:nth-child(14) { --card-accent: #bd6d43; }
+
+.dashboard-flex {
+  display: grid !important;
+  grid-template-columns: minmax(260px,.9fr) minmax(320px,1.2fr) minmax(320px,1.2fr) !important;
+  gap: 16px !important;
+  margin-bottom: 16px !important;
+}
+.dashboard-section {
+  min-width: 0 !important;
+  min-height: 245px !important;
+  padding: 20px !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: var(--ui-radius) !important;
+  background: rgba(255,255,255,.98) !important;
+  box-shadow: var(--ui-shadow-sm) !important;
+}
+.dashboard-section h3 {
+  margin: 0 0 16px !important;
+  color: #1b3245;
+  font-size: 15px;
+  font-weight: 800;
+}
+.dashboard-section p {
+  padding: 9px 0;
+  margin: 0;
+  border-bottom: 1px solid #eef2f6;
+  color: #5f7180;
+  font-size: 13px;
+}
+.dashboard-section p:last-child { border-bottom: 0; }
+.dashboard-section .empty-note {
+  min-height: 150px;
+  display: grid;
+  place-items: center;
+  color: #8b99a6 !important;
+  font-style: normal;
+}
+#equipments-status-chart {
+  display: block;
+  max-width: 205px !important;
+  max-height: 205px !important;
+  margin: 14px auto 0;
+}
+
+.dashboard-main > .dashboard-section:last-child { min-height: 150px !important; }
+.room-stat-card {
+  width: 100%;
+  min-height: 42px;
+  margin: 6px 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid var(--ui-border) !important;
+  border-radius: 10px !important;
+  background: #fbfdff !important;
+  color: #405568;
+  box-shadow: none !important;
+  text-align: left;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease !important;
+}
+.room-stat-card:hover {
+  background: #f2f8fc !important;
+  border-color: #b9d8e9 !important;
+  transform: translateX(2px) !important;
+}
+
+/* ---------- Éléments généraux de l'admin ---------- */
+.admin-content .card,
+.admin-content .data-table,
+.admin-content .tableau,
+.admin-content .user-table {
+  border-color: var(--ui-border);
+}
+.admin-content .card {
+  border: 1px solid var(--ui-border);
+  box-shadow: var(--ui-shadow-sm);
+}
+.admin-content .btn {
+  border-radius: 10px;
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+}
+.admin-content .btn:not(:disabled):hover { transform: translateY(-1px); }
+.admin-content input,
+.admin-content select,
+.admin-content textarea {
+  border-radius: 10px;
+  border-color: #dbe4ec;
+  background: #fff;
+}
+.admin-content input:focus,
+.admin-content select:focus,
+.admin-content textarea:focus {
+  border-color: #65a5c9;
+  box-shadow: 0 0 0 3px rgba(36,123,173,.10);
+}
+
+/* ---------- Technicien ---------- */
+.smart-tech-board { background: var(--ui-canvas) !important; }
+.smart-tech-header {
+  margin: 0 !important;
+  min-height: 76px;
+  padding: 12px 26px !important;
+  background: linear-gradient(115deg, #0d3843, #13767a 55%, #1c9697) !important;
+  box-shadow: 0 8px 28px rgba(15,65,71,.16) !important;
+  border-radius: 0 0 18px 18px;
+}
+.smart-tech-header .header-left { gap: 12px; }
+.smart-tech-header .header-left h1 { color: #fff !important; font-size: 1.3rem; }
+.smart-tech-header #global-tech-search {
+  height: 42px;
+  margin: 0;
+  border-radius: 12px;
+  background: rgba(255,255,255,.96);
+}
+.smart-tech-header .user-name { color: #fff !important; }
+.smart-tech-header .user-block:hover { background: rgba(255,255,255,.11) !important; }
+.smart-dashboard { padding: 26px !important; }
+.tech-stat-card,
+.tech-card {
+  border: 1px solid var(--ui-border);
+  box-shadow: var(--ui-shadow-sm) !important;
+}
+.tech-stat-card:hover { box-shadow: var(--ui-shadow) !important; }
+
+/* ---------- Responsable ----------
+
+   LA COQUE PARTAGE VRAIMENT LE VIEWPORT.
+
+   Mesuré sur `60c1bc2`, avant ce correctif : `#responsible-content` commençait
+   EXACTEMENT à la hauteur de la fenêtre — y=900 à 1440×900, y=1080 à 1920×1080,
+   y=768 à 1366×768. Toutes les sections du responsable paraissaient vides, et
+   `window.scrollTo()` n'atteignait rien d'utile.
+
+   La cause n'était pas une marge à corriger, c'était une coque qui n'existait pas :
+   `.responsible-page` était un simple bloc, `.responsible-sidebar` restait en flux
+   (son `top: 76px` ne s'appliquait à rien, faute de `position`) et occupait à elle
+   seule `calc(100vh - 76px)`. Le `<main>`, bloc suivant, commençait donc sous elle —
+   c'est-à-dire à 100vh — pendant que son `margin-left: 220px` supposait, lui, une
+   barre HORS du flux. Les deux moitiés de la mise en page se contredisaient.
+
+   La coque est donc déclarée une fois, en grille : l'en-tête sur toute la largeur,
+   la navigation et le contenu côte à côte sur la rangée suivante. Aucun décalage
+   par résolution n'est nécessaire — la largeur du rail est une variable, et la
+   rangée de contenu (`1fr`, donc `minmax(auto, 1fr)`) grandit au-delà de la fenêtre
+   quand le contenu l'exige : le défilement vertical redevient celui de la page.
+   ---------- */
+.responsible-page {
+  --resp-rail: 220px;
+  display: grid;
+  grid-template-columns: var(--resp-rail) minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background: var(--ui-canvas);
+}
+.responsible-header {
+  grid-column: 1 / -1;
+  min-height: 76px;
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #fff;
+  background: linear-gradient(115deg, #5c3a20, #bd6e28 54%, #d98738);
+  box-shadow: 0 8px 28px rgba(86,48,18,.15);
+  border-radius: 0 0 18px 18px;
+}
+.responsible-header h1 { margin:0; font-size:1.3rem; }
+/* Les commandes de droite s'alignent comme celles de l'administrateur : une rangée, un
+   espacement unique, et rien qui déborde quand le nom du compte est long. */
+.responsible-header-actions {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.responsible-header .user-badge {
+  display:inline-block;
+  padding:8px 13px;
+  margin-right:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  max-width:280px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+/* Le rôle se lit d'un coup d'œil, sans se confondre avec le nom du compte. */
+.responsible-header .user-badge-role {
+  background:rgba(255,255,255,.26);
+  font-weight:700;
+  letter-spacing:.2px;
+}
+.responsible-header #responsible-theme {
+  min-width:38px;
+  height:38px;
+  padding:0 11px;
+}
+.responsible-sidebar {
+  grid-column: 1;
+  grid-row: 2;
+  /* La barre suit la page ; elle reste néanmoins visible quand le contenu est long,
+     sans quoi la navigation disparaîtrait au premier défilement. */
+  position: sticky;
+  top: 0;
+  align-self: start;
+  max-height: 100vh;
+  overflow-y: auto;
+  width:auto !important;
+  min-height:0 !important;
+  background:#fff !important;
+  border-right:1px solid var(--ui-border);
+  box-shadow:7px 0 28px rgba(28,59,82,.045);
+}
+.responsible-content {
+  grid-column: 2;
+  grid-row: 2;
+  /* La grille place le contenu : la marge d'antan dupliquerait le rail. */
+  margin-left:0 !important;
+  min-width: 0;
+  padding:28px 30px !important;
+}
+.responsible-sidebar .sidebar-menu { padding-top:14px; padding-bottom:14px; }
+/* La première entrée touchait le bord de l'en-tête : elle paraissait coupée. */
+.responsible-sidebar .sidebar-menu a { border-radius:11px; margin:0 10px 5px; }
+
+/* ---------- Visiteur : une coque, pas une page ----------
+
+   Le visiteur ouvrait sur quatre boutons empilés au centre d'un écran vide, chacun avec
+   sa couleur écrite à la main dans le gabarit. Rien ne nommait la plateforme, ni le compte
+   connecté, ni le rôle — les trois repères que les trois autres coques affichent. Sur un
+   vidéoprojecteur, l'écran ne se rattachait à rien.
+
+   La même ossature qu'ailleurs : une en-tête pleine largeur, puis le contenu. Les couleurs
+   viennent des classes `btn` existantes, plus d'un style par bouton.
+   ---------- */
+.visitor-page {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background: var(--ui-canvas);
+}
+.visitor-header {
+  min-height: 76px;
+  padding: 12px 28px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #fff;
+  background: linear-gradient(115deg, #1d3b52, #2874a6 56%, #3a90c6);
+  box-shadow: 0 8px 28px rgba(18, 52, 78, .16);
+  border-radius: 0 0 18px 18px;
+}
+.visitor-brand { display:flex; align-items:center; gap:14px; min-width:0; }
+.visitor-brand-logo {
+  width:42px; height:42px;
+  border-radius:11px;
+  background:#fff;
+  padding:4px;
+  object-fit:contain;
+  flex:0 0 auto;
+}
+.visitor-header h1 { margin:0; font-size:1.3rem; }
+.visitor-header-actions {
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.visitor-header .user-badge {
+  display:inline-block;
+  padding:8px 13px;
+  border-radius:999px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  max-width:280px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.visitor-header .user-badge-role { background:rgba(255,255,255,.26); font-weight:700; letter-spacing:.2px; }
+.visitor-splash {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:10px;
+  padding:clamp(36px, 9vh, 110px) 22px 56px;
+  text-align:center;
+}
+.visitor-splash h2 {
+  margin:0;
+  color:#1d5b85;
+  font-size:clamp(22px, 2.4vw, 32px);
+  letter-spacing:1.4px;
+}
+.visitor-splash p { margin:0 0 8px; font-size:17px; color:var(--ui-muted, #5b7385); }
+.visitor-actions {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  max-width:820px;
+}
+/* Les boutons posés par d'autres modules — « Mes accès » vient de
+   `zone-access-integration.js` — portent leurs marges en style en ligne. Elles décalaient
+   d'une douzaine de pixels le seul bouton qui n'est pas écrit dans ce gabarit : la rangée
+   les neutralise ici plutôt que d'aller les corriger un par un dans chaque module. */
+.visitor-actions .btn { border-radius:14px; margin-top:0 !important; }
+.visitor-actions .visitor-action-main { padding:12px 34px; font-size:18px; }
+
+body.dark-theme .visitor-page { background:#101a22; }
+body.dark-theme .visitor-splash h2 { color:#9fd0ec; }
+
+@media (max-width: 760px) {
+  .visitor-header { padding:10px 14px; border-radius:0 0 14px 14px; }
+  .visitor-header h1 { font-size:1.05rem; }
+  .visitor-actions .btn { width:100%; justify-content:center; }
+}
+
+/* ---------- Technicien : ce qui est local le dit ----------
+
+   Deux surfaces du tableau technicien ne quittent jamais l'appareil — les tâches et les
+   notes. Elles s'annonçaient comme un planning et comme un canal d'équipe. La mention
+   ci-dessous accompagne désormais leur titre : discrète, mais lue avant qu'on écrive
+   dedans. Le ton est celui d'une précision, pas d'une alerte : rien n'est en panne.
+   ---------- */
+.tech-local-only {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: -2px 0 10px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--ui-muted, #6b8296);
+}
+.tech-local-only i { opacity: .75; }
+body.dark-theme .tech-local-only { color: #9fb0bd; }
+
+/* ---------- Visiteur ---------- */
+#app > div[style*="height:100vh"] {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(45,136,187,.14), transparent 28%),
+    radial-gradient(circle at 88% 88%, rgba(18,71,107,.10), transparent 28%),
+    var(--ui-canvas);
+}
+#app > div[style*="height:100vh"] > img {
+  width: 128px !important;
+  padding: 12px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(18,54,82,.13);
+}
+
+/* ---------- Thème sombre ---------- */
+body.dark-theme .admin-page,
+body.dark-theme .smart-tech-board,
+body.dark-theme .responsible-page {
+  --ui-canvas:#121b24;
+  --ui-surface:#1b2732;
+  --ui-text:#eaf1f6;
+  --ui-muted:#a8b6c2;
+  --ui-border:#2b3946;
+  background:#121b24 !important;
+  color:#eaf1f6;
+}
+body.dark-theme .admin-sidebar,
+body.dark-theme .responsible-sidebar { background:rgba(24,35,45,.96) !important; border-color:#2b3946 !important; }
+/* Le fond sombre de la barre latérale du responsable était déjà apparié juste au-dessus,
+   mais pas l'encre : mesuré au navigateur en thème sombre, ses onze entrées s'affichaient
+   en gris foncé sur fond gris foncé — lisibles seulement au survol. Les deux coques
+   partagent désormais la même règle, comme elles partagent déjà le même fond. */
+body.dark-theme .admin-sidebar .sidebar-menu a,
+body.dark-theme .responsible-sidebar .sidebar-menu a { color:#c8d4de !important; }
+body.dark-theme .admin-sidebar .sidebar-menu a i,
+body.dark-theme .responsible-sidebar .sidebar-menu a i { color:#91a5b5; }
+body.dark-theme .stat-card,
+body.dark-theme .dashboard-section,
+body.dark-theme .admin-content .card,
+body.dark-theme .tech-stat-card,
+body.dark-theme .tech-card { background:#1b2732 !important; border-color:#2b3946 !important; color:#eaf1f6 !important; }
+body.dark-theme .stat-card strong,
+body.dark-theme .dashboard-section h3 { color:#eef5fa !important; }
+body.dark-theme .stat-card span,
+body.dark-theme .dashboard-section p { color:#aebbc5 !important; }
+body.dark-theme .room-stat-card { background:#18242e !important; color:#cbd6de; border-color:#2b3946 !important; }
+
+/* ---------- Responsive ---------- */
+/* Sous 1400 px, les deux ACTIONS longues de l'en-tête passent à leur icône seule —
+   le geste reste offert, son libellé cède la place. Le seuil porte sur l'espace
+   disponible, pas sur une résolution nommée : c'est la largeur à partir de laquelle
+   les deux libellés ne tiennent plus avec l'identité complète. */
+@media (max-width: 1400px) {
+  .admin-header .btn-map,
+  .admin-header #field-evidence-intake-open {
+    font-size: 0 !important;
+    padding-inline: 12px !important;
+  }
+  .admin-header .btn-map i,
+  .admin-header #field-evidence-intake-open i { font-size: 15px; }
+}
+
+/* Sous 1100 px, le titre reprend la forme courte déjà employée en mode réduit : la
+   marque reste lue, ses deux cent pixels reviennent à l'identité et aux actions. */
+@media (max-width: 1100px) {
+  .admin-header #platform-title { font-size: 0 !important; }
+  .admin-header #platform-title::after { content: "2M TECH"; font-size: 18px; }
+}
+
+@media (max-width: 1180px) {
+  .admin-header { padding-inline: 18px !important; gap: 12px; }
+  .admin-header .header-right { gap: 8px !important; }
+  /* Le rôle RESTE lisible : le masquer était l'autre moitié du constat P0-6. */
+  .dashboard-flex { grid-template-columns: 1fr 1fr !important; }
+  .dashboard-flex .dashboard-section:first-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 900px) {
+  .admin-sidebar { width: 62px !important; padding-inline: 7px !important; }
+  .admin-sidebar .sidebar-menu a { justify-content:center; padding-inline:8px !important; }
+  .admin-sidebar .sidebar-menu a span,
+  .admin-sidebar .system-status span { display:none; }
+  .admin-sidebar .system-status { justify-content:center; padding-inline:0; }
+  .admin-content { margin-left:62px !important; padding:20px 16px 30px !important; }
+  .admin-header #platform-title { font-size:0 !important; }
+  .admin-header #platform-title::after { content:"2M TECH"; font-size:18px; }
+  .admin-header .btn-map { font-size:0; padding-inline:12px !important; }
+  .admin-header .btn-map i { font-size:15px; }
+  .dashboard-cards { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+  /* Le rail se resserre par la VARIABLE de la grille : la barre et le contenu ne
+     peuvent plus se désaccorder, puisqu'ils lisent la même valeur. */
+  .responsible-page { --resp-rail: 62px; }
+  .responsible-content { padding:20px 16px !important; }
+}
+
+@media (max-width: 640px) {
+  .admin-header { flex-wrap:wrap; min-height:auto; border-radius:0 0 14px 14px !important; }
+  .admin-header .header-center { order:3; flex-basis:100%; max-width:none; }
+  .admin-header .user-info { display:none; }
+  .admin-sidebar { display:none !important; }
+  .admin-content { margin-left:0 !important; padding:16px 10px 28px !important; }
+  .dashboard-cards { grid-template-columns:1fr 1fr !important; gap:9px !important; }
+  .stat-card { min-height:100px !important; grid-template-columns:36px 1fr !important; padding:12px 10px !important; }
+  .stat-card i { width:36px; height:36px; font-size:17px; }
+  .stat-card strong { font-size:22px; }
+  .dashboard-flex { grid-template-columns:1fr !important; }
+  .dashboard-flex .dashboard-section:first-child { grid-column:auto; }
+  .dashboard-section { min-height:210px !important; padding:16px !important; }
+  .smart-tech-header { flex-wrap:wrap; }
+  .smart-dashboard { padding:16px 10px !important; }
+}

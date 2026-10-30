@@ -1,0 +1,143 @@
+/* 2M TECH — Suite exploitation quotidienne */
+.ops-shell{display:grid;gap:18px}.ops-hero{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:22px;border:1px solid #dce8f1;border-radius:18px;background:linear-gradient(135deg,#f8fcff,#eef7fb)}.ops-hero h2{margin:0;color:#123e5d;font-size:24px}.ops-hero p{margin:6px 0 0;color:#617b8e}.ops-sync{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;background:#eef4f7;color:#49677a;border:1px solid #d6e3eb}.ops-sync::before{content:"";width:9px;height:9px;border-radius:50%;background:#8aa0af}.ops-sync.synced::before{background:#24a66a}.ops-sync.offline::before{background:#e08a2d}.ops-sync.error::before{background:#d84e5b}.ops-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.ops-stat{border:1px solid #dbe7ef;border-radius:15px;background:#fff;padding:17px;display:grid;gap:5px;box-shadow:0 8px 22px rgba(20,68,96,.06)}.ops-stat i{font-size:18px;color:#227fb8}.ops-stat strong{font-size:26px;color:#123e5d}.ops-stat span{font-size:12px;color:#708797}.ops-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}.ops-card{border:1px solid #dbe7ef;border-radius:16px;background:#fff;padding:18px;box-shadow:0 8px 22px rgba(20,68,96,.05)}.ops-card h3{margin:0 0 12px;color:#153f5d}.ops-card-sub{margin:-6px 0 14px;color:#71899a;font-size:13px}.ops-list{display:grid;gap:9px}.ops-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border-radius:11px;background:#f7fafc;border:1px solid #edf2f5}.ops-row-main{min-width:0}.ops-row strong{display:block;color:#183f59}.ops-row small{display:block;color:#7a8e9d;margin-top:3px}.ops-badge{padding:5px 8px;border-radius:999px;background:#edf4f8;color:#3d647c;font-size:11px;font-weight:800;white-space:nowrap}.ops-badge.critical{background:#fff0f1;color:#b73340}.ops-badge.watch{background:#fff7e8;color:#a16413}.ops-badge.ok{background:#eaf8f1;color:#1e8054}.ops-form{display:grid;gap:11px}.ops-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ops-form label{display:grid;gap:6px;font-size:12px;font-weight:750;color:#244d68}.ops-form input,.ops-form select,.ops-form textarea{width:100%;box-sizing:border-box;border:1px solid #cedde7;border-radius:10px;padding:10px 11px;background:#fbfdff;color:#173a52;font:inherit}.ops-form textarea{min-height:90px;resize:vertical}.ops-actions{display:flex;justify-content:flex-end;gap:9px}.ops-empty{padding:16px;border:1px dashed #ccdbe5;border-radius:12px;color:#748b9c;text-align:center;background:#fbfdfe}.ops-header-tools{display:flex;gap:8px;flex-wrap:wrap}.ops-modal{position:fixed;inset:0;z-index:65000;background:rgba(5,22,34,.66);backdrop-filter:blur(5px);display:grid;place-items:center;padding:20px}.ops-modal-card{width:min(1180px,calc(100vw - 30px));max-height:calc(100dvh - 30px);overflow:auto;background:#f6fafc;border-radius:18px;box-shadow:0 30px 90px rgba(4,24,38,.34);border:1px solid #d5e3ec}.ops-modal-head{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(255,255,255,.96);border-bottom:1px solid #dbe6ed}.ops-modal-body{padding:18px}.ops-close{border:0;background:#eef4f7;color:#365b72;border-radius:9px;width:36px;height:36px;cursor:pointer;font-size:20px}.ops-360-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:16px}.ops-facts{display:grid;grid-template-columns:1fr 1fr;gap:9px}.ops-fact{padding:11px;border-radius:10px;background:#f8fbfd;border:1px solid #e6eef3}.ops-fact small{display:block;color:#7b909f}.ops-fact strong{display:block;margin-top:3px;color:#173f5b;overflow-wrap:anywhere}.ops-flow{display:grid;gap:8px}.ops-flow-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px;align-items:center;padding:10px;border:1px solid #e0e9ef;border-radius:11px;background:#fbfdfe}.ops-flow-node{padding:9px 10px;background:#eef6fa;border-radius:9px;color:#214d68;overflow-wrap:anywhere}.ops-flow-arrow{color:#2c86bd;font-weight:900}.ops-qr-wrap{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.ops-qr-wrap img{width:120px;height:120px;border-radius:10px;border:1px solid #d7e3eb;background:#fff}.ops-search-modal{position:fixed;inset:0;z-index:66000;background:rgba(5,22,34,.54);backdrop-filter:blur(4px);display:flex;justify-content:center;align-items:flex-start;padding-top:8vh}.ops-search-card{width:min(760px,calc(100vw - 26px));max-height:80vh;overflow:hidden;border-radius:18px;background:#fff;box-shadow:0 28px 80px rgba(5,25,39,.32);display:grid;grid-template-rows:auto 1fr}.ops-search-box{padding:14px;border-bottom:1px solid #e0e8ee}.ops-search-box input{width:100%;box-sizing:border-box;border:1px solid #c8d9e4;border-radius:12px;padding:13px 14px;font-size:16px}.ops-search-results{overflow:auto;padding:10px;display:grid;gap:7px}.ops-search-result{width:100%;text-align:left;border:1px solid #e0e9ef;background:#fbfdfe;border-radius:11px;padding:11px 12px;cursor:pointer;display:flex;justify-content:space-between;gap:12px}.ops-search-result:hover{background:#eef7fb;border-color:#c8dfed}.ops-search-result strong{color:#173f5b}.ops-search-result small{display:block;color:#7a8e9c;margin-top:2px}.ops-entry-btn{display:inline-flex;align-items:center;gap:7px}.ops-header-sync{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:#edf3f7;border:1px solid #d7e4ec;font-size:11px;font-weight:800;color:#47687d}.ops-header-sync::before{content:"";width:8px;height:8px;border-radius:50%;background:#899eac}.ops-header-sync.synced::before{background:#25a86d}.ops-header-sync.offline::before{background:#e18a2c}.ops-header-sync.error::before{background:#d84f5b}.ops-scope-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 16px;border:1px solid #dbe7ef;border-radius:14px;background:#f7fbfd}.ops-scope-picker{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:750;color:#244d68}.ops-scope-picker select{border:1px solid #cedde7;border-radius:9px;padding:7px 10px;background:#fff;color:#173a52;font:inherit;font-weight:700;max-width:100%}.ops-scope-current{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:#edf4f8;color:#3d647c;font-size:11px;font-weight:800}body.dark-theme .ops-card,body.dark-theme .ops-stat,body.dark-theme .ops-modal-card,body.dark-mode .ops-card,body.dark-mode .ops-stat,body.dark-mode .ops-modal-card{background:#132735;color:#edf6fb;border-color:#345063}body.dark-theme .ops-hero,body.dark-mode .ops-hero{background:linear-gradient(135deg,#142a39,#193548);border-color:#355569}body.dark-theme .ops-hero h2,body.dark-theme .ops-card h3,body.dark-theme .ops-stat strong,body.dark-mode .ops-hero h2,body.dark-mode .ops-card h3,body.dark-mode .ops-stat strong{color:#eef8fd}body.dark-theme .ops-row,body.dark-theme .ops-fact,body.dark-theme .ops-flow-row,body.dark-mode .ops-row,body.dark-mode .ops-fact,body.dark-mode .ops-flow-row{background:#10222f;border-color:#2d4758}body.dark-theme .ops-search-card,body.dark-mode .ops-search-card{background:#152a38;color:#eef8fd}body.dark-theme .ops-scope-bar,body.dark-mode .ops-scope-bar{background:#10222f;border-color:#2d4758}body.dark-theme .ops-scope-picker,body.dark-mode .ops-scope-picker{color:#cfe3ef}body.dark-theme .ops-scope-picker select,body.dark-mode .ops-scope-picker select{background:#132735;color:#edf6fb;border-color:#345063}@media(max-width:980px){.ops-grid{grid-template-columns:repeat(2,1fr)}.ops-layout,.ops-360-grid{grid-template-columns:1fr}}@media(max-width:620px){.ops-grid,.ops-form-grid,.ops-facts{grid-template-columns:1fr}.ops-hero{flex-direction:column}.ops-scope-bar{flex-direction:column;align-items:stretch}.ops-scope-picker select{width:100%}.ops-modal{padding:8px}.ops-flow-row{grid-template-columns:1fr}.ops-flow-arrow{text-align:center;transform:rotate(90deg)}}
+
+/* =========================================================================
+   PORTS DE LA GRILLE CENTRALE, dans la Fiche 360 d'un équipement
+   La fiche ne montrait qu'un NOMBRE — « Ports grille ↔ physiques validés : 3 ».
+   Un numéro seul ne permet ni de repiquer un signal, ni de retrouver une entrée
+   sur la face arrière : c'est pourtant ce qu'un technicien vient chercher.
+   ========================================================================= */
+.gc-ports-title{margin:16px 0 6px;font-size:13px;display:flex;align-items:center;gap:7px}
+.gc-ports-title i{color:var(--primary)}
+/* Les matrices de grande capacité produisent des tableaux larges : ils défilent DANS leur
+   cadre, sans jamais faire défiler la fiche entière de côté. Un commentaire CSS est servi
+   au même titre que la règle qu'il explique — il ne cite donc aucune valeur d'installation. */
+.gc-ports-wrap{overflow-x:auto;border:1px solid rgba(120,150,175,.24);border-radius:9px}
+.gc-ports{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
+.gc-ports th{position:sticky;top:0;text-align:left;padding:7px 9px;font-size:10px;letter-spacing:.8px;
+  text-transform:uppercase;color:#7b8b98;background:rgba(125,165,200,.12);white-space:nowrap}
+.gc-ports td{padding:7px 9px;border-top:1px solid rgba(120,150,175,.16)}
+.gc-ports tbody tr:hover{background:rgba(125,165,200,.09)}
+.gc-port-num{font-variant-numeric:tabular-nums;font-weight:700}
+.gc-port-dir{display:inline-block;padding:1px 7px;border-radius:99px;font-size:10px;letter-spacing:.6px}
+.gc-port-dir.gc-input{background:rgba(46,134,222,.16);color:#1b6fc0}
+.gc-port-dir.gc-output{background:rgba(22,160,133,.16);color:#0e7a63}
+body.dark-theme .gc-port-dir.gc-input{color:#79c0ff}
+body.dark-theme .gc-port-dir.gc-output{color:#5fd0b4}
+
+/* =========================================================================
+   FICHE 360 — PANNEAU CONTEXTUEL au lieu d'une fenêtre qui recouvre tout
+
+   Mesuré avant, sur un écran de 1600 px : la carte occupait 1180 px au milieu
+   et le tableau était INACCESSIBLE — `elementFromPoint` sur la première ligne
+   rendait la fenêtre, pas la ligne. Pour comparer deux appareils il fallait
+   fermer, retrouver sa ligne, rouvrir. Sur 448 équipements, c'est le geste le
+   plus répété de la plateforme.
+
+   Le contenu, l'identifiant et la structure interne ne changent pas : quatorze
+   modules y accrochent leurs panneaux. Seule la POSITION change.
+   ========================================================================= */
+
+/* ---- Grand écran : panneau accosté à droite ---- */
+.ops-modal.is-side-panel{
+  inset:0 0 0 auto;              /* colonne de droite, hauteur pleine */
+  display:block;padding:0;
+  background:transparent;         /* aucun voile : le tableau reste lisible */
+  backdrop-filter:none;
+  /* LE POINT CENTRAL : le fond laisse passer les clics, donc on sélectionne
+     l'équipement suivant dans le tableau sans fermer la fiche. */
+  pointer-events:none;
+}
+.ops-modal.is-side-panel .ops-modal-card{
+  pointer-events:auto;            /* la carte, elle, reste interactive */
+  width:min(520px,42vw);height:100dvh;max-height:none;margin-left:auto;
+  border-radius:0;border:0;border-left:1px solid #d5e3ec;
+  box-shadow:-18px 0 46px rgba(4,24,38,.18);
+  display:flex;flex-direction:column;
+  animation:ops-panel-in 220ms cubic-bezier(.22,.61,.36,1) both;
+}
+.ops-modal.is-side-panel .ops-modal-body{flex:1;overflow:auto}
+/* Deux colonnes dans 520 px seraient illisibles. La requête média existante est
+   fondée sur la VUE, pas sur le conteneur : sur un écran large elle ne se
+   déclencherait pas, et la grille resterait à deux colonnes dans le panneau. */
+.ops-modal.is-side-panel .ops-360-grid{grid-template-columns:1fr}
+.ops-modal.is-side-panel .ops-facts{grid-template-columns:1fr 1fr}
+@keyframes ops-panel-in{from{transform:translateX(26px);opacity:0}to{transform:none;opacity:1}}
+
+/* La place réservée au panneau dans le contenu N'EST PAS ici : `.admin-content`
+   est disputé par six feuilles, dont ui-final.css qui impose
+   `padding: 30px 36px 44px !important`. Un arbitrage se tranche dans la feuille
+   d'arbitrage, pas dans la feuille d'un composant. Voir design-system.css. */
+
+/* ---- Petit écran : feuille montante ---- */
+.ops-modal.is-bottom-sheet{align-items:flex-end;padding:0;display:grid}
+.ops-modal.is-bottom-sheet .ops-modal-card{
+  width:100%;max-height:88dvh;border-radius:18px 18px 0 0;
+  display:flex;flex-direction:column;
+  animation:ops-sheet-in 260ms cubic-bezier(.22,.61,.36,1) both;
+}
+.ops-modal.is-bottom-sheet .ops-modal-body{flex:1;overflow:auto}
+/* Poignée de préhension : elle annonce que la feuille se tire vers le haut. */
+.ops-modal.is-bottom-sheet .ops-modal-head::before{
+  content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:38px;height:4px;border-radius:99px;background:#c3d3de;
+}
+.ops-modal.is-bottom-sheet .ops-modal-head{position:sticky;padding-top:16px}
+@keyframes ops-sheet-in{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
+
+body.dark-theme .ops-modal.is-side-panel .ops-modal-card,
+body.dark-mode  .ops-modal.is-side-panel .ops-modal-card{border-left-color:#345063}
+body.dark-theme .ops-modal.is-bottom-sheet .ops-modal-head::before,
+body.dark-mode  .ops-modal.is-bottom-sheet .ops-modal-head::before{background:#3d5b70}
+
+@media(prefers-reduced-motion:reduce){
+  .ops-modal.is-side-panel .ops-modal-card,
+  .ops-modal.is-bottom-sheet .ops-modal-card{animation:none}
+}
+
+/* ---------------------------------------------------------------------------
+   FIL D'ARIANE — de la ville jusqu'à l'appareil.
+
+   Il joint deux chemins que la plateforme calculait séparément : l'échelle
+   géographique (Ville › Région › Département) et le chemin physique
+   (Salle › Baie › Équipement). Sur un parc réparti sur plusieurs sites, savoir
+   dans QUELLE VILLE se trouve l'appareil est ce qu'on cherche en premier quand
+   il faut envoyer quelqu'un.
+   --------------------------------------------------------------------------- */
+.ops-fact.ops-fact-wide{grid-column:1/-1}
+.ops-fil-ariane{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin-top:2px}
+.ops-crumb{padding:2px 7px;border-radius:7px;font-size:12px;font-weight:700;line-height:1.5;text-decoration:none;color:#2a6f9e;background:rgba(42,111,158,.08);transition:background .14s,color .14s}
+.ops-crumb:hover,.ops-crumb:focus-visible{background:rgba(42,111,158,.17);color:#17486b;outline:none}
+/* Le dernier maillon est l'appareil qu'on regarde : il ne mène nulle part, et doit
+   se lire comme un état, pas comme un bouton. */
+.ops-crumb.is-current{color:#12354f;background:transparent;padding-inline:2px}
+.ops-crumb-sep{font-style:normal;color:#9fb2c1;font-size:11px}
+body.dark-theme .ops-crumb{color:#8fc8ee;background:rgba(143,200,238,.12)}
+body.dark-theme .ops-crumb.is-current{color:#e6f2fa;background:transparent}
+
+/* =========================================================================
+   LE TÉMOIN DE SYNCHRONISATION, VU DANS L'EN-TÊTE
+
+   Il est dessiné pour une surface CLAIRE — fond #edf3f7, texte #47687d, bordure
+   #d7e4ec. Or `operations-suite.js` l'injecte dans `.header-right`, c'est-à-dire
+   sur un en-tête bleu foncé. La pastille y devenait le seul aplat blanc de la
+   barre : un ÉTAT, qui se lit, criait plus fort que les deux ACTIONS à côté.
+
+   On ne change pas le composant, on l'habille pour la pièce où il se trouve.
+   ========================================================================= */
+.admin-header .ops-header-sync {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(255, 255, 255, .18);
+  color: rgba(255, 255, 255, .88);
+}
+
+/* =========================================================================
+   « Signal Flow » : le repère visuel d'une extrémité, sous son port.
+
+   Une ligne de plus sous chaque nœud, jamais un fait nouveau : elle dit si le contrat des
+   formes imbriquées documente une position pour l'ENTITÉ porteuse (baie, équipement,
+   composant), jamais pour le connecteur — voir cable-route-presentation.js#
+   endpointVisualPositionLabel. Un style discret, distinct de `<small>` du port : cette
+   ligne est une annotation de confiance, pas une donnée technique du même rang.
+   ========================================================================= */
+.ops-flow-position{display:block;margin-top:2px;font-style:italic;opacity:.72}

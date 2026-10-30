@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mode hors ligne - 2M TECH</title>
+  <link rel="stylesheet" href="/main.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-content">
+      <h1>Vous êtes hors ligne</h1>
+      <p>L'application ne peut pas joindre le réseau. Vérifiez votre connexion, puis réessayez.</p>
+      <button id="reload-btn">Réessayer</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('reload-btn').addEventListener('click', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

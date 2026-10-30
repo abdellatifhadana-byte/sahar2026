@@ -1,22 +1,22 @@
 {
-  "name": "ai-commerce-os",
+  "name": "2m-tech-platform",
   "private": true,
-  "version": "3.2.0",
   "type": "module",
-  "engines": { "node": ">=20.0.0" },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "postinstall": "cd server && npm install",
-    "start": "node server/index.js"
+    "test": "node --test tests/*.test.js",
+    "check": "node scripts/check-active-modules.js && node scripts/check-public-bundle.mjs && node scripts/public-bundle-residue-guard.mjs",
+    "start": "node --import ./scripts/inventory-replace-preload.js --import ./scripts/catalog-seed-preload.js scripts/serve.js",
+    "check:structure": "node scripts/check-structure.mjs",
+    "check:css": "node scripts/check-css-conflicts.mjs",
+    "check:css:mort": "node scripts/check-dead-css.mjs",
+    "fix:css:mort": "node scripts/fix-dead-css.mjs",
+    "check:bundle:residue": "node scripts/public-bundle-residue-guard.mjs",
+    "liaisons": "node scripts/carte-liaisons.mjs"
   },
   "dependencies": {
-    "clsx": "*", "lucide-react": "*", "react": "*",
-    "react-dom": "*", "react-router-dom": "*", "tailwind-merge": "*"
+    "pg": "^8.13.1"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "*", "@types/node": "*", "@types/react": "*",
-    "@types/react-dom": "*", "@vitejs/plugin-react": "*",
-    "tailwindcss": "*", "typescript": "*", "vite": "*"
+    "jsqr": "^1.4.0"
   }
 }

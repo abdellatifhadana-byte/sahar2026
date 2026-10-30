@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>وضع عدم الاتصال - 2M TECH</title>
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="manifest" href="/manifest.json">
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-content">
+      <img src="/assets/images/offline.png" alt="Offline">
+      <h1>أنت غير متصل بالإنترنت</h1>
+      <p>لا يمكن تحميل التطبيق لأنك غير متصل بالإنترنت. يرجى التحقق من اتصالك ثم إعادة المحاولة.</p>
+      <button id="reload-btn">إعادة المحاولة</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('reload-btn').addEventListener('click', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

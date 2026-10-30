@@ -1,0 +1,242 @@
+/* Phase 18 — Carte / Jumeau opérationnel 2M TECH */
+#admin-context-menu.map-admin-context-menu{position:fixed;display:none;min-width:220px;padding:7px;background:rgba(17,31,43,.98);border:1px solid rgba(255,255,255,.16);border-radius:14px;box-shadow:0 18px 55px rgba(0,0,0,.35);backdrop-filter:blur(14px);z-index:2147483600;color:#eef6fc}
+#admin-context-menu .context-menu-item{display:flex;width:100%;align-items:center;gap:10px;padding:10px 12px;border:0;border-radius:9px;background:transparent;color:inherit;text-align:left;cursor:pointer;font:inherit}
+#admin-context-menu .context-menu-item:hover,#admin-context-menu .context-menu-item:focus-visible{background:rgba(91,178,255,.14);outline:2px solid rgba(91,178,255,.55);outline-offset:-2px}
+#admin-context-menu .context-menu-item[data-action="delete"]{color:#ffb4ad}
+#admin-context-menu .context-menu-separator{height:1px;margin:5px 8px;background:rgba(255,255,255,.1)}
+
+#map-modal.map-digital-twin-ready{--mdt-bg:rgba(17,31,43,.96);--mdt-border:rgba(255,255,255,.16);--mdt-text:#edf6fb;--mdt-muted:#a9bcc8;--mdt-blue:#5bb2ff;--mdt-warn:#f1c40f;--mdt-danger:#ff6b5f;--mdt-ok:#36c995;--mdt-purple:#bf87ff}
+#map-modal .map-hotspot{outline:none}
+#map-modal .map-hotspot:focus-visible{box-shadow:0 0 0 4px rgba(91,178,255,.45),0 3px 18px rgba(0,0,0,.3)!important;transform:scale(1.18)!important}
+#map-modal .map-hotspot.map-status-fault{background:#d94d45!important;box-shadow:0 0 0 5px rgba(217,77,69,.22),0 3px 17px rgba(217,77,69,.58)!important}
+#map-modal .map-hotspot.map-status-warning{background:#d99b28!important;box-shadow:0 0 0 4px rgba(217,155,40,.18),0 3px 15px rgba(217,155,40,.5)!important}
+#map-modal .map-hotspot.map-status-ok{background:#15946e!important}
+#map-modal .map-hotspot.map-has-ticket::after{content:"";position:absolute;right:-5px;top:-5px;width:10px;height:10px;border-radius:50%;background:#ff5f56;border:2px solid #fff;box-shadow:0 0 0 2px rgba(255,95,86,.25)}
+#map-modal .map-hotspot.map-quality-warning::before{content:"!";position:absolute;left:-7px;bottom:-7px;display:grid;place-items:center;width:14px;height:14px;border-radius:50%;font:900 9px/1 system-ui;background:#f1c40f;color:#17222b;border:2px solid #fff}
+#map-modal .map-hotspot.map-impact-origin{background:#fff!important;color:#17222b!important;box-shadow:0 0 0 7px rgba(91,178,255,.42),0 0 35px rgba(91,178,255,.8)!important;transform:scale(1.2)!important}
+#map-modal .map-hotspot.map-impact-downstream{background:#ff725e!important;box-shadow:0 0 0 5px rgba(255,114,94,.25),0 0 24px rgba(255,114,94,.62)!important}
+#map-modal .map-hotspot.map-impact-upstream{background:#bf87ff!important;box-shadow:0 0 0 5px rgba(191,135,255,.22),0 0 24px rgba(191,135,255,.55)!important}
+#map-modal.map-digital-hide-room .map-hotspot.room,#map-modal.map-digital-hide-baie .map-hotspot.baie,#map-modal.map-digital-hide-equipment .map-hotspot.equipment{display:none!important}
+#map-modal.map-digital-alerts-only .map-hotspot:not(.map-has-alert){opacity:.12!important;filter:grayscale(1);transform:scale(.8)!important}
+#map-modal.map-digital-quality-only .map-hotspot:not(.map-quality-warning){opacity:.12!important;filter:grayscale(1)}
+
+#map-command-center-toggle{position:fixed;right:18px;top:18px;z-index:2147482200;width:44px;height:44px;border:1px solid var(--mdt-border);border-radius:13px;background:var(--mdt-bg);color:var(--mdt-text);box-shadow:0 9px 28px rgba(0,0,0,.28);cursor:pointer;backdrop-filter:blur(12px)}
+#map-command-center-toggle:hover,#map-command-center-toggle:focus-visible{border-color:rgba(91,178,255,.6);outline:2px solid rgba(91,178,255,.35)}
+#map-command-center-toggle .map-command-alert-dot{position:absolute;right:6px;top:6px;width:9px;height:9px;border-radius:50%;background:#ff5f56;border:2px solid #17232d}
+
+#map-command-center{position:fixed;right:18px;top:72px;bottom:18px;z-index:2147482150;width:min(390px,calc(100vw - 36px));display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--mdt-border);border-radius:18px;background:var(--mdt-bg);color:var(--mdt-text);box-shadow:0 22px 70px rgba(0,0,0,.38);backdrop-filter:blur(18px);transform:translateX(calc(100% + 36px));opacity:0;pointer-events:none;transition:transform .2s ease,opacity .2s ease}
+#map-command-center.open{transform:translateX(0);opacity:1;pointer-events:auto}
+#map-command-center .mdt-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 16px 12px;border-bottom:1px solid rgba(255,255,255,.09)}
+#map-command-center .mdt-head h2{font-size:15px;margin:0;color:var(--mdt-text)}
+#map-command-center .mdt-head p{font-size:11px;margin:3px 0 0;color:var(--mdt-muted)}
+#map-command-center .mdt-close{border:0;background:transparent;color:var(--mdt-muted);font-size:18px;cursor:pointer}
+#map-command-center .mdt-scroll{overflow:auto;padding:12px 14px 18px;display:grid;gap:12px}
+#map-command-center .mdt-section{border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.035);padding:11px}
+#map-command-center .mdt-section h3{display:flex;align-items:center;gap:7px;margin:0 0 9px;font-size:12px;color:#f4f9fc}
+#map-command-center .mdt-kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#map-command-center .mdt-kpi{padding:9px;border-radius:11px;background:rgba(255,255,255,.055);min-width:0}
+#map-command-center .mdt-kpi strong{display:block;font-size:20px;line-height:1.05}
+#map-command-center .mdt-kpi small{display:block;margin-top:4px;color:var(--mdt-muted);font-size:10px;white-space:normal}
+#map-command-center .mdt-kpi.alert strong{color:#ff9188}#map-command-center .mdt-kpi.warn strong{color:#f4cc58}#map-command-center .mdt-kpi.ok strong{color:#64d9ad}
+#map-command-center .mdt-progress{height:7px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:8px}
+#map-command-center .mdt-progress>span{display:block;height:100%;background:linear-gradient(90deg,#5bb2ff,#61d6ad);border-radius:inherit}
+#map-command-center .mdt-layer-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+#map-command-center .mdt-layer{display:flex;align-items:center;gap:7px;padding:8px;border-radius:10px;background:rgba(255,255,255,.045);font-size:11px;cursor:pointer}
+#map-command-center .mdt-layer input{accent-color:#5bb2ff}
+#map-command-center .mdt-actions{display:flex;flex-wrap:wrap;gap:7px}
+#map-command-center .mdt-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:rgba(255,255,255,.055);color:var(--mdt-text);padding:8px 9px;font-size:11px;cursor:pointer}
+#map-command-center .mdt-btn:hover,#map-command-center .mdt-btn:focus-visible{background:rgba(91,178,255,.12);border-color:rgba(91,178,255,.45);outline:none}
+#map-command-center .mdt-btn.active{background:rgba(91,178,255,.18);border-color:rgba(91,178,255,.55);color:#fff}
+#map-command-center .mdt-btn.danger{border-color:rgba(255,107,95,.28);color:#ffb2ab}
+#map-command-center .mdt-legend{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;color:var(--mdt-muted)}
+#map-command-center .mdt-legend span{display:flex;align-items:center;gap:6px}.mdt-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#15946e}.mdt-dot.warn{background:#d99b28}.mdt-dot.fault{background:#d94d45}.mdt-dot.ticket{background:#ff5f56}.mdt-dot.up{background:#bf87ff}.mdt-dot.down{background:#ff725e}
+#map-command-center .mdt-list{display:grid;gap:6px;max-height:210px;overflow:auto}
+#map-command-center .mdt-list-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 9px;border-radius:10px;background:rgba(255,255,255,.045);border:1px solid transparent;color:inherit;text-align:left;cursor:pointer}
+#map-command-center .mdt-list-item:hover{border-color:rgba(91,178,255,.3)}#map-command-center .mdt-list-item strong{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#map-command-center .mdt-list-item small{grid-column:1/-1;color:var(--mdt-muted);font-size:9px}
+#map-command-center .mdt-pill{font-size:9px;border-radius:999px;padding:3px 6px;background:rgba(255,255,255,.07);white-space:nowrap}.mdt-pill.warn{background:rgba(241,196,15,.14);color:#f7d96a}.mdt-pill.alert{background:rgba(255,95,86,.14);color:#ffaaa4}
+#map-command-center .mdt-disclaimer{font-size:10px;line-height:1.5;color:var(--mdt-muted);margin:0}.mdt-disclaimer strong{color:#dcecf5}
+#map-command-center .mdt-empty{padding:10px;text-align:center;color:var(--mdt-muted);font-size:10px}
+
+#map-search-results.map-smart-search{border:1px solid rgba(255,255,255,.13)!important;border-radius:12px!important;background:rgba(17,31,43,.98)!important;box-shadow:0 14px 36px rgba(0,0,0,.32)!important;max-height:320px!important;overflow:auto!important}
+#map-search-results .map-smart-result{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;padding:9px 10px;border:0;border-bottom:1px solid rgba(255,255,255,.06);background:transparent;color:#edf6fb;text-align:left;cursor:pointer}
+#map-search-results .map-smart-result:hover,#map-search-results .map-smart-result.active{background:rgba(91,178,255,.12)}
+#map-search-results .map-smart-result i{color:#7fc5ff}#map-search-results .map-smart-result strong{display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#map-search-results .map-smart-result small{display:block;color:#9fb2bf;font-size:9px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#map-search-results .map-smart-result .map-result-badges{display:flex;gap:4px}
+#map-search-results .map-smart-result .map-result-badge{width:7px;height:7px;border-radius:50%;background:#d99b28}.map-result-badge.ticket{background:#ff5f56}.map-result-badge.fault{background:#d94d45}
+
+#map-digital-breadcrumb{position:fixed;left:18px;top:18px;z-index:2147482050;display:flex;align-items:center;gap:7px;max-width:min(460px,calc(100vw - 150px));padding:8px 11px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(17,31,43,.88);color:#e8f2f8;backdrop-filter:blur(10px);box-shadow:0 8px 25px rgba(0,0,0,.22);font-size:11px;pointer-events:none}
+#map-digital-breadcrumb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#map-digital-breadcrumb i{color:#7fc5ff}
+#map-dirty-indicator{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:2147482070;display:none;align-items:center;gap:7px;padding:8px 11px;border:1px solid rgba(241,196,15,.28);border-radius:11px;background:rgba(49,43,22,.92);color:#f7dd77;font-size:10px;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+#map-modal.map-digital-dirty #map-dirty-indicator{display:flex}
+
+@media(max-width:760px){#map-command-center-toggle{right:10px;top:10px}#map-command-center{right:8px;left:8px;top:62px;bottom:8px;width:auto}#map-digital-breadcrumb{left:10px;top:10px;max-width:calc(100vw - 76px)}#map-navigation-hint{display:none!important}#map-command-center .mdt-kpis{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){#map-command-center{transition:none!important}.map-hotspot{transition:none!important}}
+
+/* =============================================================================
+   BRIEFING D'ENTRÉE DE LA CARTE
+   Remplace l'ancien portail plein écran sur dégradé bleu générique, qu'il fallait
+   congédier avant de voir le plan. Le plan est désormais construit d'abord ; ce
+   panneau se pose dessus, à travers un voile flouté qui le laisse deviner.
+   Même vocabulaire que le reste de la plateforme : filets d'un pixel, équerres de
+   repérage, étiquettes en petites capitales, chiffres et libellés d'instrument.
+   ========================================================================== */
+
+.map-briefing{
+  position:fixed;inset:0;
+  /* La carte revendique déjà un empilement quasi maximal — mesuré : #map-modal à
+     2147482000 et sa barre d'outils à 2147482100. Un briefing à 30000 se retrouvait
+     DERRIÈRE elle, invisible, alors qu'il paraissait correct isolément. On se place
+     juste au-dessus de la barre, et bien en dessous de l'écran de démarrage
+     (2147483000) qui doit rester souverain. */
+  z-index:2147482500;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  background:rgba(6,14,22,.52);
+  -webkit-backdrop-filter:blur(7px) saturate(.9);backdrop-filter:blur(7px) saturate(.9);
+  opacity:0;transition:opacity 320ms ease
+}
+.map-briefing.is-open{opacity:1}
+.map-briefing.is-leaving{opacity:0;pointer-events:none}
+
+.map-briefing-panel{
+  position:relative;width:min(520px,100%);max-height:calc(100dvh - 40px);overflow:auto;
+  padding:26px clamp(20px,4vw,32px) 22px;
+  background:#0F1B26;color:#E8F1F8;
+  border:1px solid rgba(150,180,210,.22);border-radius:12px;
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+  transform:translateY(10px) scale(.985);transition:transform 380ms cubic-bezier(.16,1,.3,1)
+}
+.map-briefing.is-open .map-briefing-panel{transform:none}
+
+/* Les mêmes équerres que l'écran de démarrage et que les panneaux de l'application :
+   c'est le motif qui relie visuellement toutes les surfaces de la plateforme. */
+.map-briefing-mark{position:absolute;width:10px;height:10px;pointer-events:none;opacity:.5;border-color:rgba(150,190,225,.65);border-style:solid}
+.map-briefing-mark.tl{top:8px;left:8px;border-width:1px 0 0 1px}
+.map-briefing-mark.br{bottom:8px;right:8px;border-width:0 1px 1px 0}
+
+.map-briefing-eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7FA6C4}
+.map-briefing-head h2{margin:6px 0 4px;font-size:clamp(19px,3.4vw,24px);font-weight:300;letter-spacing:-.01em;color:#fff}
+.map-briefing-head p{margin:0 0 18px;font-size:13px;line-height:1.5;color:#9DB4C8}
+
+.map-briefing-keys{display:grid;gap:1px;margin:0 0 20px;background:rgba(150,180,210,.14);border:1px solid rgba(150,180,210,.14);border-radius:8px;overflow:hidden}
+.map-briefing-keys>div{display:grid;grid-template-columns:minmax(120px,34%) 1fr;gap:12px;padding:11px 13px;background:#0F1B26}
+.map-briefing-keys dt{display:flex;align-items:center;gap:7px;margin:0;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#8FB2CC}
+.map-briefing-keys dt i{font-size:11px;color:#4FC3F7}
+.map-briefing-keys dd{margin:0;font-size:12.5px;line-height:1.45;color:#C6D8E6}
+
+.map-briefing-go{
+  width:100%;min-height:44px;padding:0 18px;
+  border:1px solid rgba(79,195,247,.45);border-radius:9px;
+  background:linear-gradient(180deg,#1787C2,#116FA3);color:#fff;
+  font:inherit;font-size:14px;font-weight:700;letter-spacing:.03em;cursor:pointer;
+  transition:filter 180ms ease,transform 180ms ease
+}
+.map-briefing-go:hover{filter:brightness(1.1)}
+.map-briefing-go:active{transform:translateY(1px)}
+.map-briefing-go:focus-visible{outline:2px solid #4FC3F7;outline-offset:2px}
+.map-briefing-hint{margin:10px 0 0;text-align:center;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:#6E8AA2}
+
+@media(max-width:520px){
+  .map-briefing-keys>div{grid-template-columns:1fr;gap:3px}
+}
+@media(prefers-reduced-motion:reduce){
+  .map-briefing,.map-briefing-panel{transition-duration:.01ms}
+}
+
+/* =========================================================================
+   ÉDITEUR DE FORMES — rectangle, cercle, polygone
+   Barre posée SUR le plan pendant l'édition. Elle doit passer au-dessus de la
+   carte, qui revendique un empilement quasi maximal (#map-modal mesuré à
+   2147482000, sa barre d'outils à 2147482100), et rester SOUS l'écran de
+   démarrage. Même arbitrage que le briefing.
+   ========================================================================= */
+.shape-editor-bar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147482500;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;max-width:min(940px,94vw);
+  padding:12px 16px;border-radius:14px;border:1px solid rgba(120,190,240,.28);
+  background:rgba(11,20,30,.92);backdrop-filter:blur(14px);
+  box-shadow:0 18px 48px rgba(0,0,0,.5);color:#dbeaf6;font-size:13px}
+.shape-editor-title{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#7fb2d4;flex:1 0 100%}
+.shape-editor-tools,.shape-editor-actions{display:flex;gap:6px;flex-wrap:wrap}
+.shape-editor-bar button{min-height:36px;min-width:38px;padding:0 12px;border-radius:9px;cursor:pointer;
+  border:1px solid rgba(120,190,240,.3);background:rgba(24,40,56,.9);color:#dbeaf6;
+  font-size:13px;line-height:1;transition:background 160ms ease,border-color 160ms ease}
+.shape-editor-bar button:hover{background:rgba(38,64,88,.95);border-color:rgba(140,215,255,.55)}
+.shape-editor-bar button:focus-visible{outline:2px solid #6fd3ff;outline-offset:2px}
+.shape-editor-tools button{font-size:17px}
+.shape-editor-tools button.is-active{background:#0d6ea8;border-color:#6fd3ff;color:#fff}
+.shape-editor-bar button.is-primary{background:#0d6ea8;border-color:#3ea8e0;color:#fff;font-weight:600}
+.shape-editor-hint{flex:1 0 100%;margin:2px 0 0;font-size:11px;line-height:1.5;color:#8fb0c6}
+
+@media(max-width:640px){
+  .shape-editor-bar{left:8px;right:8px;bottom:8px;transform:none;max-width:none;padding:10px 12px}
+  .shape-editor-hint{font-size:10px}
+}
+
+/* =========================================================================
+   BARRE DU TRACÉ D'UN CÂBLE — consultation et édition
+   Même empilement et même gabarit que l'éditeur de formes : les deux vivent
+   sur le plan, jamais l'un sous l'autre, et un exploitant ne doit pas avoir à
+   réapprendre où regarder selon ce qu'il édite.
+   ========================================================================= */
+.route-editor-bar{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:2147482500;
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;max-width:min(980px,94vw);
+  padding:12px 16px;border-radius:14px;border:1px solid rgba(120,190,240,.28);
+  background:rgba(11,20,30,.92);backdrop-filter:blur(14px);
+  box-shadow:0 18px 48px rgba(0,0,0,.5);color:#dbeaf6;font-size:13px}
+.route-editor-bar[hidden]{display:none}
+.route-editor-title{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#7fb2d4}
+/* La pastille porte un TEXTE : une couleur seule ne dit rien à qui ne la distingue pas. */
+.route-editor-badge{padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06)}
+.route-editor-badge.is-verifie{background:rgba(46,204,113,.18);border-color:rgba(46,204,113,.55);color:#8bf0b5}
+.route-editor-badge.is-propose{background:rgba(243,156,18,.18);border-color:rgba(243,156,18,.55);color:#ffd08a}
+.route-editor-badge.is-protege{background:rgba(155,89,182,.18);border-color:rgba(155,89,182,.55);color:#dcb6ef}
+.route-editor-badge.is-absent,.route-editor-badge.is-inconnu{color:#b9cbd8}
+.route-editor-message,.route-editor-sentence{flex:1 0 100%;margin:0;font-size:12px;line-height:1.5}
+.route-editor-message{color:#ffd08a}
+.route-editor-sentence{color:#cfe4f3}
+.route-editor-tools,.route-editor-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end}
+.route-editor-tools{flex:1 0 100%}
+.route-editor-field{display:flex;flex-direction:column;gap:3px;font-size:10px;
+  letter-spacing:1px;text-transform:uppercase;color:#7fb2d4}
+.route-editor-field select{min-height:36px;padding:0 10px;border-radius:9px;
+  border:1px solid rgba(120,190,240,.3);background:rgba(24,40,56,.9);color:#dbeaf6;
+  font-size:13px;text-transform:none;letter-spacing:0}
+.route-editor-bar button{min-height:36px;min-width:38px;padding:0 12px;border-radius:9px;cursor:pointer;
+  border:1px solid rgba(120,190,240,.3);background:rgba(24,40,56,.9);color:#dbeaf6;
+  font-size:13px;line-height:1;transition:background 160ms ease,border-color 160ms ease}
+.route-editor-bar button:hover:not(:disabled){background:rgba(38,64,88,.95);border-color:rgba(140,215,255,.55)}
+.route-editor-bar button:focus-visible{outline:2px solid #6fd3ff;outline-offset:2px}
+.route-editor-bar button:disabled{opacity:.45;cursor:not-allowed}
+.route-editor-bar button.is-primary{background:#0d6ea8;border-color:#3ea8e0;color:#fff;font-weight:600}
+.route-editor-bar button.is-danger{background:rgba(192,57,43,.28);border-color:rgba(231,76,60,.6);color:#ffbcb2}
+.route-editor-hint{flex:1 0 100%;margin:2px 0 0;font-size:11px;line-height:1.5;color:#8fb0c6}
+
+@media(max-width:640px){
+  .route-editor-bar{left:8px;right:8px;bottom:8px;transform:none;max-width:none;padding:10px 12px}
+  .route-editor-tools,.route-editor-actions{width:100%}
+  .route-editor-field{flex:1 1 100%}
+  .route-editor-field select{width:100%}
+  .route-editor-hint{font-size:10px}
+}
+
+/* =========================================================================
+   FORMES IMBRIQUÉES — la liste « à placer » du panneau salle/baie.
+   N'apparaît qu'en mode « Modifier les formes », pour ce qui n'a ni forme ni
+   point hérité — voir nested-shape-contract.js et installerFormesPhoto().
+   ========================================================================= */
+.nested-shapes-unplaced{max-width:96vw;width:420px;margin:10px 0 0;padding:10px 12px;
+  border-radius:12px;border:1px solid rgba(120,190,240,.28);background:rgba(11,20,30,.86);
+  color:#dbeaf6;font-size:13px}
+.nested-shapes-unplaced-title{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;
+  color:#7fb2d4;margin-bottom:7px}
+.nested-shapes-unplaced-item{display:inline-flex;align-items:center;margin:0 6px 6px 0;
+  padding:6px 11px;border-radius:9px;cursor:pointer;border:1px dashed rgba(255,212,121,.55);
+  background:rgba(24,40,56,.9);color:#ffd479;font-size:12px;line-height:1.3}
+.nested-shapes-unplaced-item:hover{background:rgba(38,64,88,.95);border-color:#ffd479}
+.nested-shapes-unplaced-item:focus-visible{outline:2px solid #6fd3ff;outline-offset:2px}
+/* Sélecteur explicite par type (« Dessiner une baie/un équipement ») : mêmes items, deux
+   états. Une entité déjà positionnée reste choisissable — elle rouvre son édition — d'où
+   une teinte cyan qui la distingue de l'ambre « à placer » sans changer la structure. */
+.nested-shapes-unplaced-item.is-placed{border-style:solid;border-color:rgba(111,211,255,.55);color:#bfe9ff}
+.nested-shapes-unplaced-item.is-placed:hover{background:rgba(38,64,88,.95);border-color:#6fd3ff}
+.nested-shapes-unplaced-item.is-empty{cursor:default;opacity:.75}
+.nested-shapes-unplaced-item.is-empty:hover{background:rgba(24,40,56,.9);border-color:rgba(255,212,121,.55)}

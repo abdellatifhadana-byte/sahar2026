@@ -1,0 +1,125 @@
+/* 2M TECH — réglages visuels finaux après validation Railway
+ * CSS uniquement : aucune logique, donnée, route ou permission modifiée.
+ */
+
+/* --- Shell / sidebar --- */
+.admin-sidebar .sidebar-menu a.active::before { display: none !important; }
+.admin-sidebar .sidebar-menu a.active { transform: none !important; }
+.admin-sidebar .sidebar-menu a:hover { transform: none !important; }
+
+/* --- Login : fond continu, carte plus nette --- */
+
+
+
+
+
+
+
+
+
+/* --- Paramètres : vraie hiérarchie titre / sous-titre --- */
+:is(#admin-content,#responsible-content):has(.system-settings) {
+  padding-top: 26px !important;
+}
+.system-settings::before {
+  content: "Paramètres" !important;
+  margin: 0 0 28px !important;
+  color: #0d2f50 !important;
+  font-size: 29px !important;
+  line-height: 1.1 !important;
+  font-weight: 850 !important;
+  letter-spacing: -.35px !important;
+}
+.system-settings .settings-section:first-child {
+  position: relative;
+  margin-top: 8px !important;
+}
+.system-settings .settings-section:first-child::before {
+  content: "Configurez l'apparence, la sécurité et la gestion des données de la plateforme.";
+  position: absolute;
+  left: 0;
+  top: -48px;
+  color: #6d8297;
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.system-settings .settings-section:first-child {
+  padding-top: 21px !important;
+}
+.system-settings .settings-footer { margin-top: 0 !important; }
+
+/* --- Diagnostic écrans : état disabled réellement lisible --- */
+.diagnostic-interface #start-diagnosis-btn:disabled {
+  color: #8b9bab !important;
+  background: #e8edf3 !important;
+  border-color: #e2e8ee !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
+.diagnostic-interface .quick-actions {
+  position: static !important;
+  margin-top: -2px !important;
+  padding: 0 !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header .card-actions {
+  gap: 9px !important;
+}
+:is(#admin-content,#responsible-content) > .card:has(.diagnostic-interface) > .card-header .card-actions .btn {
+  min-height: 40px !important;
+  padding-inline: 16px !important;
+}
+
+/* --- Mur d'images : toolbar/état vide plus équilibrés --- */
+.wall-page.card { overflow: hidden; }
+.wall-header { gap: 18px !important; }
+#wall-empty:not([hidden]) {
+  margin-top: 58px !important;
+  min-height: 250px !important;
+}
+#wall-empty:not([hidden])::before {
+  width: 112px !important;
+  height: 88px !important;
+  margin-bottom: 20px !important;
+}
+#wall-empty:not([hidden]) + #wall-toolbar {
+  margin-top: 4px !important;
+}
+#wall-empty:not([hidden]) + #wall-toolbar .btn {
+  min-width: 260px !important;
+}
+
+/* --- Boutons secondaires : contraste plus fin --- */
+.admin-content .btn.gray:not(.danger) {
+  color: #24445f !important;
+  background: #f7fafc !important;
+  border: 1px solid #d5e2ed !important;
+}
+.admin-content .btn.gray:not(.danger):hover {
+  background: #eef5fa !important;
+  border-color: #bed3e5 !important;
+}
+
+/* --- Responsive --- */
+@media (max-width: 1100px) {
+  .system-settings .settings-section:first-child::before {
+    white-space: normal;
+    max-width: 90vw;
+  }
+}
+
+@media (max-width: 760px) {
+  
+  .system-settings::before {
+    font-size: 25px !important;
+    margin-bottom: 34px !important;
+  }
+  .system-settings .settings-section:first-child::before {
+    top: -53px;
+    font-size: 13px;
+  }
+}

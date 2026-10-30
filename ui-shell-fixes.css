@@ -1,0 +1,539 @@
+/* Correctifs de coque 2M TECH — chargés en dernier pour neutraliser les anciennes règles !important. */
+.admin-page .admin-sidebar {
+  transition: transform .2s ease, width .2s ease, opacity .2s ease !important;
+}
+.admin-page.sidebar-closed .admin-sidebar {
+  transform: translateX(-105%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+.admin-page.sidebar-closed .admin-content {
+  margin-left: 0 !important;
+}
+.admin-page.sidebar-closed .admin-tabs {
+  margin-left: 0 !important;
+}
+
+.platform-quick-add-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 72000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(8, 33, 55, .56);
+  backdrop-filter: blur(5px);
+}
+.platform-quick-add-card {
+  width: min(620px, calc(100vw - 30px));
+  border: 1px solid #dbe7f1;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(8, 38, 63, .28);
+  overflow: hidden;
+}
+.platform-quick-add-card > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e7eef4;
+}
+.platform-quick-add-card > header strong {
+  display: block;
+  color: #103b5c;
+  font-size: 18px;
+}
+.platform-quick-add-card > header small {
+  display: block;
+  margin-top: 3px;
+  color: #6d8394;
+}
+.platform-quick-add-close {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  background: #f0f5f9;
+  color: #31536e;
+  font-size: 22px;
+  cursor: pointer;
+}
+.platform-quick-add-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px;
+}
+.platform-quick-add-grid button {
+  min-height: 112px;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 2px 12px;
+  text-align: left;
+  padding: 16px;
+  border: 1px solid #dce8f2;
+  border-radius: 14px;
+  background: #fafdff;
+  color: #163f5d;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.platform-quick-add-grid button:hover {
+  transform: translateY(-2px);
+  border-color: #7fb8e6;
+  box-shadow: 0 10px 24px rgba(19, 89, 143, .10);
+}
+.platform-quick-add-grid button i {
+  grid-row: 1 / span 2;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #eaf4fc;
+  color: #0d72c7;
+  font-size: 18px;
+}
+.platform-quick-add-grid button span {
+  align-self: end;
+  font-weight: 800;
+  font-size: 14px;
+}
+.platform-quick-add-grid button small {
+  align-self: start;
+  color: #72879a;
+  font-size: 12px;
+}
+body.dark-theme .platform-quick-add-card {
+  background: #152735;
+  border-color: #324d60;
+}
+body.dark-theme .platform-quick-add-card > header { border-color: #2b4355; }
+body.dark-theme .platform-quick-add-card > header strong { color: #eef7fd; }
+body.dark-theme .platform-quick-add-card > header small { color: #a6bdcc; }
+body.dark-theme .platform-quick-add-grid button {
+  background: #10202c;
+  color: #eef7fd;
+  border-color: #355366;
+}
+body.dark-theme .platform-quick-add-grid button i { background: #18364b; }
+
+@media (max-width: 650px) {
+  .platform-quick-add-backdrop { align-items: end; padding: 10px; }
+  .platform-quick-add-card { width: 100%; border-radius: 18px 18px 12px 12px; }
+  .platform-quick-add-grid { grid-template-columns: 1fr; max-height: 70vh; overflow: auto; }
+  .platform-quick-add-grid button { min-height: 86px; }
+}
+
+/* Fenêtres de saisie : viewport stable, contenu défilable et actions toujours accessibles. */
+#eq-modal,
+#user-modal,
+#ticket-modal {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: clamp(8px, 2vw, 24px) !important;
+  overflow: hidden !important;
+}
+
+#eq-modal .equipment-modal-content {
+  width: min(1120px, 100%) !important;
+  max-width: 1120px !important;
+  min-width: 0 !important;
+  max-height: calc(100dvh - clamp(16px, 4vw, 48px)) !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+#eq-modal .equipment-modal-content > h3 {
+  flex: 0 0 auto;
+  margin: 0 !important;
+  padding: 20px 64px 16px 24px;
+  border-bottom: 1px solid #e3ebf2;
+  color: #103b5c;
+  background: #fff;
+}
+
+#eq-modal .close-modal,
+#user-modal .close-modal,
+#ticket-modal .close-modal {
+  z-index: 8;
+}
+
+#eq-form {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px 14px;
+  padding: 18px 24px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#eq-form > input,
+#eq-form > select,
+#eq-form > textarea {
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+}
+
+/* Champ étiqueté : occupe EXACTEMENT la même cellule de grille que le champ nu qu'il
+   remplace, de sorte que les deux colonnes et l'ordre des champs ne bougent pas.
+   Employé pour les dates, dont le `placeholder` n'est jamais affiché par le navigateur. */
+#eq-form > .eq-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+#eq-form > .eq-field > span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--tk-ink-3, #7690A8);
+}
+#eq-form > .eq-field > input {
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+}
+
+#eq-form > textarea,
+#eq-form > input[type="file"],
+#eq-form > #modal-images-list,
+#eq-form > .kb-equipment-link,
+#eq-form > .equipment-ports-editor,
+#eq-form > .eq-internals,
+#eq-form > .equipment-modal-actions {
+  grid-column: 1 / -1;
+}
+
+#eq-form > textarea {
+  min-height: 86px;
+  resize: vertical;
+}
+
+#eq-form .kb-equipment-link,
+#eq-form .equipment-ports-editor,
+#eq-form .eq-internals {
+  margin: 6px 0 !important;
+}
+
+#eq-form .kb-equipment-link-head > div,
+#eq-form .ports-editor-head > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+#eq-form .kb-equipment-link-head strong,
+#eq-form .kb-equipment-link-head small,
+#eq-form .ports-editor-head h4,
+#eq-form .ports-editor-head p {
+  display: block;
+  margin: 0;
+}
+
+#eq-form .kb-equipment-link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+#eq-form .kb-equipment-link-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+#eq-form .equipment-modal-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 7;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 8px -24px 0;
+  padding: 15px 24px 18px;
+  border-top: 1px solid #e3ebf2;
+  background: rgba(255, 255, 255, .97);
+  box-shadow: 0 -10px 24px rgba(16, 58, 96, .06);
+  backdrop-filter: blur(8px);
+}
+
+#user-modal .user-modal-content,
+#ticket-modal .ticket-modal-content {
+  width: min(720px, 100%) !important;
+  min-width: 0 !important;
+  max-height: calc(100dvh - clamp(16px, 4vw, 48px)) !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#ticket-modal .ticket-modal-content {
+  width: min(580px, 100%) !important;
+  max-width: 580px !important;
+}
+
+#user-modal #user-form,
+#ticket-modal #ticket-form {
+  min-height: 0;
+  padding: 2px 4px 0 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#user-modal .form-actions,
+#ticket-modal .ticket-modal-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin: 16px -4px 0;
+  padding: 14px 4px 0;
+  border-top: 1px solid #e5edf3;
+  background: #fff;
+}
+
+#ticket-modal input[type="file"] {
+  min-height: 46px;
+  padding: 7px !important;
+  border: 1px dashed #b9cede !important;
+  background: #f8fbfe !important;
+}
+
+#ticket-modal .close-modal {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: #f1f5f8;
+  line-height: 1;
+}
+
+body.dark-theme #eq-modal .equipment-modal-content > h3,
+body.dark-theme #eq-form .equipment-modal-actions,
+body.dark-theme #user-modal .form-actions,
+body.dark-theme #ticket-modal .ticket-modal-actions {
+  background: rgba(21, 39, 53, .98);
+  border-color: #345063;
+}
+
+@media (max-width: 720px) {
+  #eq-modal,
+  #user-modal,
+  #ticket-modal { align-items: flex-end !important; padding: 6px !important; }
+  #eq-modal .equipment-modal-content,
+  #user-modal .user-modal-content,
+  #ticket-modal .ticket-modal-content {
+    width: 100% !important;
+    max-height: calc(100dvh - 12px) !important;
+    border-radius: 16px 16px 10px 10px !important;
+  }
+  #eq-form,
+  #eq-form .kb-equipment-link-grid,
+  #user-modal .form-row { grid-template-columns: 1fr !important; }
+  #eq-form { padding-inline: 15px; }
+  #eq-form .equipment-modal-actions { margin-inline: -15px; padding-inline: 15px; }
+}
+
+/* =========================================================
+   BARRE LATÉRALE : ATTEINDRE TOUTES LES SECTIONS
+   =========================================================
+   Le contenu de la barre mesure environ 1008 px, mais elle était en
+   `overflow-y: visible` : les sections qui dépassaient la hauteur de l'écran
+   n'étaient pas coupées — elles débordaient simplement, SANS barre de
+   défilement, donc sans aucun moyen de les atteindre.
+
+   Mesuré : à 900 px de haut, 3 sections sur 19 hors d'atteinte ; à 760 px, 6 ;
+   à 640 px, 8. Sur un portable 1366 × 768 — configuration courante —
+   « Paramètres » et « Accès zones » étaient donc purement inaccessibles.
+
+   La barre défile désormais son propre contenu, et l'en-tête reste en place. */
+
+.admin-page .admin-sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 160, 195, .45) transparent;
+}
+
+.admin-page .admin-sidebar::-webkit-scrollbar { width: 8px; }
+.admin-page .admin-sidebar::-webkit-scrollbar-track { background: transparent; }
+.admin-page .admin-sidebar::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: rgba(120, 160, 195, .42);
+}
+.admin-page .admin-sidebar:hover::-webkit-scrollbar-thumb { background: rgba(120, 160, 195, .68); }
+
+/* Cible tactile : les liens tombaient à 35 × 42 px en mode réduit, sous le seuil
+   de confort de 44 px recommandé pour le doigt. */
+@media (pointer: coarse) {
+  .admin-page .admin-sidebar [data-section] { min-height: 44px; }
+}
+
+/* =============================================================================
+   LA BANDE D'ONGLETS — une seule rangée, à hauteur constante.
+
+   CE QUI ÉTAIT MESURÉ (base 60c1bc2)
+   ----------------------------------
+   `#admin-tabs` existe dans le DOM depuis toujours, avec ses gestes déjà câblés :
+   on clique un onglet pour y revenir, sa croix le ferme, « fermer tous » les vide.
+   Mais AUCUNE feuille ne le dessinait — ni lui, ni `.tab`. Trois conséquences,
+   toutes relevées au navigateur à 1440 × 900 :
+
+     · `.tab` restant un élément de niveau bloc, chaque onglet occupait sa propre
+       LIGNE. La bande grandissait de 24 px par navigation : 24, 48, 72, 96, 120,
+       144, 168 px, jusqu'au plafond de sept onglets ;
+     · le contenu, qui suit la bande dans le flux, descendait d'autant : mesuré de
+       102 px à 270 px sur vingt navigations ;
+     · faute de `margin-left`, la bande se rendait SOUS la barre latérale fixe,
+       c'est-à-dire invisible — d'où une dérive verticale sans cause visible.
+
+   LE PARTI RETENU
+   ---------------
+   Les onglets sont utiles et déjà gouvernés par `admin-ui.js` : on garde donc la
+   fonction (choix A) et on lui donne enfin sa forme — UN conteneur horizontal,
+   unique et stable. La hauteur est FIXE et ne dépend pas du nombre d'onglets :
+   c'est ce qui garantit que la position du contenu ne bouge plus, que la bande
+   porte un onglet ou sept. Le débordement part sur la droite, dans la bande, et
+   jamais vers le bas.
+
+   Le décalage à gauche reprend celui de `.admin-content`, ni plus ni moins : la
+   bande et le contenu sont alignés sur le même rail, et les règles de repli
+   existantes (`.sidebar-closed`, `mobile-runtime.css`) continuent de valoir.
+   ========================================================================== */
+.admin-page .admin-tabs {
+  /* 236 px : la largeur RÉELLE de la barre latérale, telle que `ui-final.css` la pose
+     en dernier avec `!important` — et non les 230 px de `main.css`, qui ne s'appliquent
+     plus. Mesuré au navigateur, pas déduit de la feuille la plus ancienne. */
+  --tabs-rail: 236px;
+  --tabs-height: 44px;
+  box-sizing: border-box;
+  margin-left: var(--tabs-rail);
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  height: var(--tabs-height);
+  min-height: var(--tabs-height);
+  max-height: var(--tabs-height);
+  padding: 0 12px;
+  background: var(--ui-surface, #fff);
+  border-bottom: 1px solid var(--ui-border, #dce6f0);
+  transition: margin-left .22s;
+}
+.admin-page .admin-tabs .tabs-container {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 0;
+  /* Le trop-plein part sur le côté — jamais vers le bas, sinon la dérive revient. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+.admin-page .admin-tabs .tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  max-width: 220px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--ui-muted, #5c7182);
+  font-size: 12.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.admin-page .admin-tabs .tab span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-page .admin-tabs .tab:hover { color: var(--ui-text, #16344c); }
+.admin-page .admin-tabs .tab.active {
+  color: var(--ui-text, #16344c);
+  border-bottom-color: var(--tk-accent, #0B66D9);
+}
+.admin-page .admin-tabs .tab .close-tab {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: .55;
+  cursor: pointer;
+  padding: 0 2px;
+  line-height: 1;
+}
+.admin-page .admin-tabs .tab .close-tab:hover { opacity: 1; }
+.admin-page .admin-tabs .close-all-tabs {
+  flex: 0 0 auto;
+  align-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--ui-muted, #5c7182);
+  cursor: pointer;
+}
+
+body.dark-theme .admin-page .admin-tabs {
+  background: #1b2732;
+  border-bottom-color: #2b3946;
+}
+
+/* =============================================================================
+   L'ABSENCE D'HABILITATION SE DIT — elle ne se devine pas dans un tableau vide.
+
+   Le bloc remplace le silence d'une liste vide pour un rôle à périmètre. Il est
+   discret : ce n'est pas une erreur, c'est un état de compte. Le fond neutre et
+   le filet de gauche le distinguent d'une alerte rouge, qui ferait croire à une
+   panne de la plateforme — exactement l'impression qu'on corrige ici.
+   ========================================================================== */
+.zone-scope-notice {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+  padding: 13px 16px;
+  border: 1px solid var(--tk-line, #dce6f0);
+  border-left: 3px solid var(--tk-idle, #7690a8);
+  border-radius: 10px;
+  background: var(--tk-surface-2, #f7fafd);
+  color: var(--tk-ink-2, #40607d);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.zone-scope-notice > span { flex: 1 1 260px; min-width: 0; }
+.zone-scope-notice .btn { flex: 0 0 auto; }
+body.dark-theme .zone-scope-notice {
+  background: #18242e;
+  border-color: #2b3946;
+  color: #aebbc5;
+}
+
+/* Le rail de la bande suit CELUI DU CONTENU, à chaque palier où il change — la barre
+   latérale passe à 74 px sous 1100 (`ui-final.css`) puis à 56 px sous 900 (`main.css`).
+   Une bande qui garderait 230 px se rendrait au-dessus du contenu, décalée de 156 px. */
+/* Sous 1100 px, la barre et le contenu passent tous deux à 74 px (`ui-final.css`), et ils
+   y restent jusqu'en bas : `mobile-runtime.css` prend ensuite le relais avec son propre
+   rail. Un palier supplémentaire à 900 px désalignerait la bande de 18 px. */
+@media (max-width: 1100px) {
+  .admin-page .admin-tabs { --tabs-rail: 74px; }
+}

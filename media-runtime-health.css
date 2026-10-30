@@ -1,0 +1,84 @@
+.eq-media-visual {
+  position: relative;
+}
+
+.eq-media-kind-badge {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 3;
+  max-width: calc(100% - 16px);
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(15, 35, 52, .86);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  backdrop-filter: blur(5px);
+}
+
+.eq-media-kind-badge.kind-field-photo {
+  background: rgba(25, 116, 74, .9);
+}
+
+.eq-media-kind-badge.kind-manufacturer-diagram,
+.eq-media-kind-badge.kind-technical-view {
+  background: rgba(55, 77, 101, .92);
+}
+
+.eq-media-kind-badge.kind-candidate-reference {
+  background: rgba(154, 102, 20, .92);
+}
+
+.eq-media-visual.media-broken {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--border-color, #cbd5df);
+  border-radius: 10px;
+  background: var(--surface-soft, #f7fafc);
+}
+
+.eq-media-broken {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  padding: 18px;
+  color: var(--text-muted, #627283);
+  text-align: center;
+}
+
+.eq-media-broken i {
+  font-size: 22px;
+  color: #b77716;
+}
+
+.eq-media-broken strong {
+  color: var(--text-color, #253747);
+}
+
+.eq-media-broken small {
+  max-width: 420px;
+  overflow-wrap: anywhere;
+}
+
+.eq-media-broken a {
+  color: var(--primary-color, #176f9b);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.eq-media-broken a:hover {
+  text-decoration: underline;
+}
+
+.eq-media-thumb[data-media-fallback-active="1"] {
+  outline: 2px solid rgba(183, 119, 22, .35);
+  outline-offset: 2px;
+}
